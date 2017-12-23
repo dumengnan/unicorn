@@ -1,0 +1,15 @@
+*           text=auto  
+*.txt       text  
+*.jpg       -text  
+*.vcproj    text eol=crlf  
+*.sh        text eol=lf  
+*.py        text diff=python 
+*.sql       text
+*.java      text diff=java
+*.html      text diff=html
+*.css       text
+*.js        text
+
+
+# 比较不同版本的word 文件
+*.doc diff=word
