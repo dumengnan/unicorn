@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book xmlns:xi="http://www.w3.org/2001/XInclude">
+  <bookinfo>
+    <title>
+      <inlinegraphic align="right" fileref="piggy.gif"/>
+      piggy安装文档
+    </title>
+    <releaseinfo>0.0.1</releaseinfo>
+
+  </bookinfo>
+  <toc/>
+
+  <xi:include href="basic_install.xml"/>
+  <xi:include href="db_install.xml"/>
+  <xi:include href="module_install.xml"/>
+  
+  
+</book>

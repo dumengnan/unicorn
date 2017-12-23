@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2009-2013 Roland Huss
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<chapter id="db_install">
+
+  <title>数据库安装</title>
+  <section>
+  <title><emphasis>Mysql</emphasis> 安装与配置</title>
+  <itemizedlist>
+    
+      <listitem>
+	    <para>安装并启动mysql 服务</para>
+		<screen>yum install mysql
+service mysql.d start</screen>
+	 </listitem>
+	 
+	 <listitem>
+	    <para>添加到开机启动</para>
+		<screen>chkconfig mysql.d on</screen>
+	 </listitem>
+	
+  </itemizedlist>
+   </section>
+   
+   <section>
+  <title><emphasis>创建数据库以及表</emphasis></title>
+  <itemizedlist>
+    
+      <listitem>
+	    <para>解压文件</para>
+		<screen>tar zxvf piggy-db.tar.gz -C /opt</screen>
+	 </listitem>
+	 
+	  <listitem>
+	    <para>创建数据库</para>
+		<screen>mysql -u root -p(密码)
+create database piggy;</screen>
+	 </listitem>
+	
+	 <listitem>
+	    <para>创建表</para>
+		<screen>cd /opt/piggy-db/
+mysql -u root -p(密码)>account.sql
+mysql -u root -p(密码)>user.sql</screen>
+	 </listitem>
+  </itemizedlist>
+   </section>
+</chapter>

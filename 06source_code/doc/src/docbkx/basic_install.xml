@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2009-2013 Roland Huss
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<chapter id="basic_install">
+
+  <title>基础安装</title>
+  <section>
+  <title><emphasis>supervisor</emphasis> 安装与配置</title>
+  <itemizedlist>
+    
+      <listitem>
+	    <para>安装supervisor</para>
+		<screen>pip install supervisor</screen>
+		<para>生成配置文件</para>
+ 		<screen>echo_supervisord_conf > /etc/supervisord.conf</screen>
+	 </listitem>
+	 
+	<listitem>
+	<para>执行命令  生成supervisord配置文件</para>
+	<screen>echo_supervisord_conf > /etc/supervisord.conf</screen>
+	</listitem>
+	
+	<listitem>
+	<para>修改配置文件的位置</para>
+	<screen>[include]
+files = /etc/supervisor/*.conf</screen>
+	</listitem>
+	
+	<listitem>
+	<para>启动supervisor</para>
+	<screen>supervisord -c /etc/supervisord.conf</screen>
+	</listitem>
+	
+	<listitem>
+	<para>配置开机启动</para>
+	<para>进入/lib/systemd/system目录，并创建supervisor.service文件</para>
+	<screen>[Unit]
+Description=supervisor
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+ExecStop=/usr/bin/supervisorctl $OPTIONS shutdown
+ExecReload=/usr/bin/supervisorctl $OPTIONS reload
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target</screen>
+
+    <para>配置开机启动</para>
+	<screen>systemctl enable supervisor.service
+systemctl daemon-reload</screen>
+
+    <para>修改文件权限为766</para>
+	<screen>chmod 766 supervisor.service</screen>
+	</listitem>
+  </itemizedlist>
+   </section>
+   
+   
+   <section>
+  <title><emphasis>buildbot</emphasis> 安装与配置</title>
+  <itemizedlist>
+    
+      <listitem>
+	  <para>master 安装</para>
+	  
+	  <para> 创建目录</para>
+	  <screen>mkdir -p /opt/project-master
+cd /opt/project-master</screen>
+
+	    <para>安装virtual-env</para>
+		<screen>pip install virtualenv</screen>
+		<para>启动沙箱虚拟环境</para>
+ 		<screen>virtualenv --no-site-packages sandbox
+source sandbox/bin/activate</screen>
+		<para>安装buildbot</para>
+		<screen>pip install --upgrade pip
+pip install 'buildbot[bundle]'</screen>
+	 
+	<para>创建master </para>
+	<screen>buildbot create-master master</screen>
+	<para>生成配置文件 </para>
+	<screen>mv master/master.cfg.sample master/master.cfg</screen>
+	<para>启动master </para>
+	<screen>buildbot start master
+</screen>
+
+	<para>访问http://localhot:8010 确认页面能够访问</para>
+	</listitem>
+	
+	<listitem>
+		<para>worker 安装</para>	
+
+		<para> 创建目录</para>
+		<screen>mkdir -p /opt/project-worker
+cd /opt/project-worker</screen>
+
+		<para>启动沙箱虚拟环境</para>
+		<screen>virtualenv --no-site-packages sandbox
+source sandbox/bin/activate</screen>
+
+		<para>安装buildbot</para>
+		<screen>pip install --upgrade pip
+pip install buildbot-worker</screen>	
+	
+		<para>创建worker</para>
+		<screen>buildbot-worker create-worker worker 192.168.2.141:9989 piggy-worker pass</screen>
+		
+			<para>启动worker </para>
+	<screen>buildbot-worker start worker
+</screen>
+	</listitem>
+	
+
+  </itemizedlist>
+   </section>
+   
+   <section>
+   <title> 常用工具安装与配置</title>
+   <itemizedlist>
+   	<listitem>
+		<para>yum 安装 httpd</para>	
+		<screen>yum install httpd</screen>
+
+		<para>配置开机启动</para>
+		<screen>chkconfig httpd on</screen>
+
+		<para>启动httpd 服务</para>
+		<screen>service httpd start</screen>
+		
+		<para>yum 安装 git</para>	
+	</listitem>
+   
+   
+   </itemizedlist>
+   </section>
+</chapter>

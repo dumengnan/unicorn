@@ -1,0 +1,16 @@
+依据 原有的表设计 现在需要划分为三张表
+mysql 密码：
+Ctt=19931101
+
+
+piggy_user表
+name    passwd reamark
+CREATE TABLE piggy_user(name varchar(100) NOT NULL PRIMARY KEY,passwd varchar(100), remark varchar(100));
+
+piggy_bookkeep 表
+type(类型)  amount(金钱数额)  currency(货币种类)  icon图标(固定的几种类型)  title(标题 花费缘由)   period(花费时间)
+0(支出)     100				   RMB                utilities                 冲地铁卡               20170512
+1(收入)		190000             RMB                gas                       兼职收入               20170512
+
+piggy_bookkeep
+CREATE TABLE piggy_bookkeep(title varchar(255), type INT, currency varchar(20), amount double, period varchar(20), icon varchar(20));
