@@ -3,10 +3,9 @@
 <book xmlns:xi="http://www.w3.org/2001/XInclude">
   <bookinfo>
     <title>
-      <inlinegraphic align="right" fileref="piggy.gif"/>
-      piggy安装文档
+      Unicorn安装文档
     </title>
-    <releaseinfo>0.0.1</releaseinfo>
+    <releaseinfo>@PROJECT_VERSION@</releaseinfo>
 
   </bookinfo>
   <toc/>
