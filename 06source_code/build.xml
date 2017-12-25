@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="Unicorn" default="compile" basedir=".">
+	<property file="build.properties"/>
+	<property name="release.name" value="${ant.project.name}-${version}"/>
+	<property name="release.dir" value="build"/> 
+
+	<condition property="exe" value=".exe" else=""><os family="windows" /></condition>
+	<condition property="bat" value=".bat" else=""><os family="windows" /></condition>
+
+	<property name="mvn.exe" value="mvn${bat}"/> 
+
+	<target name="init" description="init clean dirs">
+		<sed-file from="service-center/build.properties.in" to="service-center/build.properties" />
+		<sed-file from="crawler/VERSION.in" to="crawler/VERSION" />
+    </target>
+
+	<target name="compile" depends="init">
+	  <!-- <ant antfile="build.xml" target="compile" dir="service-center" inheritAll="false"/> -->
+    </target>
+
+	<target name="release" depends="compile">
+	   <mkdir dir="${release.dir}"/>
+       <!-- <ant antfile="build.xml" target="release" dir="service-center" inheritAll="false"/>
+       <copy todir="build/${release.name}" overwrite="true">
+			<fileset dir="service-center/build">
+				<include name="*.tar.gz"/>
+			</fileset>
+	   </copy>  -->
+	   
+	   <exec dir="crawler" executable="tox" failonerror="true">
+          <arg value="-e py27-release"/>
+	   </exec>
+    </target>
+
+	<target name="clean">
+		<delete dir="${release.dir}"/>
+
+    </target>
+
+	<macrodef name="sed-file">
+		<attribute name="from"/>
+		<attribute name="to"/>
+		<attribute name="encoding" default="utf-8"/>
+		<sequential>
+			<copy file="@{from}" tofile="@{to}" overwrite="true" filtering="true" encoding="@{encoding}">
+				<filterset begintoken="@" endtoken="@">
+					<filter token="VERSION" value="${project.version}"/>
+				</filterset>
+			</copy>
+		</sequential>
+	</macrodef>
+
+</project>
