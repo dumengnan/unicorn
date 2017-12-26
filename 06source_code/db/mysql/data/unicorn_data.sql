@@ -1,3 +1,7 @@
+
+create database unicorn;
+use unicorn;
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------

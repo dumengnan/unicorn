@@ -55,7 +55,7 @@ def crawl_twitter_content(options):
                 file_name = os.path.join(options.output, user_name)
                 user_url = url + user_name
                 logger.info(user_url)
-                response = requests.get(user_url, headers=headers)
+                response = requests.get(user_url, headers=headers, verify=False)
                 results = json.loads(response.text)
                 logger.info("Get Results Num : " + str(len(results)))
                 if len(results) > 1:
@@ -68,7 +68,7 @@ def crawl_twitter_content(options):
                         max_id = results[-1]["id_str"]
                         new_url = user_url + "&max_id=" + max_id
                         logger.info("Request url is " + new_url)
-                        response = requests.get(new_url, headers=headers)
+                        response = requests.get(new_url, headers=headers, verify=False)
                         results = json.loads(response.text)
                         write_to_file(results, file_name, options.update)
             except Exception as e:
