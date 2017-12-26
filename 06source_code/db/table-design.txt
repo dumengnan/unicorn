@@ -1,16 +1,33 @@
-依据 原有的表设计 现在需要划分为三张表
-mysql 密码：
-Ctt=19931101
+HBase 表设计 
+uni:user
+RowKey  columnFamily   qualifier   value
+userId  info            MD5_value  {"desc":"This is My period"}         存储的是扩展的相关用户信息 
+		statusid        MD5_value  ["statusid1", "statusid2"]
 
 
-piggy_user表
-name    passwd reamark
-CREATE TABLE piggy_user(name varchar(100) NOT NULL PRIMARY KEY,passwd varchar(100), remark varchar(100));
+// 存储内容相关的信息
+uni:content
+RowKey      columnFamily      qualifier        value
+statusId    info              MD5_value        {"actionTime:"20171209 12:34:23", "sources":"Iphone"}    (发表内容相关基础信息)
+            text              MD5_value        {"Tom, Today the weather is very good!"}                 (发表内容)
+			entity            MD5_value        {{"type":"name", "value":"Tom"}}                         (内容里面所包含的实体内容)
 
-piggy_bookkeep 表
-type(类型)  amount(金钱数额)  currency(货币种类)  icon图标(固定的几种类型)  title(标题 花费缘由)   period(花费时间)
-0(支出)     100				   RMB                utilities                 冲地铁卡               20170512
-1(收入)		190000             RMB                gas                       兼职收入               20170512
 
-piggy_bookkeep
-CREATE TABLE piggy_bookkeep(title varchar(255), type INT, currency varchar(20), amount double, period varchar(20), icon varchar(20));
+			
+// 存储评论相关内容
+uni:comment
+RowKey      columnFamily      qualifier        value
+statusId    info              MD5_value        {"actionTime:"20171209 12:34:23", "sources":"Iphone"}    (评论内容相关基础信息)
+            text              MD5_value        {"Tom, My Email is 0984734545@123.com"}                 (评论内容)
+			entity            MD5_value        {{"type":"name", "value":"Tom"}, {"type":"email", "value":"0984734545@123.com"}}                         (评论内容里面所包含的实体内容)
+			
+
+			
+// 存储关系型数据 
+uni:relation
+RowKey      columnFamily      qualifier        value
+userId      focus             MD5_value        ["1","23"]
+            follwers          MD5_value        ["1","23"]
+			
+			
+			
