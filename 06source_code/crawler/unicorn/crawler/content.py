@@ -27,9 +27,14 @@ def write_to_file(results, file_name, update_time):
     with open(file_name, "a+") as f_out:
         for content in results:
             user_id = content["user"]["id_str"]
+            status_id = content["id_str"]
+            lang = content["lang"]
+            geo = content["geo"]
+            place = content["place"]
             retweet_count = content["retweet_count"]
             favorite_count = content["favorite_count"]
             device = content["source"]
+            text = content["text"].encode("utf-8").replace("\n"," ")
             device_str = r'>(.*?)<'
             device_a_text = re.findall(device_str, device, re.S|re.M)
             for device_content in device_a_text:
@@ -38,7 +43,7 @@ def write_to_file(results, file_name, update_time):
             if update_time and create_time <= update_time:
                 # 在上次更新时间之前的 跳过
                 continue
-            f_out.write("%s\t%s\t%d\t%d\t%s\t%s" % (user_id, create_time, retweet_count, favorite_count, device, content["text"].encode("utf-8").replace("\n"," ")) + "\n")
+            f_out.write("%s\t%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\t%s" % (user_id, create_time, status_id, lang, device, retweet_count, favorite_count, geo, place, text) + "\n")
 
 
 # 抓取所有twitter内容
