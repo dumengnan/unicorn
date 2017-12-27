@@ -17,7 +17,7 @@ logger = logging.getLogger('root')
 # api的限制速度 15分钟 15次
 api_rate_limit = 15
 # 关系类型
-relation_type = '1'
+relation_type = 'focus'
 
 
 def get_user_id_str(twitter, username):
@@ -61,20 +61,24 @@ def crawl_friends(options):
                             friends_count = follower_user["friends_count"]
                             list_count = follower_user["listed_count"]
                             statuses_count = follower_user["statuses_count"]
+                            lang = follower_user["lang"]
+                            location = follower_user["location"]
 
                             user_info.append(id_str)
-                            user_info.append(name)
                             user_info.append(screen_name)
+                            user_info.append(name)
                             user_info.append(created_at)
-                            user_info.append(desc.replace("\n", ""))
-                            user_info.append(str(favourite_count))
-                            user_info.append(str(follower_count))
                             user_info.append(str(friends_count))
-                            user_info.append(str(list_count))
+                            user_info.append(str(follower_count))
                             user_info.append(str(statuses_count))
+                            user_info.append(str(lang))
+                            user_info.append(desc.replace("\n", ""))
+                            user_info.append(location)
+                            user_info.append(str(list_count))
+                            user_info.append(str(favourite_count))
 
                             f_output.write("\t".join(user_info) + "\n")
-                            relation_f.write(parent_id_str + "\t" + id_str + "\t" + relation_type + "\n")
+                            relation_f.write(parent_id_str + "\t" + relation_type + "\t" + id_str + "\n")
 
                     except Exception as e:
                         count = count + 1

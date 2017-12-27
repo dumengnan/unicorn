@@ -3,8 +3,23 @@ uni:user
 RowKey  columnFamily   qualifier   value
 userId  info            MD5_value  {"desc":"This is My period"}         存储的是扩展的相关用户信息 
         statusid        MD5_value  ["statusid1", "statusid2"]
+ 
+-- 字段包含以下内容 
+userId          用户Id
+screen_name     昵称
+name_str        用户名
+create_time     注册时间
+focus_count     关注数
+follwers_count  粉丝数
+status_count    状态数
+user_lang       账号语种
+desc            账号描述信息
+location        地点
+list_count      群组数
+favourite_count 点赞数
 
-
+        
+        
 // 存储内容相关的信息
 uni:content
 RowKey      columnFamily      qualifier        value

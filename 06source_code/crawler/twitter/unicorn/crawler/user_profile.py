@@ -40,17 +40,21 @@ def crawl_user_profile(options):
                     friends_count = results["friends_count"]
                     list_count = results["listed_count"]
                     statuses_count = results["statuses_count"]
+                    lang = results["lang"]
+                    location = results["location"]
 
                     user_info.append(id_str)
-                    user_info.append(name)
                     user_info.append(screen_name)
+                    user_info.append(name)
                     user_info.append(created_at)
-                    user_info.append(desc.replace("\n", ""))
-                    user_info.append(str(favourite_count))
-                    user_info.append(str(follower_count))
                     user_info.append(str(friends_count))
-                    user_info.append(str(list_count))
+                    user_info.append(str(follower_count))
                     user_info.append(str(statuses_count))
+                    user_info.append(lang)
+                    user_info.append(desc.replace("\n", ""))
+                    user_info.append(location)
+                    user_info.append(str(list_count))
+                    user_info.append(str(favourite_count))
 
                     f_output.write("\t".join(user_info) + "\n")
 
