@@ -10,9 +10,12 @@ from logging.config import fileConfig
 from unicorn.utils.get_random_key import get_twitter_auth
 from unicorn.utils.get_random_key import get_twitter_auth_list
 from unicorn.utils.get_config import get_config
+from unicorn.utils.uni_util import get_file_name
 
 fileConfig('etc/crawler_log.conf')
 logger = logging.getLogger('root')
+
+output_file_prefix = "uni-twitter_info-"
 
 # api的限制速度 15分钟 900次
 api_rate_limit = 900
@@ -21,8 +24,9 @@ api_rate_limit = 900
 def crawl_user_profile(options):
     count = 0
     key_index = 0
+    output_file = get_file_name(output_file_prefix)
     with open(options.input, "r") as f_input:
-        with open(os.path.join(options.output, "user_profile.txt"), "w") as f_output:
+        with open(os.path.join(options.output, output_file), "w") as f_output:
             for user in f_input:
                 try:
                     user_info = []

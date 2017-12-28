@@ -6,17 +6,18 @@ import requests
 import json
 import logging
 import os
-import time
 import re
 import unicorn.utils.select_useragent as select_useragent
-import datetime
+import unicorn.crawlernoapi.crawl_content_noapi as crawl_content_noapi
+from datetime import datetime, date
 from logging.config import fileConfig
 from unicorn.utils.get_config import get_config
-
+from unicorn.utils.uni_util import get_file_name, get_current_time
 
 url = "https://www.allmytweets.net/get_tweets.php?include_rts=true&exclude_replies=false&count=200&screen_name="
 fileConfig('etc/crawler_log.conf')
 logger = logging.getLogger('root')
+file_prefix = "uni-twitter_content-"
 
 
 # 结果写入到文件中
@@ -34,16 +35,33 @@ def write_to_file(results, file_name, update_time):
             retweet_count = content["retweet_count"]
             favorite_count = content["favorite_count"]
             device = content["source"]
-            text = content["text"].encode("utf-8").replace("\n"," ")
+            text = content["text"].encode("utf-8").replace("\n", " ")
             device_str = r'>(.*?)<'
-            device_a_text = re.findall(device_str, device, re.S|re.M)
+            device_a_text = re.findall(device_str, device, re.S | re.M)
             for device_content in device_a_text:
                 device = device_content
-            create_time = datetime.datetime.strptime(content["created_at"], "%a %b %d %H:%M:%S +0000 %Y").strftime('%Y-%m-%d %H:%M:%S')
+            create_time = datetime.strptime(content["created_at"], "%a %b %d %H:%M:%S +0000 %Y").strftime(
+                '%Y-%m-%d %H:%M:%S')
             if update_time and create_time <= update_time:
                 # 在上次更新时间之前的 跳过
                 continue
-            f_out.write("%s\t%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\t%s" % (user_id, create_time, status_id, lang, device, retweet_count, favorite_count, geo, place, text) + "\n")
+
+            line_data = "%s\t%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\t%s" % (
+                user_id, create_time, status_id, lang, device, retweet_count, favorite_count, geo, place, text)
+
+            f_out.write(line_data.replace("None", "") + "\n")
+
+
+def crawl_oldcontent_noapi(file_name, user_name, end_date):
+    print "Start Crawl  " + file_name + "   " + user_name + "  " + end_date
+    start_date = datetime.strptime('20130101', "%Y%m%d").date()
+    end_date = datetime.strptime(end_date, "%Y%m%d").date()
+
+    tweet_list = crawl_content_noapi.query_content(user_name, start_date, end_date)
+    print "Get Twitter List is " + str(len(tweet_list))
+    with open(file_name, "a+") as f_out:
+        for tweet_content in tweet_list:
+            f_out.write(repr(tweet_content) + "\n")
 
 
 # 抓取所有twitter内容
@@ -53,20 +71,23 @@ def crawl_twitter_content(options):
         os.makedirs(options.output)
 
     headers = {'User-Agent': select_useragent.selectUserAgent()}
+    output_file = os.path.join(options.output, get_file_name(file_prefix))
     with open(input_file, "r") as input_f:
         for user_name in input_f:
             try:
                 user_name = user_name.strip()
-                file_name = os.path.join(options.output, user_name)
                 user_url = url + user_name
                 logger.info(user_url)
                 response = requests.get(user_url, headers=headers, verify=False)
                 results = json.loads(response.text)
+
                 logger.info("Get Results Num : " + str(len(results)))
                 if len(results) > 1:
-                    write_to_file(results, file_name, options.update)
+                    write_to_file(results, output_file, options.update)
                 else:
                     continue
+
+                last_content_time = None
                 # 不是更新的话 需要爬取所有的
                 if not options.update:
                     while len(results) > 1:
@@ -75,7 +96,14 @@ def crawl_twitter_content(options):
                         logger.info("Request url is " + new_url)
                         response = requests.get(new_url, headers=headers, verify=False)
                         results = json.loads(response.text)
-                        write_to_file(results, file_name, options.update)
+
+                        last_content_time = datetime.strptime(results[-1]["created_at"], "%a %b %d %H:%M:%S +0000 %Y").strftime(
+                            '%Y%m%d')
+                        write_to_file(results, output_file, options.update)
+
+                    print last_content_time
+                    # 使用直接访问的方式  爬取直接的所有twitter 内容
+                    crawl_oldcontent_noapi(output_file, user_name, last_content_time)
             except Exception as e:
                 print "Have Exception %s" % e
 
@@ -84,7 +112,7 @@ def crawl_twitter_content(options):
 def write_update_file(output_path):
     output = os.path.join(os.path.dirname(output_path), "last_update")
     with open(output, "w") as update_f:
-        update_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        update_time = get_current_time()
         update_f.write(update_time + "\n")
 
 
@@ -108,5 +136,3 @@ def main(args):
     options.output = output_path
     crawl_twitter_content(options)
     write_update_file(output_path)
-
-

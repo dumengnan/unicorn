@@ -10,6 +10,7 @@ from logging.config import fileConfig
 from unicorn.utils.get_random_key import get_twitter_auth_list
 from unicorn.utils.get_random_key import get_twitter_auth
 from unicorn.utils.get_config import get_config
+from unicorn.utils.uni_util import get_file_name
 
 fileConfig('etc/crawler_log.conf')
 logger = logging.getLogger('root')
@@ -18,6 +19,11 @@ logger = logging.getLogger('root')
 api_rate_limit = 15
 # 关系类型
 relation_type = 'followers'
+
+# 基础信息输出前缀
+output_file_prefix = "uni-twitter_info-"
+# 关系信息输出前缀
+relaiton_file_prefix = "uni-twitter_relation-"
 
 
 def get_user_id_str(twitter, username):
@@ -30,7 +36,7 @@ def crawl_followers(options):
     key_index = 0
 
     # 记录他们的关注关系
-    relation_f = open(os.path.join(options.output, "relation.bcp"), "a+")
+    relation_f = open(os.path.join(options.output, get_file_name(relaiton_file_prefix)), "a+")
     with open(options.input, "r") as f_input:
         for user in f_input:
             cursor = -1
@@ -38,7 +44,7 @@ def crawl_followers(options):
             twitter, count, key_index = get_twitter_auth(api_rate_limit, count, key_index)
             # 所爬取人账号的ID
             parent_id_str = get_user_id_str(twitter, user)
-            with open(os.path.join(options.output, user + ".bcp"), "a+") as f_output:
+            with open(os.path.join(options.output, get_file_name(output_file_prefix)), "a+") as f_output:
                 while cursor != 0:
                     try:
                         twitter, count, key_index = get_twitter_auth(api_rate_limit, count, key_index)
