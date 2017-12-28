@@ -37,7 +37,6 @@ class Tweet:
         line_list.append(xstr(self.text))
         return "\t".join(line_list)
 
-
     @classmethod
     def from_soup(cls, tweet):
         user_id = tweet.find('div')['data-user-id']

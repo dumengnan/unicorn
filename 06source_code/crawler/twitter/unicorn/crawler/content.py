@@ -109,15 +109,14 @@ def get_status_id_list(tweet_list):
     return id_list
 
 
-def write_content_to_file(options, tweet_list):
+def write_content_to_file(content_file, tweet_list):
     """
     将所有的推文内容写入到文件
-    :param options:
+    :param content_file:
     :param tweet_list:
     :return:
     """
-    output_file = os.path.join(options.output, get_file_name(file_prefix))
-    with open(output_file, "a+") as f_out:
+    with open(content_file, "a+") as f_out:
         for content in tweet_list:
             f_out.write(repr(content) + "\n")
 
@@ -133,23 +132,24 @@ def write_comment_to_file(source_status_id, file_name, comment_list):
     with open(file_name, "a+") as f_comment:
         for comment in comment_list:
             for single_comment in comment:
-                comment_content = repr(single_comment)
-                line = source_status_id + "\t" + comment_content
+                line = single_comment.status_id + "\treply\t" + source_status_id
                 f_comment.write(line + "\n")
 
 
-def crawl_comments(options, screen_name, status_id_list):
+def crawl_comments(options, screen_name, status_id_list, content_file):
     """
     抓取所有的评论内容
     :param options:
     :param screen_name:
     :param status_id_list:
+    :param content_file:
     :return:
     """
     comments_file = os.path.join(options.output, get_file_name(comment_prefix))
     for status_id in status_id_list:
         comment_list = crawl_single_comment(screen_name, status_id)
         write_comment_to_file(status_id, comments_file, comment_list)
+        write_content_to_file(content_file, comment_list)
 
 
 def crawl_twitter_content(options):
@@ -158,6 +158,7 @@ def crawl_twitter_content(options):
     :param options:
     :return:
     """
+    content_file = os.path.join(options.output, get_file_name(file_prefix))
     with open(options.input, "r") as input_f:
         for user_name in input_f:
             try:
@@ -169,11 +170,11 @@ def crawl_twitter_content(options):
                     new_tweet_list = crawl_content_noapi(user_name.strip(), last_tweet_time)
                     logging.info("Get {} Tweets From No Api".format(str(len(tweet_list))))
                     tweet_list.append(new_tweet_list)
-                write_content_to_file(options, tweet_list)
+                write_content_to_file(content_file, tweet_list)
 
                 if options.comment:
                     status_id_list = get_status_id_list(tweet_list)
-                    crawl_comments(options, user_name.strip(), status_id_list)
+                    crawl_comments(options, user_name.strip(), status_id_list, content_file)
 
             except Exception as e:
                 print "Have Exception %s" % e
