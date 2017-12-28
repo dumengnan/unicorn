@@ -218,7 +218,7 @@ def get_all_query(query, start_date, end_date):
     """
     limits = []
     query_start_date = start_date
-    delta_day = 30
+    delta_day = 10
     for next_date in perdelta(start_date, end_date, timedelta(days=delta_day)):
         if (end_date - next_date).days < delta_day:
             limits.append((next_date, end_date))

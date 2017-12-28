@@ -6,119 +6,191 @@ import requests
 import json
 import logging
 import os
-import re
 import unicorn.utils.select_useragent as select_useragent
-import unicorn.crawlernoapi.crawl_content_noapi as crawl_content_noapi
-import unicorn.crawlernoapi.query as tweet_query
-from datetime import datetime
+import unicorn.crawlernoapi.main as noapi_main
+from unicorn.crawlernoapi.tweet import Tweet
+from unicorn.crawlernoapi.comment.comment import crawl_single_comment
 from logging.config import fileConfig
 from unicorn.utils.get_config import get_config
-from unicorn.utils.uni_util import get_file_name, get_current_time
+from unicorn.utils.uni_util import *
 
-url = "https://www.allmytweets.net/get_tweets.php?include_rts=true&exclude_replies=false&count=200&screen_name="
+URL = "https://www.allmytweets.net/get_tweets.php?include_rts=true& \
+       exclude_replies=false&count=200&screen_name={screen_name}"
+
+RELOAD_URL = URL + "&max_id={max_id}"
+
 fileConfig('etc/crawler_log.conf')
 logger = logging.getLogger('root')
 file_prefix = "uni-twitter_content-"
+comment_prefix = "uni-twitter_comment-"
 
 
-# 结果写入到文件中
-def write_to_file(results, file_name, update_time):
-    if update_time:
-        file_name = "Twitter_Update.txt"
-
-    with open(file_name, "a+") as f_out:
-        for content in results:
-            user_id = content["user"]["id_str"]
-            status_id = content["id_str"]
-            lang = content["lang"]
-            geo = content["geo"]
-            place = content["place"]
-            retweet_count = content["retweet_count"]
-            favorite_count = content["favorite_count"]
-            device = content["source"]
-            text = content["text"].encode("utf-8").replace("\n", " ")
-            device_str = r'>(.*?)<'
-            device_a_text = re.findall(device_str, device, re.S | re.M)
-            for device_content in device_a_text:
-                device = device_content
-            create_time = datetime.strptime(content["created_at"], "%a %b %d %H:%M:%S +0000 %Y").strftime(
-                '%Y-%m-%d %H:%M:%S')
-            if update_time and create_time <= update_time:
-                # 在上次更新时间之前的 跳过
-                continue
-
-            line_data = "%s\t%s\t%s\t%s\t%s\t%d\t%d\t%s\t%s\t%s" % (
-                user_id, create_time, status_id, lang, device, retweet_count, favorite_count, geo, place, text)
-
-            f_out.write(line_data.replace("None", "") + "\n")
-
-
-def crawl_oldcontent_noapi(file_name, user_name, end_date):
-    print "Start Crawl  " + file_name + "   " + user_name + "  " + end_date
+def crawl_content_noapi(screen_name, end_date):
+    """
+    利用twitter搜索技巧爬取推文
+    :param screen_name:
+    :param end_date:
+    :return:
+    """
+    logger.info("Crawl %s no Api to %s" % (screen_name, end_date))
     start_date = datetime.strptime('20130101', "%Y%m%d").date()
     end_date = datetime.strptime(end_date, "%Y%m%d").date()
 
-    query_condition = crawl_content_noapi.create_condition(user_name)
-    all_quires = tweet_query.get_all_query(query_condition, start_date, end_date)
-
-    with open(file_name, "a+") as f_out:
-        for query in all_quires:
-            for new_tweets in tweet_query.query_tweets_once(query):
-                logger.info("Get Twitter " + str(len(new_tweets)))
-                for tweet_content in new_tweets:
-                    f_out.write(repr(tweet_content) + "\n")
+    return noapi_main.query_content(screen_name, start_date, end_date)
 
 
-# 抓取所有twitter内容
-def crawl_twitter_content(options):
-    input_file = options.input
-    if not os.path.exists(options.output):
-        os.makedirs(options.output)
-
+def crawl_content_withapi(screen_name):
+    """
+    使用API 爬取推文内容
+    :param screen_name: user screen name
+    :return: twitter list
+    """
+    logger.info("Crawl %s with Api" % screen_name)
     headers = {'User-Agent': select_useragent.selectUserAgent()}
+    max_id = None
+    content_list = []
+    last_tweet_time = get_current_time()
+
+    try:
+        while True:
+            response = requests.get(
+                URL.format(screen_name=screen_name) if max_id is None
+                else RELOAD_URL.format(screen_name=screen_name, max_id=max_id),
+                headers=headers, verify=False)
+
+            results = json.loads(response.text)
+            max_id = results[-1]["id_str"]
+            last_tweet_time = format_content_time_to_day(results[-1]["created_at"])
+            content_list.append(results)
+            if len(results) <= 1 or max_id is None:
+                return content_list, last_tweet_time
+    except Exception:
+        logger.exception("An unknown error occurred! Returning tweets "
+                         "gathered so far.")
+    return content_list, last_tweet_time
+
+
+def trans_json_to_tweet(tweet_json_arr):
+    """
+    将json 字符串解析 转换成twitter instance
+    :param tweet_json_arr: json arr for twitter content
+    :return:  tweet instance list
+    """
+    tweet_list = []
+    for content in tweet_json_arr:
+        user_id = content["user"]["id_str"]
+        status_id = content["id_str"]
+        lang = content["lang"]
+        geo = content["geo"]
+        place = content["place"]
+        retweet_count = content["retweet_count"]
+        favorite_count = content["favorite_count"]
+        source = content["source"]
+        device = parse_device_from_str(source)
+        create_time = format_content_time_to_minute(content["created_at"])
+
+        text = content["text"].encode("utf-8").replace("\n", " ")
+
+        tweet = Tweet(user_id, create_time, status_id, \
+                      lang, device, retweet_count, favorite_count, geo, place, text)
+        tweet_list.append(tweet)
+
+    return tweet_list
+
+
+def get_status_id_list(tweet_list):
+    """
+    获得所有的推文id
+    :param tweet_list:
+    :return:
+    """
+    id_list = []
+    for content in tweet_list:
+        id_list.append(content.status_id)
+    return id_list
+
+
+def write_content_to_file(options, tweet_list):
+    """
+    将所有的推文内容写入到文件
+    :param options:
+    :param tweet_list:
+    :return:
+    """
     output_file = os.path.join(options.output, get_file_name(file_prefix))
-    with open(input_file, "r") as input_f:
+    with open(output_file, "a+") as f_out:
+        for content in tweet_list:
+            f_out.write(repr(content) + "\n")
+
+
+def write_comment_to_file(source_status_id, file_name, comment_list):
+    """
+    将所有的评论内容写入到文件
+    :param source_status_id:
+    :param file_name:
+    :param comment_list:
+    :return:
+    """
+    with open(file_name, "a+") as f_comment:
+        for comment in comment_list:
+            comment_content = repr(comment)
+            line = source_status_id + "\t" + comment_content
+            f_comment.write(line + "\n")
+
+
+def crawl_comments(options, screen_name, status_id_list):
+    """
+    抓取所有的评论内容
+    :param options:
+    :param screen_name:
+    :param status_id_list:
+    :return:
+    """
+    comments_file = os.path.join(options.output, get_file_name(comment_prefix))
+    for status_id in status_id_list:
+        comment_list = crawl_single_comment(screen_name, status_id)
+        write_comment_to_file(status_id, comments_file, comment_list)
+
+
+def crawl_twitter_content(options):
+    """
+    crawl All Twitter content
+    :param options:
+    :return:
+    """
+    with open(options.input, "r") as input_f:
         for user_name in input_f:
             try:
-                user_name = user_name.strip()
-                user_url = url + user_name
-                logger.info(user_url)
-                response = requests.get(user_url, headers=headers, verify=False)
-                results = json.loads(response.text)
+                pre_tweets, last_tweet_time = crawl_content_withapi(user_name.strip())
+                tweet_list = trans_json_to_tweet(pre_tweets)
+                logger.info("Get {} From Api".format(str(len(tweet_list))))
 
-                logger.info("Get Results Num : " + str(len(results)))
-                if len(results) > 1:
-                    write_to_file(results, output_file, options.update)
-                else:
-                    continue
+                if options.all:
+                    new_tweet_list = crawl_content_noapi(user_name.strip(), last_tweet_time)
+                    logger.info("Get {} From No Api".format(str(len(tweet_list))))
+                    tweet_list.append(new_tweet_list)
+                write_content_to_file(options, tweet_list)
 
-                last_content_time = None
-                # 不是更新的话 需要爬取所有的
-                if not options.update:
-                    while len(results) > 1:
-                        max_id = results[-1]["id_str"]
-                        new_url = user_url + "&max_id=" + max_id
-                        logger.info("Request url is " + new_url)
-                        response = requests.get(new_url, headers=headers, verify=False)
-                        results = json.loads(response.text)
+                if options.comment:
+                    status_id_list = get_status_id_list(tweet_list)
+                    crawl_comments(options, user_name.strip(), status_id_list)
 
-                        last_content_time = datetime.strptime(results[-1]["created_at"], "%a %b %d %H:%M:%S +0000 %Y").strftime(
-                            '%Y%m%d')
-                        write_to_file(results, output_file, options.update)
-
-                    print last_content_time
-                    # 使用直接访问的方式  爬取直接的所有twitter 内容
-                    crawl_oldcontent_noapi(output_file, user_name, last_content_time)
             except Exception as e:
                 print "Have Exception %s" % e
 
 
-# 记录一下更新时间 下次从这个点开始更新
-def write_update_file(output_path):
-    output = os.path.join(os.path.dirname(output_path), "last_update")
-    with open(output, "w") as update_f:
-        update_time = get_current_time()
-        update_f.write(update_time + "\n")
+def get_options(parser):
+    """
+    解析 所有的参数
+    :param parser:  arg parser
+    :return:  arg map
+    """
+    config = get_config()
+    output_path = config['content']['output']
+    options = parser.parse_args()
+    options.output = output_path
+
+    return options
 
 
 def main(args):
@@ -134,10 +206,11 @@ def main(args):
     parser.add_argument("--u", "--update_time", dest="update", type=str,
                         help="Last update time")
 
-    config = get_config()
-    output_path = config['content']['output']
+    parser.add_argument("--a", "--all", dest="all", type=bool, default=False,
+                        help="crawl all tweet no use api")
 
-    options = parser.parse_args()
-    options.output = output_path
+    parser.add_argument("--c", "--comment", dest="comment", type=bool, default=False,
+                        help="crawl all tweet comment no use api")
+
+    options = get_options(parser)
     crawl_twitter_content(options)
-    write_update_file(output_path)

@@ -9,7 +9,6 @@ from argparse import ArgumentParser
 import logging
 import time
 import os
-import sys
 from datetime import datetime, date
 from logging.config import fileConfig
 
