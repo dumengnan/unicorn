@@ -1,24 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
 import logging
-import random
-import sys
-from datetime import timedelta, date
+from datetime import timedelta
 from logging.config import fileConfig
 
 import requests
 from tweet import Tweet
-from proxy import get_random_proxy
 
 from unicorn.utils.select_useragent import selectUserAgent
 
 fileConfig('etc/crawler_log.conf')
 logging = logging.getLogger('root')
 
-# ua = UserAgent()
-# HEADERS_LIST = [ua.chrome, ua.google, ua['google chrome'], ua.firefox, ua.ff]
 INIT_URL = "https://twitter.com/search?f=tweets&q={q}"
 RELOAD_URL = "https://twitter.com/i/search/timeline?f=tweets&vertical=" \
              "default&include_available_features=1&include_entities=1&" \
@@ -35,7 +29,6 @@ def query_single_page(url, user_agent, html_response=True, retry=3):
     :return: The list of tweets, the pos argument for getting the next page.
     """
     headers = {'User-Agent': user_agent}
-    #proxies = get_random_proxy()
     try:
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
