@@ -6,14 +6,10 @@ import time
 import os
 import datetime
 import logging
-from logging.config import fileConfig
 from unicorn.utils.get_random_key import get_twitter_auth_list
 from unicorn.utils.get_random_key import get_twitter_auth
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import get_file_name
-
-fileConfig('etc/crawler_log.conf')
-logger = logging.getLogger('root')
 
 # api的限制速度 15分钟 15次
 api_rate_limit = 15
@@ -52,7 +48,7 @@ def crawl_friends(options):
                         query = twitter.friends.list(screen_name=user, cursor=cursor, count=200, skip_status=1, \
                                                        include_user_entities=True)
                         cursor = query["next_cursor"]
-                        logger.info("next cursor : " + str(cursor))
+                        logging.info("next cursor : " + str(cursor))
                         for follower_user in query["users"]:
                             user_info = []
 
@@ -90,7 +86,7 @@ def crawl_friends(options):
                         count = count + 1
                         key_index = key_index + 1
                         time.sleep(api_rate_limit/len(get_twitter_auth_list()))
-                        logger.error("Current Cursor" + str(cursor) + "Get Twitter Followers Error: %s" % e)
+                        logging.error("Current Cursor" + str(cursor) + "Get Twitter Followers Error: %s" % e)
 
 
 def main(args):

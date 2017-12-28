@@ -34,8 +34,7 @@ def format_content_time_to_minute(time_str):
     :param time_str:  eg.Thu Nov 23 16:30:46 +0000 2017
     :return: 20171223
     """
-    return datetime.strptime(time_str, "%a %b %d %H:%M:%S +0000 %Y").strftime(
-        '%Y-%m-%d %H:%M:%S')
+    return datetime.strptime(time_str, "%a %b %d %H:%M:%S +0000 %Y")
 
 
 def parse_device_from_str(source_str):
@@ -51,3 +50,7 @@ def parse_device_from_str(source_str):
         device = device_content
 
     return device
+
+
+def xstr(string):
+    return '' if string is None else str(string)

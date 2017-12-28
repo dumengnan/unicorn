@@ -10,12 +10,8 @@ import logging
 import time
 import os
 from datetime import datetime, date
-from logging.config import fileConfig
 
 from query import query_all_tweets
-
-fileConfig('etc/crawler_log.conf')
-logger = logging.getLogger('root')
 
 
 def create_condition(user_name):

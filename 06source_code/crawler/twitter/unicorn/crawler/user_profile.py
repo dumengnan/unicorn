@@ -6,14 +6,12 @@ import time
 import os
 import datetime
 import logging
-from logging.config import fileConfig
 from unicorn.utils.get_random_key import get_twitter_auth
 from unicorn.utils.get_random_key import get_twitter_auth_list
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import get_file_name
 
-fileConfig('etc/crawler_log.conf')
-logger = logging.getLogger('root')
+
 
 output_file_prefix = "uni-twitter_info-"
 
@@ -66,7 +64,7 @@ def crawl_user_profile(options):
                     count = count + 1
                     key_index = key_index + 1
                     time.sleep(api_rate_limit/len(get_twitter_auth_list()))
-                    logger.error("Get Twitter Account Error: %s" % e)
+                    logging.error("Get Twitter Account Error: %s" % e)
 
 
 def main(args):

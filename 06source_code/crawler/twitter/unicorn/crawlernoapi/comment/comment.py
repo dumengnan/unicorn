@@ -16,6 +16,7 @@ COMMENT_URL = "https://twitter.com/i/{screen_name}/conversation/{status_id}?" \
 
 
 def crawl_single_comment(screen_name, status_id):
+    logging.info("crawl Comment for %s id %s" % (screen_name, status_id))
     pos = None
     user_agent = selectUserAgent()
     tweets = []
@@ -32,10 +33,7 @@ def crawl_single_comment(screen_name, status_id):
 
             tweets.append(comment_tweets)
 
-            print "Get The Comments " + str(len(comment_tweets))
             if len(comment_tweets) == 0 or pos is None:
-                logging.info("Got {} tweets .".format(
-                    len(tweets)))
                 return tweets
 
     except KeyboardInterrupt:

@@ -3,15 +3,12 @@
 
 import logging
 from datetime import timedelta
-from logging.config import fileConfig
 
 import requests
 from tweet import Tweet
 
 from unicorn.utils.select_useragent import selectUserAgent
 
-fileConfig('etc/crawler_log.conf')
-logging = logging.getLogger('root')
 
 INIT_URL = "https://twitter.com/search?f=tweets&q={q}"
 RELOAD_URL = "https://twitter.com/i/search/timeline?f=tweets&vertical=" \

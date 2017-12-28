@@ -5,6 +5,7 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 from coala_utils.decorators import generate_ordering
+from unicorn.utils.uni_util import xstr
 
 
 @generate_ordering('user_id', 'create_time', 'status_id', 'lang', 'device', 'retweet_count', 'favorite_count', 'geo',
@@ -24,16 +25,16 @@ class Tweet:
 
     def __repr__(self):
         line_list = []
-        line_list.append(self.user_id)
-        line_list.append(self.create_time.strftime("%Y-%m-%d %H:%M:%S"))
-        line_list.append(self.status_id)
-        line_list.append(self.lang)
-        line_list.append(self.device)
-        line_list.append(self.retweet_count)
-        line_list.append(self.favorite_count)
-        line_list.append(self.geo)
-        line_list.append(self.place)
-        line_list.append(self.text)
+        line_list.append(xstr(self.user_id))
+        line_list.append(xstr(self.create_time.strftime("%Y-%m-%d %H:%M:%S")))
+        line_list.append(xstr(self.status_id))
+        line_list.append(xstr(self.lang))
+        line_list.append(xstr(self.device))
+        line_list.append(xstr(self.retweet_count))
+        line_list.append(xstr(self.favorite_count))
+        line_list.append(xstr(self.geo))
+        line_list.append(xstr(self.place))
+        line_list.append(xstr(self.text))
         return "\t".join(line_list)
 
 

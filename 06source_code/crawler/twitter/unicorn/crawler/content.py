@@ -10,7 +10,6 @@ import unicorn.utils.select_useragent as select_useragent
 import unicorn.crawlernoapi.main as noapi_main
 from unicorn.crawlernoapi.tweet import Tweet
 from unicorn.crawlernoapi.comment.comment import crawl_single_comment
-from logging.config import fileConfig
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import *
 
@@ -19,8 +18,6 @@ URL = "https://www.allmytweets.net/get_tweets.php?include_rts=true& \
 
 RELOAD_URL = URL + "&max_id={max_id}"
 
-fileConfig('etc/crawler_log.conf')
-logger = logging.getLogger('root')
 file_prefix = "uni-twitter_content-"
 comment_prefix = "uni-twitter_comment-"
 
@@ -32,7 +29,7 @@ def crawl_content_noapi(screen_name, end_date):
     :param end_date:
     :return:
     """
-    logger.info("Crawl %s no Api to %s" % (screen_name, end_date))
+    logging.info("Crawl %s Tweets no Api to %s" % (screen_name, end_date))
     start_date = datetime.strptime('20130101', "%Y%m%d").date()
     end_date = datetime.strptime(end_date, "%Y%m%d").date()
 
@@ -45,7 +42,7 @@ def crawl_content_withapi(screen_name):
     :param screen_name: user screen name
     :return: twitter list
     """
-    logger.info("Crawl %s with Api" % screen_name)
+    logging.info("Crawl %s Tweets  with Api" % screen_name)
     headers = {'User-Agent': select_useragent.selectUserAgent()}
     max_id = None
     content_list = []
@@ -65,7 +62,7 @@ def crawl_content_withapi(screen_name):
             if len(results) <= 1 or max_id is None:
                 return content_list, last_tweet_time
     except Exception:
-        logger.exception("An unknown error occurred! Returning tweets "
+        logging.exception("An unknown error occurred! Returning tweets "
                          "gathered so far.")
     return content_list, last_tweet_time
 
@@ -76,24 +73,26 @@ def trans_json_to_tweet(tweet_json_arr):
     :param tweet_json_arr: json arr for twitter content
     :return:  tweet instance list
     """
+    logging.info("Trans Json To Tweet Length {}" .format(str(len(tweet_json_arr))))
     tweet_list = []
-    for content in tweet_json_arr:
-        user_id = content["user"]["id_str"]
-        status_id = content["id_str"]
-        lang = content["lang"]
-        geo = content["geo"]
-        place = content["place"]
-        retweet_count = content["retweet_count"]
-        favorite_count = content["favorite_count"]
-        source = content["source"]
-        device = parse_device_from_str(source)
-        create_time = format_content_time_to_minute(content["created_at"])
+    for tweet_json in tweet_json_arr:
+        for content in tweet_json:
+            user_id = content["user"]["id_str"]
+            status_id = content["id_str"]
+            lang = content["lang"]
+            geo = content["geo"]
+            place = content["place"]
+            retweet_count = str(content["retweet_count"])
+            favorite_count = str(content["favorite_count"])
+            source = content["source"]
+            device = parse_device_from_str(source)
+            create_time = format_content_time_to_minute(content["created_at"])
 
-        text = content["text"].encode("utf-8").replace("\n", " ")
+            text = content["text"].encode("utf-8").replace("\n", " ")
 
-        tweet = Tweet(user_id, create_time, status_id, \
-                      lang, device, retweet_count, favorite_count, geo, place, text)
-        tweet_list.append(tweet)
+            tweet = Tweet(user_id, create_time, status_id, \
+                          lang, device, retweet_count, favorite_count, geo, place, text)
+            tweet_list.append(tweet)
 
     return tweet_list
 
@@ -133,9 +132,10 @@ def write_comment_to_file(source_status_id, file_name, comment_list):
     """
     with open(file_name, "a+") as f_comment:
         for comment in comment_list:
-            comment_content = repr(comment)
-            line = source_status_id + "\t" + comment_content
-            f_comment.write(line + "\n")
+            for single_comment in comment:
+                comment_content = repr(single_comment)
+                line = source_status_id + "\t" + comment_content
+                f_comment.write(line + "\n")
 
 
 def crawl_comments(options, screen_name, status_id_list):
@@ -163,11 +163,11 @@ def crawl_twitter_content(options):
             try:
                 pre_tweets, last_tweet_time = crawl_content_withapi(user_name.strip())
                 tweet_list = trans_json_to_tweet(pre_tweets)
-                logger.info("Get {} From Api".format(str(len(tweet_list))))
+                logging.info("Get {} Tweets From Api".format(str(len(tweet_list))))
 
                 if options.all:
                     new_tweet_list = crawl_content_noapi(user_name.strip(), last_tweet_time)
-                    logger.info("Get {} From No Api".format(str(len(tweet_list))))
+                    logging.info("Get {} Tweets From No Api".format(str(len(tweet_list))))
                     tweet_list.append(new_tweet_list)
                 write_content_to_file(options, tweet_list)
 
