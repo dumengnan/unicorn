@@ -33,6 +33,13 @@ def write_to_file(file_path, tweet_contents):
 
 
 def query_content(user_name, start_date, end_date):
+    """
+    一次性查询在时间段内的所有推文
+    :param user_name: screen_name
+    :param start_date:  eg.20170101
+    :param end_date:    eg.20170909
+    :return:  list of tweets
+    """
     query_condition = create_condition(user_name)
     query_result_tweets = query_all_tweets(query_condition, start_date, end_date)
     return query_result_tweets

@@ -15,7 +15,7 @@ from proxy import get_random_proxy
 from unicorn.utils.select_useragent import selectUserAgent
 
 fileConfig('etc/crawler_log.conf')
-logger = logging.getLogger('root')
+logging = logging.getLogger('root')
 
 # ua = UserAgent()
 # HEADERS_LIST = [ua.chrome, ua.google, ua['google chrome'], ua.firefox, ua.ff]
@@ -190,27 +190,15 @@ def perdelta(start, end, delta):
 def query_all_tweets(query, start_date, end_date):
     """
     Queries *all* tweets in the history of twitter for the given query. This
-    will run in parallel for each ~10 days.
+    will run in parallel for each ~30 days.
 
     :param query: A twitter advanced search query.
     :param start_date: Crawl start Date eg.20170101
     :param end_date: Crawl end Date eg.20171010
     :return: A list of tweets.
     """
-    limits = []
-    query_start_date = start_date
-    delta_day = 10
-    for next_date in perdelta(start_date, end_date, timedelta(days=delta_day)):
-        if (end_date - next_date).days < delta_day:
-            limits.append((next_date, end_date))
-        if next_date == query_start_date:
-            continue
-        limits.append((query_start_date, next_date))
-        query_start_date = next_date
 
-    queries = ['{} since:{} until:{}'.format(query, since, until)
-               for since, until in reversed(limits)]
-
+    queries = get_all_query(query, start_date, end_date)
     all_tweets = []
     try:
         for query in queries:
@@ -223,3 +211,30 @@ def query_all_tweets(query, start_date, end_date):
                      "gathered so far.")
 
     return sorted(all_tweets, reverse=True)
+
+
+def get_all_query(query, start_date, end_date):
+    """
+    Queries *all* tweets in the history of twitter for the given query. This
+    will run in parallel for each ~30 days.
+
+    :param query: A twitter advanced search query.
+    :param start_date: Crawl start Date eg.20170101
+    :param end_date: Crawl end Date eg.20171010
+    :return: A list of query.
+    """
+    limits = []
+    query_start_date = start_date
+    delta_day = 30
+    for next_date in perdelta(start_date, end_date, timedelta(days=delta_day)):
+        if (end_date - next_date).days < delta_day:
+            limits.append((next_date, end_date))
+        if next_date == query_start_date:
+            continue
+        limits.append((query_start_date, next_date))
+        query_start_date = next_date
+
+    queries = ['{} since:{} until:{}'.format(query, since, until)
+               for since, until in reversed(limits)]
+
+    return queries

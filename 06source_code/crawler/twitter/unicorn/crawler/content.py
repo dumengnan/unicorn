@@ -9,7 +9,8 @@ import os
 import re
 import unicorn.utils.select_useragent as select_useragent
 import unicorn.crawlernoapi.crawl_content_noapi as crawl_content_noapi
-from datetime import datetime, date
+import unicorn.crawlernoapi.query as tweet_query
+from datetime import datetime
 from logging.config import fileConfig
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import get_file_name, get_current_time
@@ -57,11 +58,15 @@ def crawl_oldcontent_noapi(file_name, user_name, end_date):
     start_date = datetime.strptime('20130101', "%Y%m%d").date()
     end_date = datetime.strptime(end_date, "%Y%m%d").date()
 
-    tweet_list = crawl_content_noapi.query_content(user_name, start_date, end_date)
-    print "Get Twitter List is " + str(len(tweet_list))
+    query_condition = crawl_content_noapi.create_condition(user_name)
+    all_quires = tweet_query.get_all_query(query_condition, start_date, end_date)
+
     with open(file_name, "a+") as f_out:
-        for tweet_content in tweet_list:
-            f_out.write(repr(tweet_content) + "\n")
+        for query in all_quires:
+            for new_tweets in tweet_query.query_tweets_once(query):
+                logger.info("Get Twitter " + str(len(new_tweets)))
+                for tweet_content in new_tweets:
+                    f_out.write(repr(tweet_content) + "\n")
 
 
 # 抓取所有twitter内容
