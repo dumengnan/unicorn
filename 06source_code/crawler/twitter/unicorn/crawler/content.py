@@ -165,7 +165,7 @@ def crawl_twitter_content(options):
                 tweet_list = trans_json_to_tweet(pre_tweets)
                 logging.info("Get {} Tweets From Api".format(str(len(tweet_list))))
 
-                if options.all:
+                if options.all and len(tweet_list) >= 3200:
                     new_tweet_list = crawl_content_noapi(user_name.strip(), last_tweet_time)
                     logging.info("Get {} Tweets From No Api".format(str(len(tweet_list))))
                     tweet_list.append(new_tweet_list)
