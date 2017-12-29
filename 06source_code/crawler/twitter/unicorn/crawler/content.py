@@ -165,12 +165,13 @@ def crawl_twitter_content(options):
                 pre_tweets, last_tweet_time = crawl_content_withapi(user_name.strip())
                 tweet_list = trans_json_to_tweet(pre_tweets)
                 logging.info("Get {} Tweets From Api".format(str(len(tweet_list))))
+                write_content_to_file(content_file, tweet_list)
 
                 if options.all and len(tweet_list) >= 3200:
                     new_tweet_list = crawl_content_noapi(user_name.strip(), last_tweet_time)
+                    write_content_to_file(content_file, new_tweet_list)
                     logging.info("Get {} Tweets From No Api".format(str(len(tweet_list))))
                     tweet_list.append(new_tweet_list)
-                write_content_to_file(content_file, tweet_list)
 
                 if options.comment:
                     status_id_list = get_status_id_list(tweet_list)
@@ -195,6 +196,7 @@ def get_options(parser):
 
 
 def main(args):
+
     parser = argparse.ArgumentParser(description=
                                      "Simple Twitter Profile Analyzer", usage='--input <twitter_user_input_file>')
 

@@ -2,6 +2,7 @@
 import os
 import sys
 import site
+import logging.config
 
 # set path
 py_dir = os.path.dirname(os.path.realpath(__file__))
@@ -25,3 +26,5 @@ if os.path.isdir(libdir):
 
 # set cwd
 os.chdir(parent_dir)
+
+logging.config.fileConfig('etc/crawler_log.conf')
