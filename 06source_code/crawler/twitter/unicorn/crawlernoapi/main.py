@@ -24,7 +24,7 @@ def write_to_file(file_path, tweet_contents):
         f_out = open(file_path, "w")
         for tweet in tweet_contents:
             # only record the newer twitter content
-            f_out.write(tweet.to_bcp_line() + "\n")
+            f_out.write(repr(tweet) + "\n")
 
 
 def query_content(user_name, start_date, end_date):

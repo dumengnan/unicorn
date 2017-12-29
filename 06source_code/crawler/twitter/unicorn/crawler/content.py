@@ -8,6 +8,7 @@ import logging
 import os
 import unicorn.utils.select_useragent as select_useragent
 import unicorn.crawlernoapi.main as noapi_main
+from time import time
 from unicorn.crawlernoapi.tweet import Tweet
 from unicorn.crawlernoapi.comment.comment import crawl_single_comment
 from unicorn.utils.get_config import get_config
@@ -63,7 +64,7 @@ def crawl_content_withapi(screen_name):
                 return content_list, last_tweet_time
     except Exception:
         logging.exception("An unknown error occurred! Returning tweets "
-                         "gathered so far.")
+                          "gathered so far.")
     return content_list, last_tweet_time
 
 
@@ -73,7 +74,7 @@ def trans_json_to_tweet(tweet_json_arr):
     :param tweet_json_arr: json arr for twitter content
     :return:  tweet instance list
     """
-    logging.info("Trans Json To Tweet Length {}" .format(str(len(tweet_json_arr))))
+    logging.info("Trans Json To Tweet Length {}".format(str(len(tweet_json_arr))))
     tweet_list = []
     for tweet_json in tweet_json_arr:
         for content in tweet_json:
@@ -149,7 +150,8 @@ def crawl_comments(options, screen_name, status_id_list, content_file):
     for status_id in status_id_list:
         comment_list = crawl_single_comment(screen_name, status_id)
         write_comment_to_file(status_id, comments_file, comment_list)
-        write_content_to_file(content_file, comment_list)
+        for comm_list in comment_list:
+            write_content_to_file(content_file, comm_list)
 
 
 def crawl_twitter_content(options):
@@ -175,6 +177,7 @@ def crawl_twitter_content(options):
 
                 if options.comment:
                     status_id_list = get_status_id_list(tweet_list)
+                    logging.info("Start Crawl Comment" + str(len(status_id_list)))
                     crawl_comments(options, user_name.strip(), status_id_list, content_file)
 
             except Exception as e:
@@ -196,7 +199,6 @@ def get_options(parser):
 
 
 def main(args):
-
     parser = argparse.ArgumentParser(description=
                                      "Simple Twitter Profile Analyzer", usage='--input <twitter_user_input_file>')
 
@@ -216,4 +218,7 @@ def main(args):
                         help="crawl all tweet comment no use api")
 
     options = get_options(parser)
+    progress_start = time.time()
     crawl_twitter_content(options)
+    progress_end = time.time()
+    logging.info("Crawl Cost Time " + str(progress_end - progress_start) + "  s")
