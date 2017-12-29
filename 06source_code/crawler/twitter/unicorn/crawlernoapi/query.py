@@ -21,16 +21,17 @@ def query_single_page(url, user_agent, html_response=True, retry=3):
     Returns tweets from the given URL.
 
     :param url: The URL to get the tweets from
+    :param user_agent request head
     :param html_response: False, if the HTML is embedded in a JSON
     :param retry: Number of retries if something goes wrong.
     :return: The list of tweets, the pos argument for getting the next page.
     """
     headers = {'User-Agent': user_agent}
+    json_resp = {}
     try:
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
-           logging.info("The response Status Code is " + str(response.status_code))
-           return [], None
+            return [], None
         
         if html_response:
             html = response.text
@@ -58,7 +59,7 @@ def query_single_page(url, user_agent, html_response=True, retry=3):
             e, url))
     if retry > 0:
         logging.info("Retrying...")
-        return query_single_page(url, html_response, retry-1)
+        return query_single_page(url, user_agent, html_response, retry-1)
 
     logging.error("Giving up.")
     return [], None
@@ -97,9 +98,6 @@ def query_tweets_once(query, limit=None, num_tweets=0):
                 logging.info("Got {} tweets for {}.".format(
                     len(tweets), query))
                 return tweets
-
-            logging.info("Got {} tweets ({} new).".format(
-                len(tweets) + num_tweets, len(new_tweets)))
 
             tweets += new_tweets
 
@@ -194,8 +192,7 @@ def query_all_tweets(query, start_date, end_date):
         for query in queries:
             for new_tweets in query_tweets_once(query):
                 all_tweets.append(new_tweets)
-                logging.info("Got {} tweets .".format(len(all_tweets)))
-                
+
     except KeyboardInterrupt:
         logging.info("Program interrupted by user. Returning all tweets "
                      "gathered so far.")
