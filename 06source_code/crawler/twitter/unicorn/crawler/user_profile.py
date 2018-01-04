@@ -12,7 +12,6 @@ from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import get_file_name
 
 
-
 output_file_prefix = "uni-twitter_info-"
 
 # api的限制速度 15分钟 900次

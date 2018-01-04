@@ -15,7 +15,7 @@
 				<include name="**/pom.xml.in" />
 				<include name="**/VERSION.in" />
 			</fileset>
-			<regexmapper from="^(.*)\.in$$" to="\1" />
+			<regexpmapper from="^(.*)\.in$$" to="\1" />
 			<filterset refid="globalfilterset" />
 		</copy>
     </target>
