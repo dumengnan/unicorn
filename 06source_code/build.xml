@@ -10,8 +10,14 @@
 	<property name="mvn.exe" value="mvn${bat}"/> 
 
 	<target name="init" description="init clean dirs">
-		<sed-file from="service-center/build.properties.in" to="service-center/build.properties" />
-		<sed-file from="crawler/VERSION.in" to="crawler/VERSION" />
+		<copy todir="." overwrite="true" filtering="true" encoding="utf-8">
+			<fileset dir=".">
+				<include name="**/pom.xml.in" />
+				<include name="**/VERSION.in" />
+			</fileset>
+			<regexmapper from="^(.*)\.in$$" to="\1" />
+			<filterset refid="globalfilterset" />
+		</copy>
     </target>
 
 	<target name="compile" depends="init">
@@ -28,7 +34,8 @@
 	   </copy>  -->
 	   
 	   <exec dir="crawler" executable="tox" failonerror="true">
-          <arg value="-e py27-release"/>
+          <arg value="-e"/>
+		  <arg value="py27-release"/>
 	   </exec>
     </target>
 
@@ -37,6 +44,10 @@
 
     </target>
 
+	<filterset id="globalfilterset" begintoken="@" endtoken="@">
+		<filter token="PROJECT_VERSION" value="${project.version}"></filter>
+	</filterset>
+	
 	<macrodef name="sed-file">
 		<attribute name="from"/>
 		<attribute name="to"/>
