@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="crawler" default="compile" basedir=".">
+    <property file="build.properties"/>
+    <property name="release.name" value="${ant.project.name}-${version}"/>
+    <property name="release.dir" value="build"/> 
+
+    <condition property="exe" value=".exe" else=""><os family="windows" /></condition>
+    <condition property="bat" value=".bat" else=""><os family="windows" /></condition>
+
+    <property name="mvn.exe" value="mvn${bat}"/> 
+    <condition property="is_redhat_linux">
+        <and>
+            <os family="unix"/>
+            <resourceexists>
+                <file file="/etc/redhat-release">
+            </resourceexists>
+        </and>
+    <condition>
+    
+    <condition property="isOsWindows">
+        <os family="windows"/>
+    <condition>
+    
+    <condition property="python.tox.cmd.prefix" value="{envpython} {envbindir}/">
+        <isset property="is_redhat_linux">
+    </condition>
+    
+    <condition property="python.tox.cmd.prefix" value="">
+        <not>
+        <isset property="is_redhat_linux">
+        </not>
+    </condition>
+    
+    <target name="init" description="init clean dirs">
+        <mkdir dir="${release.dir}"/>
+    </target>
+
+    <target name="compile" depends="init,twitter_compile"> 
+     </target>
+     
+    <target name="twitter_compile">
+       <exec dir="twitter" executable="tox" failonerror="true">
+       </exec>    
+     </target>
+
+    <target name="release" depends="twitter_release">
+    </target>
+    
+    <target name="twitter_release">
+       <exec dir="twitter" executable="tox" failonerror="true">
+          <arg value="-e"/>
+          <arg value="py27-release"/>
+       </exec>
+    </target>
+
+    <target name="clean" >
+        <delete dir="twitter/.tox"/>
+        <delete dir="${release.dir}"/>
+    </target>
+
+</project>
