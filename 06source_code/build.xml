@@ -8,7 +8,29 @@
 	<condition property="bat" value=".bat" else=""><os family="windows" /></condition>
 
 	<property name="mvn.exe" value="mvn${bat}"/> 
-
+    <condition property="is_redhat_linux">
+		<and>
+			<os family="unix"/>
+			<resourceexists>
+				<file file="/etc/redhat-release">
+			</resourceexists>
+		</and>
+	<condition>
+	
+	<condition property="isOsWindows">
+		<os family="windows"/>
+	<condition>
+	
+	<condition property="python.tox.cmd.prefix" value="{envpython} {envbindir}/">
+		<isset property="is_redhat_linux">
+	</condition>
+	
+	<condition property="python.tox.cmd.prefix" value="">
+		<not>
+		<isset property="is_redhat_linux">
+		</not>
+	</condition>
+	
 	<target name="init" description="init clean dirs">
 		<copy todir="." overwrite="true" filtering="true" encoding="utf-8">
 			<fileset dir=".">
@@ -41,8 +63,8 @@
 
 	<target name="clean">
 		<delete dir="${release.dir}"/>
-
     </target>
+
 
 	<filterset id="globalfilterset" begintoken="@" endtoken="@">
 		<filter token="PROJECT_VERSION" value="${project.version}"></filter>
