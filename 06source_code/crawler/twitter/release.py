@@ -54,7 +54,7 @@ def _copytree(src, dst, ignore=None):
 
 
 def _zip_file(target_dir):
-    shutil.make_archive(target_dir, format="tar",
+    shutil.make_archive(target_dir, format="gztar",
                         root_dir=target_dir)
     #shutil.move(target_dir + ".zip", target_dir +".egg")
 

@@ -12,22 +12,22 @@
         <and>
             <os family="unix"/>
             <resourceexists>
-                <file file="/etc/redhat-release">
+                <file file="/etc/redhat-release"/>
             </resourceexists>
         </and>
-    <condition>
+    </condition>
     
     <condition property="isOsWindows">
         <os family="windows"/>
-    <condition>
+    </condition>
     
     <condition property="python.tox.cmd.prefix" value="{envpython} {envbindir}/">
-        <isset property="is_redhat_linux">
+        <isset property="is_redhat_linux"/>
     </condition>
     
     <condition property="python.tox.cmd.prefix" value="">
         <not>
-        <isset property="is_redhat_linux">
+            <isset property="is_redhat_linux"/>
         </not>
     </condition>
     
@@ -43,18 +43,25 @@
        </exec>    
      </target>
 
-    <target name="release" depends="twitter_release">
+    <target name="release" depends="init,twitter_release">
     </target>
     
     <target name="twitter_release">
-       <exec dir="twitter" executable="tox" failonerror="true">
+       <exec dir="twitter" executable="tox.bat" failonerror="true">
           <arg value="-e"/>
           <arg value="py27-release"/>
        </exec>
+       
+        <copy todir="${release.dir}/crawler" overwrite="true" filtering="true" encoding="utf-8">
+            <fileset dir="twitter/build">
+                <include name="twitter.tar.gz"/>
+            </fileset>
+        </copy>  
     </target>
 
     <target name="clean" >
-        <delete dir="twitter/.tox"/>
+        <delete dir="twitter/.tox" removeNotFollowedSymlinks="true" failonerror="false" />
+        <delete dir="twitter/build" removeNotFollowedSymlinks="true" failonerror="false"/>
         <delete dir="${release.dir}"/>
     </target>
 
