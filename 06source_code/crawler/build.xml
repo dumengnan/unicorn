@@ -39,7 +39,7 @@
      </target>
      
     <target name="twitter_compile">
-       <exec dir="twitter" executable="tox" failonerror="true">
+       <exec dir="twitter" executable="tox.bat" failonerror="true">
        </exec>    
      </target>
 
@@ -57,6 +57,12 @@
                 <include name="twitter.tar.gz"/>
             </fileset>
         </copy>  
+        
+        <tar destfile="crawler.tar.gz" compression="gzip">
+            <tarfileset dir="${release.dir}/crawler">
+                <include name="**/**"/>
+            </tarfileset>
+        </tar>
     </target>
 
     <target name="clean" >

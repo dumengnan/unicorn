@@ -12,22 +12,22 @@
 		<and>
 			<os family="unix"/>
 			<resourceexists>
-				<file file="/etc/redhat-release">
+				<file file="/etc/redhat-release"/>
 			</resourceexists>
 		</and>
-	<condition>
+	</condition>
 	
 	<condition property="isOsWindows">
 		<os family="windows"/>
-	<condition>
+	</condition>
 	
 	<condition property="python.tox.cmd.prefix" value="{envpython} {envbindir}/">
-		<isset property="is_redhat_linux">
+		<isset property="is_redhat_linux"/>
 	</condition>
 	
 	<condition property="python.tox.cmd.prefix" value="">
 		<not>
-		<isset property="is_redhat_linux">
+		<isset property="is_redhat_linux"/>
 		</not>
 	</condition>
 	
@@ -43,11 +43,17 @@
     </target>
 
 	<target name="compile" depends="init">
+	<ant antfile="build.xml" target="compile" dir="crawler" inheritAll="false"/>
 	  <!-- <ant antfile="build.xml" target="compile" dir="service-center" inheritAll="false"/> -->
     </target>
 
 	<target name="release" depends="compile">
 	   <mkdir dir="${release.dir}"/>
+	   <ant antfile="build.xml" target="release" dir="crawler" inheritAll="false"/>
+	   
+	   <copy todir="${release.dir}" overwrite="true" >
+            <fileset file="crawler/build/crawler.tar.gz"/>
+        </copy>  
        <!-- <ant antfile="build.xml" target="release" dir="service-center" inheritAll="false"/>
        <copy todir="build/${release.name}" overwrite="true">
 			<fileset dir="service-center/build">
@@ -55,14 +61,11 @@
 			</fileset>
 	   </copy>  -->
 	   
-	   <exec dir="crawler" executable="tox" failonerror="true">
-          <arg value="-e"/>
-		  <arg value="py27-release"/>
-	   </exec>
     </target>
 
 	<target name="clean">
 		<delete dir="${release.dir}"/>
+		<ant antfile="build.xml" target="clean" dir="crawler" inheritAll="false"/>
     </target>
 
 
