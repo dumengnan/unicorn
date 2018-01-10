@@ -138,13 +138,13 @@ def crawl_twitter_content(options):
                     url = "https://twitter.com/" + user_name.strip() + "/status/" + status_id
                     logging.info("start screenshot for " + url)
                     screen_file_anme = os.path.join(user_output_dir, status_id + ".png")
-                    take_screenshot(url, screen_file_anme)
+                    take_screenshot(url, screen_file_anme, options.screen_size)
 
             except Exception as e:
                 print "Have Exception %s" % e
 
 
-def take_screenshot(url, file_name):
+def take_screenshot(url, file_name, screen_size):
     options = webdriver.ChromeOptions()
 
     options.add_argument('--proxy-server=%s' % '127.0.0.1:1080')
@@ -152,7 +152,7 @@ def take_screenshot(url, file_name):
     options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    options.add_argument("window-size=1920,1440")
+    options.add_argument("window-size="+screen_size)
     browser = webdriver.Chrome(chrome_options=options, executable_path='tools/chromedriver.exe')
 
     #browser.set_window_size(1920, 1080)
@@ -171,8 +171,10 @@ def get_options(parser):
     """
     config = get_config()
     output_path = config['content']['output']
+    screen_size = config['screen_size']
     options = parser.parse_args()
     options.output = output_path
+    options.screen_size = screen_size
 
     return options
 

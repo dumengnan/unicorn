@@ -75,7 +75,7 @@ def main():
     shutil.rmtree(target_dir, ignore_errors=True)
     os.makedirs(target_dir)
 
-    copy_dirs = ['bin', 'etc', 'logs']
+    copy_dirs = ['bin', 'etc', 'logs', 'tools']
 
     lib_dir = os.path.join(target_dir, 'lib')
     _copytree(site_package_dir, lib_dir)
