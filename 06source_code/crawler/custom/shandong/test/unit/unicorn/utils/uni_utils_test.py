@@ -19,5 +19,5 @@ class UtilTest(unittest.TestCase):
 
     def test_format_tweet_time_to_minute(self):
         create_time = "Thu Nov 23 16:30:46 +0000 2017"
-        minute_date = format_content_time_to_minute(create_time)
+        minute_date = format_content_time_to_seconds(create_time)
         self.assertEqual("2017-11-23 16:30:46", minute_date.strftime("%Y-%m-%d %H:%M:%S"))

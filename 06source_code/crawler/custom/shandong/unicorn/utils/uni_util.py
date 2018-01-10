@@ -10,6 +10,10 @@ def get_current_time():
     return time.strftime("%Y%m%d%H%M%S", time.localtime())
 
 
+def get_current_time_format():
+    return time.strftime("%Y-%m-%d", time.localtime())
+
+
 # 生成文件名
 def get_file_name(prefix):
     current_time = get_current_time()
@@ -28,13 +32,13 @@ def format_content_time_to_day(time_str):
         '%Y%m%d')
 
 
-def format_content_time_to_minute(time_str):
+def format_content_time_to_seconds(time_str):
     """
     格式化推文时间
     :param time_str:  eg.Thu Nov 23 16:30:46 +0000 2017
     :return: 20171223 16:30:46
     """
-    return datetime.strptime(time_str, "%a %b %d %H:%M:%S +0000 %Y").strftime('%Y%m%d %H:%M:%S')
+    return datetime.strptime(time_str, "%a %b %d %H:%M:%S +0000 %Y").strftime('%Y-%m-%d %H:%M:%S')
 
 
 def parse_device_from_str(source_str):

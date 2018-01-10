@@ -26,7 +26,7 @@ class Tweet:
     def __repr__(self):
         line_list = []
         line_list.append(xstr(self.user_id))
-        line_list.append(xstr(self.create_time.strftime("%Y-%m-%d %H:%M:%S")))
+        line_list.append(xstr(self.create_time))
         line_list.append(xstr(self.status_id))
         line_list.append(xstr(self.lang))
         line_list.append(xstr(self.device))
