@@ -5,11 +5,11 @@ use unicorn;
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for user data
+-- Table structure for social_user 
 -- 存储社交媒体用户基础数据 
 -- ----------------------------
-DROP TABLE IF EXISTS `user_data`;
-CREATE TABLE `user_data` (
+DROP TABLE IF EXISTS `social_user`;
+CREATE TABLE `social_user` (
   `ID` int(11) NOT NULL,
   `SCREEN_NAME` varchar(255) DEFAULT NULL COMMENT '账号',
   `NAME_STR` varchar(255) DEFAULT NULL COMMENT '昵称',

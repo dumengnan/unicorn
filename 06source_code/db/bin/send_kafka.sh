@@ -19,7 +19,7 @@ mkdir -p $FAILED_BAK_DIR
 log_file=$DIR/../logs/send_kafka.log
 
 
-log() {
+function log() {
    msg=$1
    now=`date +"%Y-%m-%d %H:%M:%S"`
    echo -e "$now    $msg" >> $log_file
@@ -28,7 +28,7 @@ log() {
 # 将扫描发送过的文件移走
 ## param:1 是否发送成功
 ## param:2 文件路径
-bak_file() {
+function bak_file() {
    is_success=$1
    filePath=$2
    
@@ -42,7 +42,7 @@ bak_file() {
 }
 
 # 发送kafka
-send_to_kafka() {
+function send_to_kafka() {
    file_list=$1
    for file in $file_list; do
            echo "Send File: $file To Kafka"
@@ -55,7 +55,7 @@ send_to_kafka() {
 }
 
 ## 扫描所有的bcp 文件发送kafka
-main() {
+function main() {
     while true; do
         file_list=`find $DATA_DIR -type f -name "*.bcp"`
 
