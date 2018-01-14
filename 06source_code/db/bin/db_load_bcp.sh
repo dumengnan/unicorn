@@ -1,4 +1,4 @@
-#£°/bin/bash
+#ÔºÅ/bin/bash
 
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -7,7 +7,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 
-# ªÒ»°µΩ’Ê µ¬∑æ∂, ∑¿÷π‘⁄»Ì¡¨Ω”¿Ô√Ê
+# Ëé∑ÂèñÂà∞ÁúüÂÆûË∑ØÂæÑ, Èò≤Ê≠¢Âú®ËΩØËøûÊé•ÈáåÈù¢
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 cd $DIR
@@ -27,7 +27,13 @@ function load_bcp_to_db() {
    file_list=$1
    for file in $file_list; do
         log "Load File: $file To Db social " 
-        LOAD DATA INFILE $file  INTO TABLE social_user FIELDS TERMINATED BY '\t'  ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 0 ROWS;
+        log "mysql -uroot -p$PASSWORD $DATABASE -e \"LOAD DATA INFILE \'$file\'  INTO TABLE social_user FIELDS TERMINATED BY \'\t\'  ENCLOSED BY \'\"\' LINES TERMINATED BY \'\n\' IGNORE 0 ROWS\"";
+        mysql -uroot -p$PASSWORD $DATABASE -e "LOAD DATA INFILE '$file'  INTO TABLE social_user FIELDS TERMINATED BY '\t'  ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 0 ROWS";
+        if [ $? == 0 ];then
+           log "load $file To Db Success!"
+        else 
+           log "load $file To Db Failed" 
+        fi
    done 
 }
 
@@ -47,3 +53,5 @@ function main() {
 
     done 
 }
+
+main
