@@ -1,4 +1,5 @@
-# encoding=utf-8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
  
 import redis
 from hashlib import md5
@@ -13,7 +14,7 @@ class SimpleHash(object):
         ret = 0
         for i in range(len(value)):
             ret += self.seed * ret + ord(value[i])
-        return (self.cap - 1) &amp; ret
+        return (self.cap - 1) & ret
  
  
 class BloomFilter(object):
@@ -26,8 +27,8 @@ class BloomFilter(object):
         :param key: the key's name in Redis
         """
         self.server = redis.Redis(host=host, port=port, db=db)
-        # <<±íÊ¾¶þ½øÖÆÏò×óÒÆ¶¯Î»Êý£¬±ÈÈç2<<2,2µÄ¶þ½øÖÆ±íÊ¾000010£¬Ïò×óÒÆ2Î»£¬¾ÍÊÇ001000£¬¾ÍÊÇÊ®½øÖÆµÄ8
-        self.bit_size = 1 <<31  # RedisµÄStringÀàÐÍ×î´óÈÝÁ¿Îª512M£¬ÏÖÊ¹ÓÃ256M
+        # <<è¡¨ç¤ºäºŒè¿›åˆ¶å‘å·¦ç§»åŠ¨ä½æ•°ï¼Œæ¯”å¦‚2<<2,2çš„äºŒè¿›åˆ¶è¡¨ç¤º000010ï¼Œå‘å·¦ç§»2ä½ï¼Œå°±æ˜¯001000ï¼Œå°±æ˜¯åè¿›åˆ¶çš„8
+        self.bit_size = 1 << 31  # Redisçš„Stringç±»åž‹æœ€å¤§å®¹é‡ä¸º512Mï¼ŒçŽ°ä½¿ç”¨256M
         self.seeds = [5, 7, 11, 13, 31, 37, 61]
         self.key = key
         self.blockNum = blockNum
@@ -45,7 +46,7 @@ class BloomFilter(object):
         name = self.key + str(int(str_input[0:2], 16) % self.blockNum)
         for f in self.hashfunc:
             loc = f.hash(str_input)
-            ret = ret &amp; self.server.getbit(name, loc)
+            ret = ret & self.server.getbit(name, loc)
         return ret
  
     def insert(self, str_input):
@@ -59,9 +60,9 @@ class BloomFilter(object):
  
  
 if __name__ == '__main__':
-    """ µÚÒ»´ÎÔËÐÐÊ±»áÏÔÊ¾ not exists!£¬Ö®ºóÔÙÔËÐÐ»áÏÔÊ¾ exists! """
+    """ ç¬¬ä¸€æ¬¡è¿è¡Œæ—¶ä¼šæ˜¾ç¤º not exists!ï¼Œä¹‹åŽå†è¿è¡Œä¼šæ˜¾ç¤º exists! """
     bf = BloomFilter()
-    if bf.isContains('http://www.baidu.com'):   # ÅÐ¶Ï×Ö·û´®ÊÇ·ñ´æÔÚ
+    if bf.isContains('http://www.baidu.com'):   # åˆ¤æ–­å­—ç¬¦ä¸²æ˜¯å¦å­˜åœ¨
         print 'exists!'
     else:
         print 'not exists!'
