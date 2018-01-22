@@ -13,6 +13,8 @@ from unicorn.crawlernoapi.tweet import Tweet
 from unicorn.crawlernoapi.comment.comment import crawl_single_comment
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import *
+from unicorn.redis.redis_bloom import BloomFilter
+
 
 URL = "https://www.allmytweets.net/get_tweets.php?include_rts=true& \
        exclude_replies=false&count=200&screen_name={screen_name}"
@@ -117,9 +119,17 @@ def write_content_to_file(content_file, tweet_list):
     :param tweet_list:
     :return:
     """
+    redis_host = get_config()['redis']['host']
+    bf = BloomFilter(host=redis_host, key='status')
     with open(content_file, "a+") as f_out:
         for content in tweet_list:
-            f_out.write(repr(content) + "\n")
+            # 对数据进行去重
+            if bf.isContains(content.status_id):
+                logging.info("The user Profile Exists for " + content.status_id)
+                continue
+            else:
+                bf.insert(content.status_id)
+                f_out.write(repr(content) + "\n")
 
 
 def write_comment_to_file(source_status_id, file_name, comment_list):

@@ -10,6 +10,7 @@ from unicorn.utils.get_random_key import get_twitter_auth_list
 from unicorn.utils.get_random_key import get_twitter_auth
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import get_file_name
+from unicorn.redis.redis_bloom import BloomFilter
 
 # api的限制速度 15分钟 15次
 api_rate_limit = 15
@@ -31,6 +32,7 @@ def crawl_friends(options):
     count = 0
     key_index = 0
 
+    bf = BloomFilter(host=options.redis_host, key='users')
     # 记录他们的关注关系
     relation_f = open(os.path.join(options.output, get_file_name(relaiton_file_prefix)), "a+")
     with open(options.input, "r") as f_input:
@@ -55,6 +57,14 @@ def crawl_friends(options):
                             created_at = datetime.datetime.strptime(follower_user["created_at"], "%a %b %d %H:%M:%S +0000 %Y") \
                                 .strftime('%Y-%m-%d %H:%M:%S')
                             id_str = follower_user["id_str"]
+
+                            # 对数据进行去重
+                            if bf.isContains(id_str):
+                                logging.info("The user Profile Exists for " + id_str)
+                                continue
+                            else:
+                                bf.insert(id_str)
+
                             name = follower_user["name"].encode("utf-8", 'ignore')
                             screen_name = follower_user["screen_name"]
                             desc = follower_user["description"]
@@ -103,6 +113,8 @@ def main(args):
     options = parser.parse_args()
     config = get_config()
     options.output = config['friends']['output']
+    options.redis_host = config['redis']['host']
+
     if not os.path.exists(options.output):
         os.makedirs(options.output)
     crawl_friends(options)

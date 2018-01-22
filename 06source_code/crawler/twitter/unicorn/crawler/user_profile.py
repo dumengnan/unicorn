@@ -10,6 +10,7 @@ from unicorn.utils.get_random_key import get_twitter_auth
 from unicorn.utils.get_random_key import get_twitter_auth_list
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import get_file_name
+from unicorn.redis.redis_bloom import BloomFilter
 
 
 output_file_prefix = "uni-twitter_info-"
@@ -19,6 +20,7 @@ api_rate_limit = 900
 
 
 def crawl_user_profile(options):
+    bf = BloomFilter(host=options.redis_host, key='users')
     count = 0
     key_index = 0
     output_file = get_file_name(output_file_prefix)
@@ -33,6 +35,13 @@ def crawl_user_profile(options):
                     created_at = datetime.datetime.strptime(results["created_at"], "%a %b %d %H:%M:%S +0000 %Y") \
                                                   .strftime('%Y-%m-%d %H:%M:%S')
                     id_str = results["id_str"]
+
+                    if bf.isContains(id_str):
+                        logging.info("The user Profile Exists for " + id_str)
+                        continue
+                    else:
+                        bf.insert(id_str)
+
                     name = results["name"].encode("utf-8", 'ignore')
                     screen_name = results["screen_name"]
                     desc = results["description"]
@@ -80,6 +89,7 @@ def main(args):
     options = parser.parse_args()
     config = get_config()
     options.output = config['profile']['output']
+    options.redis_host = config['redis']['host']
 
     if not os.path.exists(options.output):
         os.makedirs(options.output)
