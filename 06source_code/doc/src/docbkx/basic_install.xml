@@ -29,15 +29,13 @@
  		<screen>echo_supervisord_conf > /etc/supervisord.conf</screen>
 	 </listitem>
 	 
-	<listitem>
-	<para>执行命令  生成supervisord配置文件</para>
-	<screen>echo_supervisord_conf > /etc/supervisord.conf</screen>
-	</listitem>
 	
 	<listitem>
 	<para>修改配置文件的位置</para>
-	<screen>[include]
-files = /etc/supervisor/*.conf</screen>
+	<screen>mkdir /etc/supervisor
+vim /etc/supervisord.conf</screen>
+	<programlisting>[include]
+files = /etc/supervisor/*.conf</programlisting>
 	</listitem>
 	
 	<listitem>
@@ -47,14 +45,14 @@ files = /etc/supervisor/*.conf</screen>
 	
 	<listitem>
 	<para>配置开机启动</para>
-	<para>进入/lib/systemd/system目录，并创建supervisor.service文件</para>
-	<screen>[Unit]
+	<screen>vim /lib/systemd/system/supervisor.service</screen>
+	<programlisting>[Unit]
 Description=supervisor
 After=network.target
 
 [Service]
 Type=forking
-ExecStart=/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+ExecStart=/usr/bin/supervisord -c /etc/supervisord.conf
 ExecStop=/usr/bin/supervisorctl $OPTIONS shutdown
 ExecReload=/usr/bin/supervisorctl $OPTIONS reload
 KillMode=process
@@ -62,14 +60,14 @@ Restart=on-failure
 RestartSec=42s
 
 [Install]
-WantedBy=multi-user.target</screen>
+WantedBy=multi-user.target</programlisting>
 
     <para>配置开机启动</para>
 	<screen>systemctl enable supervisor.service
 systemctl daemon-reload</screen>
 
     <para>修改文件权限为766</para>
-	<screen>chmod 766 supervisor.service</screen>
+	<screen>chmod 766 /lib/systemd/system/supervisor.service</screen>
 	</listitem>
   </itemizedlist>
    </section>
