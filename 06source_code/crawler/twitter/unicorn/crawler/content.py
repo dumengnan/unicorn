@@ -180,6 +180,7 @@ def crawl_twitter_content(options):
                 write_content_to_file(content_file, tweet_list)
 
                 if options.all and len(tweet_list) >= 3200:
+                    logging.info("Start Crawl Status Not Use Api!")
                     new_tweet_list = crawl_content_noapi(user_name.strip(), last_tweet_time)
                     write_content_to_file(content_file, new_tweet_list)
                     logging.info("Get {} Tweets From No Api".format(str(len(tweet_list))))

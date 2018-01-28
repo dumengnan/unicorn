@@ -2,7 +2,6 @@ requests[security]==2.18.4
 pbr==1.8.1
 twitter==1.18.0
 PyYAML==3.12
-
 beautifulsoup4
 coala_utils==0.6.2
 redis==2.10.6
