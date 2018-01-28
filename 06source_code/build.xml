@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="Unicorn" default="compile" basedir=".">
 	<property file="build.properties"/>
-	<property name="release.name" value="${ant.project.name}-${version}"/>
+	<property name="release.name" value="${ant.project.name}-${project.version}"/>
 	<property name="release.dir" value="build"/> 
 
 	<condition property="exe" value=".exe" else=""><os family="windows" /></condition>
@@ -45,23 +45,28 @@
 
 	<target name="compile" depends="init">
 	<ant antfile="build.xml" target="compile" dir="crawler" inheritAll="false"/>
+	<ant antfile="build.xml" target="compile" dir="db" inheritAll="false"/>
 	  <!-- <ant antfile="build.xml" target="compile" dir="service-center" inheritAll="false"/> -->
     </target>
 
 	<target name="release" depends="compile">
 	   <mkdir dir="${release.dir}"/>
 	   <ant antfile="build.xml" target="release" dir="crawler" inheritAll="false"/>
+	   <ant antfile="build.xml" target="release" dir="db" inheritAll="false"/>
 	   
-	   <copy todir="${release.dir}" overwrite="true" >
-            <fileset file="crawler/build/crawler.tar.gz"/>
+	   <copy todir="${release.dir}/${release.name}" overwrite="true" >
+            <fileset file="crawler/build/*.tar.gz"/>
         </copy>  
-       <!-- <ant antfile="build.xml" target="release" dir="service-center" inheritAll="false"/>
-       <copy todir="build/${release.name}" overwrite="true">
-			<fileset dir="service-center/build">
-				<include name="*.tar.gz"/>
-			</fileset>
-	   </copy>  -->
-	   
+
+	   	<copy todir="${release.dir}/${release.name}" overwrite="true" >
+            <fileset file="db/build/*.tar.gz"/>
+        </copy> 
+		
+		<tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip">
+            <tarfileset dir="${release.dir}">
+                <include name="**/**"/>
+            </tarfileset>
+        </tar>
     </target>
 
 	<target name="clean">
