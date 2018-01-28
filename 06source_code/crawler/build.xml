@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="crawler" default="compile" basedir=".">
     <property file="build.properties"/>
-    <property name="release.name" value="${ant.project.name}-${version}"/>
+    <property name="release.name" value="${ant.project.name}-${project.version}"/>
     <property name="release.dir" value="build"/> 
 
     <condition property="exe" value=".exe" else=""><os family="windows" /></condition>
@@ -52,14 +52,14 @@
           <arg value="py27-release"/>
        </exec>
        
-        <copy todir="${release.dir}/crawler" overwrite="true" filtering="true" encoding="utf-8">
+        <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="twitter/build">
-                <include name="twitter.tar.gz"/>
+                <include name="twitter/**"/>
             </fileset>
         </copy>  
         
-        <tar destfile="crawler.tar.gz" compression="gzip">
-            <tarfileset dir="${release.dir}/crawler">
+        <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip">
+            <tarfileset dir="${release.dir}/${release.name}">
                 <include name="**/**"/>
             </tarfileset>
         </tar>

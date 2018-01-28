@@ -36,6 +36,7 @@
 			<fileset dir=".">
 				<include name="**/pom.xml.in" />
 				<include name="**/VERSION.in" />
+				<include name="**/build.properties.in" />
 			</fileset>
 			<regexpmapper from="^(.*)\.in$$" to="\1" />
 			<filterset refid="globalfilterset" />
