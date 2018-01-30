@@ -35,6 +35,7 @@ def crawl_friends(options):
     bf = BloomFilter(host=options.redis_host, key='users')
     # 记录他们的关注关系
     relation_f = open(os.path.join(options.output, get_file_name(relaiton_file_prefix)), "a+")
+    info_f = os.path.join(options.output, get_file_name(output_file_prefix))
     with open(options.input, "r") as f_input:
         for user in f_input:
             cursor = -1
@@ -42,7 +43,7 @@ def crawl_friends(options):
             twitter, count, key_index = get_twitter_auth(api_rate_limit, count, key_index)
             # 所爬取人账号的ID
             parent_id_str = get_user_id_str(twitter, user)
-            with open(os.path.join(options.output, get_file_name(output_file_prefix)), "a+") as f_output:
+            with open(info_f, "a+") as f_output:
                 while cursor != 0:
                     try:
                         twitter, count, key_index = get_twitter_auth(api_rate_limit, count, key_index)
@@ -96,7 +97,7 @@ def crawl_friends(options):
                         count = count + 1
                         key_index = key_index + 1
                         time.sleep(api_rate_limit/len(get_twitter_auth_list()))
-                        logging.error("Current Cursor" + str(cursor) + "Get Twitter Followers Error: %s" % e)
+                        logging.error("Current Cursor" + str(cursor) + "Get Twitter Friends Error: %s" % e)
 
 
 def main(args):

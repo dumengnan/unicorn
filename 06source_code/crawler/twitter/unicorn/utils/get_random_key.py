@@ -16,6 +16,7 @@ ACCESS_SECRET_INDEX = 3
 # api 统一间隔时间计量单位15分钟
 api_interval_time = 900
 
+start_time = datetime.datetime.now() 
 
 def get_twitter_auth_list():
     twitter_auth_list = []
@@ -37,7 +38,6 @@ def get_twitter_auth_list():
 def get_twitter_auth(api_rate_limit, count, key_index):
     twitter_auth_list = get_twitter_auth_list()
     key_length = len(twitter_auth_list)
-    start_time = datetime.datetime.now()
 
     twitter = twitter_auth_list[key_index % key_length]
     if count == 0:
@@ -47,7 +47,7 @@ def get_twitter_auth(api_rate_limit, count, key_index):
         total_time = (datetime.datetime.now() - start_time).seconds
         if total_time < (api_interval_time / key_length):
             logging.info("Rate limit is too qucik  sleep " + str((api_interval_time / key_length) - total_time))
-            time.sleep((api_interval_time / key_length) - total_time)
+            time.sleep((api_interval_time / key_length) - total_time + 2)
         key_index = key_index + 1
         count = 0
         if key_index % key_length == key_length - 1:

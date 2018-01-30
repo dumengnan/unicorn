@@ -24,9 +24,12 @@ relaiton_file_prefix = "uni-twitter_relation-"
 
 
 def get_user_id_str(twitter, username):
-    id_str = twitter.users.show(screen_name=username)["id_str"]
-    return id_str
-
+    try:
+        id_str = twitter.users.show(screen_name=username)["id_str"]
+        return id_str
+    except Exception as e:
+        logging.error(" Get User " + username + " Error : %s " % e)
+        return None
 
 def crawl_followers(options):
     count = 0
@@ -35,6 +38,7 @@ def crawl_followers(options):
 
     # 记录他们的关注关系
     relation_f = open(os.path.join(options.output, get_file_name(relaiton_file_prefix)), "a+")
+    info_file = os.path.join(options.output, get_file_name(output_file_prefix))
     with open(options.input, "r") as f_input:
         for user in f_input:
             cursor = -1
@@ -42,7 +46,9 @@ def crawl_followers(options):
             twitter, count, key_index = get_twitter_auth(api_rate_limit, count, key_index)
             # 所爬取人账号的ID
             parent_id_str = get_user_id_str(twitter, user)
-            with open(os.path.join(options.output, get_file_name(output_file_prefix)), "a+") as f_output:
+            if parent_id_str is None:
+                continue
+            with open(info_file, "a+") as f_output:
                 while cursor != 0:
                     try:
                         twitter, count, key_index = get_twitter_auth(api_rate_limit, count, key_index)
@@ -94,9 +100,9 @@ def crawl_followers(options):
 
                     except Exception as e:
                         count = count + 1
-                        key_index = key_index + 1
+                        cursor = 0
                         time.sleep(api_rate_limit/len(get_twitter_auth_list()))
-                        logging.error("Current Cursor" + str(cursor) + "Get Twitter Followers Error: %s" % e)
+                        logging.error("Current User " + user + " Get Twitter Followers Error: %s" % e)
 
 
 def main(args):
