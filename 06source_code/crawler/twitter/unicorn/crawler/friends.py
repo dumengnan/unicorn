@@ -24,8 +24,12 @@ relaiton_file_prefix = "uni-twitter_relation-"
 
 
 def get_user_id_str(twitter, username):
-    id_str = twitter.users.show(screen_name=username)["id_str"]
-    return id_str
+    try:
+        id_str = twitter.users.show(screen_name=username)["id_str"]
+        return id_str
+    except Exception as e:
+        logging.error(" Get User " + username + " Error : %s " % e)
+        return None
 
 
 def crawl_friends(options):
@@ -43,6 +47,8 @@ def crawl_friends(options):
             twitter, count, key_index = get_twitter_auth(api_rate_limit, count, key_index)
             # 所爬取人账号的ID
             parent_id_str = get_user_id_str(twitter, user)
+            if parent_id_str is None:
+                continue
             with open(info_f, "a+") as f_output:
                 while cursor != 0:
                     try:
@@ -95,9 +101,9 @@ def crawl_friends(options):
 
                     except Exception as e:
                         count = count + 1
-                        key_index = key_index + 1
+                        cursor = 0
                         time.sleep(api_rate_limit/len(get_twitter_auth_list()))
-                        logging.error("Current Cursor" + str(cursor) + "Get Twitter Friends Error: %s" % e)
+                        logging.error("Current User" + user + "Get Twitter Friends Error: %s" % e)
 
 
 def main(args):
