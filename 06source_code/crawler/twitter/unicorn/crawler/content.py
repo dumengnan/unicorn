@@ -14,6 +14,7 @@ from unicorn.crawlernoapi.comment.comment import crawl_single_comment
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import *
 from unicorn.redis.redis_bloom import BloomFilter
+from unicorn.utils.get_random_key import get_twitter_auth
 
 
 URL = "https://www.allmytweets.net/get_tweets.php?include_rts=true& \
@@ -25,6 +26,20 @@ file_prefix = "uni-twitter_content-"
 comment_prefix = "uni-twitter_comment-"
 
 
+def get_user_register_time(username):
+    try:
+        twitter, count, key_index = get_twitter_auth(15, 0, 0)
+
+        results = twitter.users.show(screen_name=username)
+        created_at = datetime.datetime.strptime(results["created_at"], "%a %b %d %H:%M:%S +0000 %Y") \
+            .strftime('%Y%m%d')
+
+        return created_at
+    except Exception as e:
+        logging.error(" Get User " + username + " Error : %s " % e)
+        return None
+
+
 def crawl_content_noapi(screen_name, end_date):
     """
     利用twitter搜索技巧爬取推文
@@ -33,7 +48,10 @@ def crawl_content_noapi(screen_name, end_date):
     :return:
     """
     logging.info("Crawl %s Tweets no Api to %s" % (screen_name, end_date))
-    start_date = datetime.strptime('20130101', "%Y%m%d").date()
+    register_time = get_user_register_time(screen_name)
+    if register_time is None or register_time < '20130101':
+        register_time = '20130101'
+    start_date = datetime.strptime(register_time, "%Y%m%d").date()
     end_date = datetime.strptime(end_date, "%Y%m%d").date()
 
     return noapi_main.query_content(screen_name, start_date, end_date)
