@@ -3,6 +3,7 @@
 
 
 import datetime
+import random
 import time
 import logging
 from twitter import *
@@ -17,6 +18,7 @@ ACCESS_SECRET_INDEX = 3
 api_interval_time = 900
 
 start_time = datetime.datetime.now() 
+
 
 def get_twitter_auth_list():
     twitter_auth_list = []
@@ -57,3 +59,11 @@ def get_twitter_auth(api_rate_limit, count, key_index):
     logging.info("The Index is " + str(key_index % key_length))
 
     return twitter, count, key_index
+
+
+def get_proxy_server():
+    config = get_config()
+    proxy_server_list = config["proxy"]
+
+    return random.choice(proxy_server_list)
+

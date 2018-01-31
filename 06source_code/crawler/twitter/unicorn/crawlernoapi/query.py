@@ -8,7 +8,7 @@ import requests
 from tweet import Tweet
 
 from unicorn.utils.select_useragent import selectUserAgent
-
+from unicorn.utils.get_random_key import get_proxy_server
 
 INIT_URL = "https://twitter.com/search?f=tweets&q={q}"
 RELOAD_URL = "https://twitter.com/i/search/timeline?f=tweets&vertical=" \
@@ -29,7 +29,9 @@ def query_single_page(url, user_agent, html_response=True, retry=3):
     headers = {'User-Agent': user_agent}
     json_resp = {}
     try:
-        response = requests.get(url, headers=headers)
+        proxy_server = get_proxy_server()
+        proxies = {"http": proxy_server, "https": proxy_server}
+        response = requests.get(url, headers=headers, proxies=proxies)
         if response.status_code != 200:
             return [], None
         
