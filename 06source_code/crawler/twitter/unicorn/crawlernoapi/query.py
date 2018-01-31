@@ -6,7 +6,8 @@ from datetime import timedelta
 
 import requests
 from tweet import Tweet
-
+from multiprocessing.pool import Pool
+from functools import partial
 from unicorn.utils.select_useragent import selectUserAgent
 from unicorn.utils.get_random_key import get_proxy_server
 
@@ -189,11 +190,14 @@ def query_all_tweets(query, start_date, end_date):
     """
 
     queries = get_all_query(query, start_date, end_date)
+
+    pool = Pool(10)
+
     all_tweets = []
+
     try:
-        for query in queries:
-            for new_tweets in query_tweets_once(query):
-                all_tweets.append(new_tweets)
+        for new_tweets in pool.imap_unordered(partial(query_tweets_once), queries):
+            all_tweets.append(new_tweets)
 
     except KeyboardInterrupt:
         logging.info("Program interrupted by user. Returning all tweets "
