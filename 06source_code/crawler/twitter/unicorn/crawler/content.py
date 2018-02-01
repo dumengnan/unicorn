@@ -31,7 +31,7 @@ def get_user_register_time(username):
         twitter, count, key_index = get_twitter_auth(15, 0, 0)
 
         results = twitter.users.show(screen_name=username)
-        created_at = datetime.datetime.strptime(results["created_at"], "%a %b %d %H:%M:%S +0000 %Y") \
+        created_at = datetime.strptime(results["created_at"], "%a %b %d %H:%M:%S +0000 %Y") \
             .strftime('%Y%m%d')
 
         return created_at
