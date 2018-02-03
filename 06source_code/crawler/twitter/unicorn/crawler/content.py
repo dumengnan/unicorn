@@ -31,7 +31,7 @@ def get_user_register_time(username):
         twitter, count, key_index = get_twitter_auth(15, 0, 0)
 
         results = twitter.users.show(screen_name=username)
-        created_at = datetime.datetime.strptime(results["created_at"], "%a %b %d %H:%M:%S +0000 %Y") \
+        created_at = datetime.strptime(results["created_at"], "%a %b %d %H:%M:%S +0000 %Y") \
             .strftime('%Y%m%d')
 
         return created_at
@@ -201,7 +201,7 @@ def crawl_twitter_content(options):
                     logging.info("Start Crawl Status Not Use Api!")
                     new_tweet_list = crawl_content_noapi(user_name.strip(), last_tweet_time)
                     write_content_to_file(content_file, new_tweet_list)
-                    logging.info("Get {} Tweets From No Api".format(str(len(tweet_list))))
+                    logging.info("Get {} Tweets From No Api".format(str(len(new_tweet_list))))
                     tweet_list.append(new_tweet_list)
 
                 if options.comment:
