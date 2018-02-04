@@ -197,7 +197,8 @@ def query_all_tweets(query, start_date, end_date):
 
     try:
         for new_tweets in pool.imap_unordered(partial(query_tweets_once), queries):
-            all_tweets.append(new_tweets)
+            for new_tweet in new_tweets:
+                all_tweets.append(new_tweet)
 
     except KeyboardInterrupt:
         logging.info("Program interrupted by user. Returning all tweets "
