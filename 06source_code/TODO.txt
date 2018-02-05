@@ -1,0 +1,11 @@
+1、安装并学习airflow  
+2、kafka 写数据到hive
+3、kafka 写数据到ES
+4、kafka 写数据到mysql 
+4、安装buildbot 做每日构造
+5、spark-streaming 接入kafka数据 实时分析统计 最终结果入hbase 
+6、使用spring cloud 框架 写上层分析应用接口 
+7、简单界面展示
+8、fastText 应用  用于文本分类 对用户发表的内容进行训练分类
+9、修改爬虫程序 支持图片和视频内容的下载 
+10、DeepVideoAnalysis 应用  用于检索图片和视频中的内容
