@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="crawler" default="compile" basedir=".">
+<project name="unicorn-crawler" default="compile" basedir=".">
     <property file="build.properties"/>
     <property name="release.name" value="${ant.project.name}-${project.version}"/>
     <property name="release.dir" value="build"/> 
