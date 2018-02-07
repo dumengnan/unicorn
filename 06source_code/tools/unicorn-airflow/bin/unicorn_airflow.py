@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import _load_lib
 import os
 from airflow import configuration
 from airflow.bin.cli import CLIFactory
