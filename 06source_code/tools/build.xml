@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="unicorn-db" default="compile" basedir=".">
+<project name="unicorn-tools" default="compile" basedir=".">
     <property file="build.properties"/>
     <property name="release.name" value="${ant.project.name}-${project.version}"/>
     <property name="release.dir" value="build"/> 
@@ -35,21 +35,26 @@
         <mkdir dir="${release.dir}"/>
     </target>
 
-    <target name="compile" depends="init"> 
+    <target name="compile" depends="init,unicorn_airflow_compile"> 
      </target>
      
+    <target name="unicorn_airflow_compile">
+       <exec dir="unicorn-airflow" executable="tox.bat" failonerror="true">
+       </exec>    
+     </target>
 
-    <target name="release" depends="init,db_release">
+    <target name="release" depends="init,unicorn_airflow_release">
     </target>
     
-    <target name="db_release">
+    <target name="unicorn_airflow_release">
+       <exec dir="unicorn-airflow" executable="tox.bat" failonerror="true">
+          <arg value="-e"/>
+          <arg value="py27-release"/>
+       </exec>
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
-            <fileset dir=".">
-                <include name="bin/**"/>
-                <include name="etc/**"/>
-                <include name="logs/**"/>
-                <include name="db_scripts/**"/>
+            <fileset dir="unicorn-airflow/build">
+                <include name="unicorn-airflow/**"/>
             </fileset>
         </copy>  
         
@@ -61,6 +66,8 @@
     </target>
 
     <target name="clean" >
+        <delete dir="unicorn-airflow/.tox" removeNotFollowedSymlinks="true" failonerror="false" />
+        <delete dir="unicorn-airflow/build" removeNotFollowedSymlinks="true" failonerror="false"/>
         <delete dir="${release.dir}"/>
     </target>
 

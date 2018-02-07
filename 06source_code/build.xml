@@ -46,6 +46,7 @@
 	<target name="compile" depends="init">
 	<ant antfile="build.xml" target="compile" dir="crawler" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="db" inheritAll="false"/>
+	<ant antfile="build.xml" target="compile" dir="tools" inheritAll="false"/>
 	  <!-- <ant antfile="build.xml" target="compile" dir="service-center" inheritAll="false"/> -->
     </target>
 
@@ -53,13 +54,18 @@
 	   <mkdir dir="${release.dir}"/>
 	   <ant antfile="build.xml" target="release" dir="crawler" inheritAll="false"/>
 	   <ant antfile="build.xml" target="release" dir="db" inheritAll="false"/>
+	   <ant antfile="build.xml" target="release" dir="tools" inheritAll="false"/>
 	   
 	   <copy todir="${release.dir}/${release.name}" overwrite="true" >
-            <fileset file="crawler/build/*.tar.gz"/>
+            <fileset file="unicorn-crawler/build/*.tar.gz"/>
         </copy>  
 
 	   	<copy todir="${release.dir}/${release.name}" overwrite="true" >
-            <fileset file="db/build/*.tar.gz"/>
+            <fileset file="unicorn-db/build/*.tar.gz"/>
+        </copy> 
+		
+		<copy todir="${release.dir}/${release.name}" overwrite="true" >
+            <fileset file="unicorn-tools/build/*.tar.gz"/>
         </copy> 
 		
 		<tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip">
