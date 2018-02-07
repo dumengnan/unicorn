@@ -130,7 +130,7 @@ def get_status_id_list(tweet_list):
     return id_list
 
 
-def write_content_to_file(content_file, tweet_list):
+def write_content_to_file(content_file, tweet_list, screen_name):
     """
     将所有的推文内容写入到文件
     :param content_file:
@@ -143,11 +143,11 @@ def write_content_to_file(content_file, tweet_list):
         for content in tweet_list:
             # 对数据进行去重
             if bf.isContains(content.status_id):
-                logging.info("The user Profile Exists for " + content.status_id)
+                logging.info("The status Exists for " + content.status_id)
                 continue
             else:
                 bf.insert(content.status_id)
-                f_out.write(repr(content) + "\n")
+                f_out.write(repr(content) + "\t" + screen_name + "\n")
 
 
 def write_comment_to_file(source_status_id, file_name, comment_list):
@@ -179,7 +179,7 @@ def crawl_comments(options, screen_name, status_id_list, content_file):
         comment_list = crawl_single_comment(screen_name, status_id)
         write_comment_to_file(status_id, comments_file, comment_list)
         for comm_list in comment_list:
-            write_content_to_file(content_file, comm_list)
+            write_content_to_file(content_file, comm_list, screen_name)
 
 
 def crawl_twitter_content(options):
@@ -195,12 +195,12 @@ def crawl_twitter_content(options):
                 pre_tweets, last_tweet_time = crawl_content_withapi(user_name.strip())
                 tweet_list = trans_json_to_tweet(pre_tweets)
                 logging.info("Get {} Tweets From Api".format(str(len(tweet_list))))
-                write_content_to_file(content_file, tweet_list)
+                write_content_to_file(content_file, tweet_list, user_name)
 
                 if options.all and len(tweet_list) >= 3200:
                     logging.info("Start Crawl Status Not Use Api!")
                     new_tweet_list = crawl_content_noapi(user_name.strip(), last_tweet_time)
-                    write_content_to_file(content_file, new_tweet_list)
+                    write_content_to_file(content_file, new_tweet_list, user_name)
                     logging.info("Get {} Tweets From No Api".format(str(len(new_tweet_list))))
                     tweet_list.append(new_tweet_list)
 
