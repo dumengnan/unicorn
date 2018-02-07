@@ -57,15 +57,15 @@
 	   <ant antfile="build.xml" target="release" dir="tools" inheritAll="false"/>
 	   
 	   <copy todir="${release.dir}/${release.name}" overwrite="true" >
-            <fileset file="unicorn-crawler/build/*.tar.gz"/>
+            <fileset file="crawler/build/*.tar.gz"/>
         </copy>  
 
 	   	<copy todir="${release.dir}/${release.name}" overwrite="true" >
-            <fileset file="unicorn-db/build/*.tar.gz"/>
+            <fileset file="db/build/*.tar.gz"/>
         </copy> 
 		
 		<copy todir="${release.dir}/${release.name}" overwrite="true" >
-            <fileset file="unicorn-tools/build/*.tar.gz"/>
+            <fileset file="tools/build/*.tar.gz"/>
         </copy> 
 		
 		<tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip">
