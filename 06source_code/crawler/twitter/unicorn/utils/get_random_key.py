@@ -43,9 +43,11 @@ def get_twitter_auth(api_rate_limit, count, key_index):
 
     twitter = twitter_auth_list[key_index % key_length]
     if count == 0:
+        global start_time
         start_time = datetime.datetime.now()  # 统计api 耗时时间
     count = count + 1
     if count > api_rate_limit - 1:
+        global start_time
         total_time = (datetime.datetime.now() - start_time).seconds
         if total_time < (api_interval_time / key_length):
             logging.info("Rate limit is too qucik  sleep " + str((api_interval_time / key_length) - total_time))
