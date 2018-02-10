@@ -43,7 +43,7 @@
 		</copy>
     </target>
 
-	<target name="compile" depends="init">
+	<target name="compile" depends="init,clean">
 	<ant antfile="build.xml" target="compile" dir="crawler" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="db" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="tools" inheritAll="false"/>
