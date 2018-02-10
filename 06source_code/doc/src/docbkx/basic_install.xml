@@ -91,7 +91,7 @@ cd /opt/project-master</screen>
 source sandbox/bin/activate</screen>
 		<para>安装buildbot</para>
 		<screen>pip install --upgrade pip
-pip install 'buildbot[bundle]'</screen>
+pip install 'buildbot[bundle]'==0.9.0</screen>
 	 
 	<para>创建master </para>
 	<screen>buildbot create-master master</screen>
@@ -117,7 +117,7 @@ source sandbox/bin/activate</screen>
 
 		<para>安装buildbot</para>
 		<screen>pip install --upgrade pip
-pip install buildbot-worker</screen>	
+pip install buildbot-worker==0.9.0</screen>	
 	
 		<para>创建worker</para>
 		<screen>buildbot-worker create-worker worker 192.168.2.141:9989 unicorn-worker pass</screen>
