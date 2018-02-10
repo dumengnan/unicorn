@@ -39,7 +39,7 @@
      </target>
      
     <target name="unicorn_airflow_compile">
-       <exec dir="unicorn-airflow" executable="tox.bat" failonerror="true">
+       <exec dir="unicorn-airflow" executable="tox" failonerror="true">
        </exec>    
      </target>
 
@@ -47,7 +47,7 @@
     </target>
     
     <target name="unicorn_airflow_release">
-       <exec dir="unicorn-airflow" executable="tox.bat" failonerror="true">
+       <exec dir="unicorn-airflow" executable="tox" failonerror="true">
           <arg value="-e"/>
           <arg value="py27-release"/>
        </exec>
