@@ -120,7 +120,7 @@ source sandbox/bin/activate</screen>
 pip install buildbot-worker</screen>	
 	
 		<para>创建worker</para>
-		<screen>buildbot-worker create-worker worker 192.168.2.141:9989 piggy-worker pass</screen>
+		<screen>buildbot-worker create-worker worker 192.168.2.141:9989 unicorn-worker pass</screen>
 		
 			<para>启动worker </para>
 	<screen>buildbot-worker start worker
