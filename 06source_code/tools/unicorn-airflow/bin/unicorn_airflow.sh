@@ -15,6 +15,9 @@ cd $DIR
 
 export AIRFLOW_HOME=$DIR/../
 export PATH=$AIRFLOW_HOME/bin:$PATH
+export AIRFLOW_SERVER_IP=`hostname -I | cut -f1 -d ' '`
+
+cp $AIRFLOW_HOME/etc/airflow/airflow.cfg $AIRFLOW_HOME
 
 if [ -f unicorn_airflow.env ];then 
     source unicorn_airflow.env 
