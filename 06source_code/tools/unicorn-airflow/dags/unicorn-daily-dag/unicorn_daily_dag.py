@@ -15,6 +15,7 @@
 import os
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
 from datetime import datetime, timedelta
 from unicorn.airflow.util.unicorn_airflow_util import load_yaml
 
@@ -31,7 +32,10 @@ dag = DAG(dag_id,
 
 dag.doc_md = dag_config['doc_md']
 
-t1 = BashOperator(task_id='TaskStart', bash_command="date", dag=dag)
+task1 = BashOperator(task_id='TaskStart',
+                     bash_command="echo {{params}}",
+                     params=dag_config["task1_cmd"],
+                     dag=dag)
 
 task2 = BashOperator(task_id='UnicornDaily',
                      depends_on_past=False,
@@ -39,8 +43,13 @@ task2 = BashOperator(task_id='UnicornDaily',
                      params=dag_config["task1_params"],
                      dag=dag)
 
-task2.set_upstream(t1)
+task3 = DummyOperator(
+    task_id='TaskFinsish',
+    dag=dag
+)
 
+task2.set_upstream(task1)
+task3.set_upstream(task2)
 
 
 
