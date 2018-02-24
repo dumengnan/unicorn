@@ -1,0 +1,24 @@
+doc_md: >
+     Daily Crawl Data From Twitter
+
+ # 按天进行调度 每天凌晨0:00 执行
+schedule_interval: @daily
+
+default_args:
+   owner: unicorn
+   email_on_retry: False
+   email_on_failure: False
+   retries: 1
+   params:
+       time_out: 86400
+
+task1_cmd: python /opt/unicorn-crawl/twitter/bin/crawl_content.py --i {{params.input}}
+
+task1_params:
+   input: /opt/crawler_data/input/id.txt
+
+
+
+
+
+
