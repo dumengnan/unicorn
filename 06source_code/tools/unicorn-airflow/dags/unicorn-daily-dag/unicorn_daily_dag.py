@@ -24,7 +24,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 dag_config = load_yaml(os.path.join(dir_path, dag_id + ".yml"))
 
 default_args = dag_config['default_args']
-default_args['start_date'] = datetime.now()
+default_args['start_date'] = datetime.utcnow()
 
 dag = DAG(dag_id,
           default_args=dag_config["default_args"],
