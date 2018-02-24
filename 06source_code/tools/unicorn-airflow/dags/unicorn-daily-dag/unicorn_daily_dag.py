@@ -33,6 +33,13 @@ dag.doc_md = dag_config['doc_md']
 
 t1 = BashOperator(task_id='TaskStart', bash_command="date", dag=dag)
 
+task2 = BashOperator(task_id='UnicornDaily',
+                     depends_on_past=False,
+                     bash_command=dag_config["task1_cmd"],
+                     params=dag_config["task1_params"],
+                     dag=dag)
+
+task2.set_upstream(t1)
 
 
 
