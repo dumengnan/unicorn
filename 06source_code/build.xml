@@ -83,6 +83,7 @@
 
 	<filterset id="globalfilterset" begintoken="@" endtoken="@">
 		<filter token="PROJECT_VERSION" value="${project.version}"></filter>
+		<filter token="PROJECT_JAVA_VERSION" value="${project.java.version}"></filter>
 	</filterset>
 	
 	<macrodef name="sed-file">
