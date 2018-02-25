@@ -47,17 +47,6 @@ case "`uname`" in
     ;;
 esac
 
-# 默认后台启动
-# The option will tell MYAPPLICATIONDaemon not
-# to close stdout/stderr, but it's up to us not to background.
-if [ "x$daemonized" != "x" ]; then
-    exec $JAVA $JAVA_OPTS  -cp $MYAPPLICATION_CLASSPATH -DrootDir=$MYAPPLICATION_HOME \
-            org.springframework.boot.loader.JarLauncher  "$@"
-# Startup piggy config , background it
-else
-    exec $JAVA $JAVA_OPTS  -cp $MYAPPLICATION_CLASSPATH -DrootDir=$MYAPPLICATION_HOME \
-                org.springframework.boot.loader.JarLauncher "$@" <&- &
-fi
 
 
 exit $?
