@@ -34,7 +34,7 @@ dag.doc_md = dag_config['doc_md']
 
 task1 = BashOperator(task_id='TaskStart',
                      bash_command="echo {{params}}",
-                     params=dag_config["task1_cmd"],
+                     params={'cmd':dag_config["task1_cmd"]},
                      dag=dag)
 
 task2 = BashOperator(task_id='UnicornDaily',
