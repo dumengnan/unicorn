@@ -8,6 +8,7 @@
     <condition property="bat" value=".bat" else=""><os family="windows" /></condition>
 
     <property name="mvn.exe" value="mvn${bat}"/> 
+	<property name="tox.exe" value="tox${bat}"/> 
     <condition property="is_redhat_linux">
         <and>
             <os family="unix"/>
@@ -35,26 +36,26 @@
         <mkdir dir="${release.dir}"/>
     </target>
 
-    <target name="compile" depends="init,twitter_compile"> 
+    <target name="compile" depends="init,tweet_compile"> 
      </target>
      
-    <target name="twitter_compile">
-       <exec dir="twitter" executable="tox" failonerror="true">
+    <target name="tweet_compile">
+       <exec dir="tweet" executable="${tox.exe}" failonerror="true">
        </exec>    
      </target>
 
-    <target name="release" depends="init,twitter_release">
+    <target name="release" depends="init,tweet_release">
     </target>
     
-    <target name="twitter_release">
-       <exec dir="twitter" executable="tox" failonerror="true">
+    <target name="tweet_release">
+       <exec dir="tweet" executable="${tox.exe}" failonerror="true">
           <arg value="-e"/>
           <arg value="py27-release"/>
        </exec>
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
-            <fileset dir="twitter/build">
-                <include name="twitter/**"/>
+            <fileset dir="tweet/build">
+                <include name="tweet/**"/>
             </fileset>
         </copy>  
         
@@ -66,8 +67,8 @@
     </target>
 
     <target name="clean" >
-        <delete dir="twitter/.tox" removeNotFollowedSymlinks="true" failonerror="false" />
-        <delete dir="twitter/build" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="tweet/.tox" removeNotFollowedSymlinks="true" failonerror="false" />
+        <delete dir="tweet/build" removeNotFollowedSymlinks="true" failonerror="false"/>
         <delete dir="${release.dir}"/>
     </target>
 
