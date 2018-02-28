@@ -4,6 +4,7 @@ language: java
 
 before_install:
   - cd 06source_code
+  - pip install tox
   
 install: ant compile
 
