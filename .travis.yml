@@ -1,0 +1,10 @@
+language: java
+
+
+
+
+install: cd 06sourcecode; ant compile
+
+
+jdk:
+  - oraclejdk8
