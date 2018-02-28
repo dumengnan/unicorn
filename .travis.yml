@@ -2,8 +2,10 @@ language: java
 
 
 
-
-install: cd 06sourcecode; ant compile
+before_install:
+  - cd 06sourcecode
+  
+install: ant compile
 
 
 jdk:
