@@ -4,10 +4,20 @@ language: java
 
 before_install:
   - cd 06source_code
-  - pip install tox
   
 install: ant compile
 
 
 jdk:
   - oraclejdk8
+  
+matrix:
+  include:
+    - language: python
+      python: 2.7
+      before_script:
+        - pip install tox
+        
+notifications:
+  email:
+    - 18652005280@126.com
