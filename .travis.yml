@@ -3,7 +3,7 @@ language: java
 
 
 before_install:
-  - cd 06sourcecode
+  - cd 06source_code
   
 install: ant compile
 
