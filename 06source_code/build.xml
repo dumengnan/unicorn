@@ -47,6 +47,7 @@
 	<ant antfile="build.xml" target="compile" dir="crawler" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="db" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="tools" inheritAll="false"/>
+	<ant antfile="build.xml" target="compile" dir="doc" inheritAll="false"/>
 	  <!-- <ant antfile="build.xml" target="compile" dir="service-center" inheritAll="false"/> -->
     </target>
 
@@ -55,6 +56,7 @@
 	   <ant antfile="build.xml" target="release" dir="crawler" inheritAll="false"/>
 	   <ant antfile="build.xml" target="release" dir="db" inheritAll="false"/>
 	   <ant antfile="build.xml" target="release" dir="tools" inheritAll="false"/>
+	   <ant antfile="build.xml" target="release" dir="doc" inheritAll="false"/>
 	   
 	   <copy todir="${release.dir}/${release.name}" overwrite="true" >
             <fileset file="crawler/build/*.tar.gz"/>
