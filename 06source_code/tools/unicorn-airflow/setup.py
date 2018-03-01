@@ -12,7 +12,6 @@ except ImportError:
     pass
 
 setuptools.setup(    
-    name='unicorn-airflow',
-    description='Programmatically author, schedule and monitor data pipelines',
-    author='mee'
+   setup_requires=[''],
+   pbr=True
 )
