@@ -12,7 +12,7 @@ except ImportError:
     pass
 
 setuptools.setup(    
-    name='unicorn-tweet',
+    name='unicorn-airflow',
     description='Programmatically author, schedule and monitor data pipelines',
     author='mee'
 )
