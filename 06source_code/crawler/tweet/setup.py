@@ -12,6 +12,7 @@ except ImportError:
     pass
 
 setuptools.setup(
-    setup_requires=['pbr', 'setuptools'],
-    pbr=True,
+    name='unicorn-tweet',
+    description='Programmatically author, schedule and monitor data pipelines',
+    author='mee'
 )
