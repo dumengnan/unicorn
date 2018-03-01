@@ -11,7 +11,7 @@ try:
 except ImportError:
     pass
 
-setuptools.setup(    
-   setup_requires=[''],
-   pbr=True
+setuptools.setup(
+    setup_requires=['pbr', 'setuptools'],
+    pbr=True,
 )
