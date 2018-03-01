@@ -80,6 +80,9 @@
 	<target name="clean">
 		<delete dir="${release.dir}"/>
 		<ant antfile="build.xml" target="clean" dir="crawler" inheritAll="false"/>
+    	<ant antfile="build.xml" target="clean" dir="db" inheritAll="false"/>
+		<ant antfile="build.xml" target="clean" dir="tools" inheritAll="false"/>
+		<ant antfile="build.xml" target="clean" dir="doc" inheritAll="false"/>
     </target>
 
 
