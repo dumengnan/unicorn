@@ -2,7 +2,7 @@ doc_md: >
      Crawl Data By Trigger
 
  # 触发式调度
-schedule_interval: None
+schedule_interval: 
 
 default_args:
    owner: unicorn
