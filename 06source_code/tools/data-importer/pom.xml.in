@@ -83,7 +83,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<!-- https://maven.apache.org/plugins-archives/maven-assembly-plugin-2.5.4/examples/index.html-->
 				<groupId>org.apache.maven.plugins</groupId>
