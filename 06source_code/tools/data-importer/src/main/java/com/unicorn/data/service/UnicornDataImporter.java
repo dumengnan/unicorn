@@ -1,9 +1,6 @@
 package com.unicorn.data.service;
 
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +29,23 @@ public class UnicornDataImporter {
         return opts;
     }
 
+    static CommandLine parseCommandLine(String[] args) throws Exception {
+        DefaultParser parser = new DefaultParser();
+
+        return parser.parse(getOptions(), args);
+    }
+
 
     public static void doMain(String[] args) {
+        try {
+            CommandLine line = parseCommandLine(args);
+            if (line.hasOption("help")) {
+                printUsage(getOptions());
+            }
 
+        } catch (Exception ex) {
+            log.error(" ", ex);
+        }
     }
 
     public static void main(String[] args) {
