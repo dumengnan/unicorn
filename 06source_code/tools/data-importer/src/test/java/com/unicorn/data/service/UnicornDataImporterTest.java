@@ -13,7 +13,9 @@ public class UnicornDataImporterTest {
     public void testGetOptions() throws Exception {
         String[] args = {"-Dkey1=value1", "-Dkey2=value2"};
 
-        CommandLine line = UnicornDataImporter.parseCommandLine(args);
+        UnicornDataImporter dataImporter = new UnicornDataImporter();
+
+        CommandLine line = dataImporter.parseCommandLine(args);
 
         Properties commandProp = line.getOptionProperties("D");
 

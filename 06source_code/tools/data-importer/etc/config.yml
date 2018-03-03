@@ -1,0 +1,13 @@
+
+# kafka 服务器配置
+kafka:
+  brokers: 192.168.0.6:9000
+
+# hbase 服务器配置
+hbase:
+  server:
+
+
+# elasticsearch 配置
+es:
+  server:

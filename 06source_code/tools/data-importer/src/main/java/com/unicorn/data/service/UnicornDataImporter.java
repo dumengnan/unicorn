@@ -1,6 +1,10 @@
 package com.unicorn.data.service;
 
 import org.apache.commons.cli.*;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.streaming.Durations;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,20 +33,34 @@ public class UnicornDataImporter {
         return opts;
     }
 
-    static CommandLine parseCommandLine(String[] args) throws Exception {
+    CommandLine parseCommandLine(String[] args) throws Exception {
         DefaultParser parser = new DefaultParser();
 
         return parser.parse(getOptions(), args);
     }
 
 
+    public void run() throws Exception {
+        SparkConf conf = new SparkConf().setAppName("UnicornDataImporter");
+        JavaStreamingContext jssc = new JavaStreamingContext(conf, Durations.seconds(3));
+
+
+        jssc.start();
+        jssc.awaitTermination();
+        jssc.stop();
+
+    }
+
     public static void doMain(String[] args) {
+        UnicornDataImporter dataImporter = new UnicornDataImporter();
+
         try {
-            CommandLine line = parseCommandLine(args);
+            CommandLine line = dataImporter.parseCommandLine(args);
             if (line.hasOption("help")) {
                 printUsage(getOptions());
             }
 
+            dataImporter.run();
         } catch (Exception ex) {
             log.error(" ", ex);
         }
