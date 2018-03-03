@@ -15,28 +15,28 @@ import java.util.Map;
  */
 public class UnicornDataImportUtil {
 
-  public static Map<String, Object> loadConfig(String yamlConfig, String overrideYamlConfig)
-      throws IOException {
-    Map<String, Object> configMap = Maps.newHashMap();
-    Yaml yaml = new Yaml();
+    public static Map<String, Object> loadConfig(String yamlConfig, String overrideYamlConfig)
+            throws IOException {
+        Map<String, Object> configMap = Maps.newHashMap();
+        Yaml yaml = new Yaml();
 
-    File yamlFile = new File(yamlConfig);
-    if (yamlFile.exists()) {
-      try (InputStream in = Files.newInputStream(Paths.get(yamlConfig))) {
-        Map<String, Object> result = yaml.load(in);
-        configMap.putAll(result);
-      }
+        File yamlFile = new File(yamlConfig);
+        if (yamlFile.exists()) {
+            try (InputStream in = Files.newInputStream(Paths.get(yamlConfig))) {
+                Map<String, Object> result = yaml.load(in);
+                configMap.putAll(result);
+            }
+        }
+
+        File overrideFile = new File(overrideYamlConfig);
+        if (overrideFile.exists()) {
+            try (InputStream in = Files.newInputStream(Paths.get(overrideYamlConfig))) {
+                Map<String, Object> overrideResult = yaml.load(in);
+                configMap.putAll(overrideResult);
+            }
+        }
+
+        return configMap;
     }
-
-    File overrideFile = new File(overrideYamlConfig);
-    if (overrideFile.exists()) {
-      try (InputStream in = Files.newInputStream(Paths.get(overrideYamlConfig))) {
-        Map<String, Object> overrideResult = yaml.load(in);
-        configMap.putAll(overrideResult);
-      }
-    }
-
-    return configMap;
-  }
 
 }
