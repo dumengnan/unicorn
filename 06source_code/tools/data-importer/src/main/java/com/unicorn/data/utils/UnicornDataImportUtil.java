@@ -1,42 +1,31 @@
 package com.unicorn.data.utils;
 
-import com.google.common.collect.Maps;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Map;
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
 
 /**
  * Created by Administrator on 2018/3/3.
  */
 public class UnicornDataImportUtil {
 
-    public static Map<String, Object> loadConfig(String yamlConfig, String overrideYamlConfig)
-            throws IOException {
-        Map<String, Object> configMap = Maps.newHashMap();
-        Yaml yaml = new Yaml();
+    public static Configuration loadConfig(String configFile, String configOverrideFile)
+            throws Exception {
+        CompositeConfiguration mergeConfig = new CompositeConfiguration();
 
-        File yamlFile = new File(yamlConfig);
-        if (yamlFile.exists()) {
-            try (InputStream in = Files.newInputStream(Paths.get(yamlConfig))) {
-                Map<String, Object> result = yaml.load(in);
-                configMap.putAll(result);
-            }
-        }
-
-        File overrideFile = new File(overrideYamlConfig);
+        // 先加载override 文件
+        File overrideFile = new File(configOverrideFile);
         if (overrideFile.exists()) {
-            try (InputStream in = Files.newInputStream(Paths.get(overrideYamlConfig))) {
-                Map<String, Object> overrideResult = yaml.load(in);
-                configMap.putAll(overrideResult);
-            }
+            PropertiesConfiguration overrideConfig = new PropertiesConfiguration(configOverrideFile);
+            mergeConfig.addConfiguration(overrideConfig);
         }
 
-        return configMap;
+        PropertiesConfiguration config = new PropertiesConfiguration(configFile);
+        mergeConfig.addConfiguration(config);
+
+        return mergeConfig;
     }
 
 }
