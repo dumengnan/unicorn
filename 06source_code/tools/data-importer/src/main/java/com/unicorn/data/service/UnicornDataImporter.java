@@ -1,6 +1,7 @@
 package com.unicorn.data.service;
 
 import com.google.common.collect.Maps;
+import com.unicorn.data.sender.MysqlSender.MysqlSenderService;
 import com.unicorn.data.utils.UnicornDataImportUtil;
 import java.io.FileInputStream;
 import java.util.Arrays;
@@ -73,7 +74,10 @@ public class UnicornDataImporter {
                 LocationStrategies.PreferConsistent(), ConsumerStrategies.<String, String>Subscribe(
                         Arrays.asList(topicLsit), kafkaParams));
 
-        
+        MysqlSenderService mysqlSenderService = new MysqlSenderService(applicationConfig);
+        stream.foreachRDD(rdd -> rdd.foreachPartition(partitionOfRecords -> {
+            mysqlSenderService.sendDataToMysql(partitionOfRecords);
+        }));
 
 
         jssc.start();
