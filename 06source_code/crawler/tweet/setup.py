@@ -12,6 +12,6 @@ except ImportError:
     pass
 
 setuptools.setup(    
-    setup_requires=['pbr', 'setuptools'],
+    setup_requires=[],
     pbr=True,
 )
