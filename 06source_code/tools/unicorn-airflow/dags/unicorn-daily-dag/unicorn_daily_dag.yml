@@ -2,7 +2,7 @@ doc_md: >
      Daily Crawl Data From Twitter
 
  # 按天进行调度 每天凌晨0:00 执行
-schedule_interval: @daily
+schedule_interval: '@daily'
 
 default_args:
    owner: unicorn
