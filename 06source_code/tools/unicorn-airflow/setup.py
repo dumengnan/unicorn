@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # THIS FILE IS MANAGED BY THE GLOBAL REQUIREMENTS REPO - DO NOT EDIT
-import setuptools
+from setuptools import setup, find_packages
 
 # In python < 2.7.4, a lazy loading of package `pbr` will break
 # setuptools if some other modules registered functions in `atexit`.
@@ -14,4 +14,5 @@ except ImportError:
 setuptools.setup(
     setup_requires=[],
     pbr=True,
+    packages=find_packages(),
 )
