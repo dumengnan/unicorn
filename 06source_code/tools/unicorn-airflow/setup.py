@@ -11,7 +11,7 @@ try:
 except ImportError:
     pass
 
-setuptools.setup(
+setup(
     setup_requires=[],
     pbr=True,
     packages=find_packages(),
