@@ -6,8 +6,9 @@
 
     <condition property="exe" value=".exe" else=""><os family="windows" /></condition>
     <condition property="bat" value=".bat" else=""><os family="windows" /></condition>
+    <condition property="cmd" value=".cmd" else=""><os family="windows" /></condition>
 
-    <property name="mvn.exe" value="mvn${bat}"/> 
+    <property name="mvn.exe" value="mvn${cmd}"/> 
     <property name="tox.exe" value="tox${bat}"/> 
 
     <condition property="is_redhat_linux">
