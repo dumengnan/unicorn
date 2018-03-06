@@ -37,7 +37,7 @@ dag.doc_md = dag_config['doc_md']
 
 
 def run_this_func(ds, **kwargs):
-    print("Remotely received value of {} for key=message".format(kwargs['dag_run'].conf['message']))
+    print("Remotely received value of {} for key=message".format(kwargs['dag_run'].conf))
 
 
 task1 = PythonOperator(
