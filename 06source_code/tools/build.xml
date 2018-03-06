@@ -61,7 +61,7 @@
         </copy>  
         
         <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip">
-            <tarfileset dir="${release.dir}/${release.name}">
+            <tarfileset dir="${release.dir}">
                 <include name="**/**"/>
             </tarfileset>
         </tar>
