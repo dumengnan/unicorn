@@ -51,15 +51,26 @@ grant all privileges on airflow.* to airflow@"%" identified by '123456';
 	 </listitem>
 	 
       <listitem>
-	    <para>解压安装包</para>
-		<screen>tar zxvf unicorn-tools-@PROJECT_VERSION@.tar.gz -C /opt</screen>
+	    <para>解压安装包,切换目录</para>
+		<screen>tar zxvf unicorn-tools-@PROJECT_VERSION@.tar.gz -C /opt
+cd /opt/unicorn-tools/unicorn-airflow</screen>
 	 </listitem>
-
-	<listitem>
-	    <para>建立软连接</para>
-		<screen>tar zxvf unicorn-tools-@PROJECT_VERSION@.tar.gz -C /opt</screen>
-	</listitem>
 	 
+      <listitem>
+	    <para>初始化数据库</para>
+		<screen>bash bin/unicorn_airflow.sh initdb</screen>
+	 </listitem>
+	 
+	<listitem>
+	    <para>拷贝配置文件</para>
+		<screen>cp etc/airflow/airflow.cfg .
+cp etc/supervisor/*.conf /etc/supervisor/</screen>
+	</listitem>
+	
+	<listitem>
+	    <para>启动程序</para>
+		<screen>supervisorctl reload</screen>
+	</listitem>
 
   </itemizedlist>
    </section>
