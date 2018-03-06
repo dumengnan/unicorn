@@ -68,8 +68,8 @@
        </exec>
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
-            <fileset dir="unicorn-airflow/target/">
-                <include name="data-importer-*.tar.gz"/>
+            <fileset dir="unicorn-airflow/build">
+                <include name="**/**"/>
             </fileset>
         </copy>  
         
@@ -81,8 +81,8 @@
        </exec>
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
-            <fileset dir="data-importer/build">
-                <include name="unicorn-airflow/**"/>
+            <fileset dir="data-importer/target">
+                <include name="**/**"/>
             </fileset>
         </copy>  
         
