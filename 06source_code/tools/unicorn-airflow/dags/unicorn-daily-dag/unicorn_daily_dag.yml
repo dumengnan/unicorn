@@ -12,10 +12,10 @@ default_args:
    params:
        time_out: 86400
 
-task1_cmd: python /opt/unicorn-crawl/twitter/bin/crawl_content.py --i {{params.input}} --s {{unicorn_macros.ds_sub(ds,1)}} --e {{ds}}
+task1_cmd: 'python /opt/unicorn-crawl/twitter/bin/crawl_content.py --i {{ params.input }} --s {{ macros.ds_sub(ds,1) }} --e {{ ds }}'
 
 task1_params:
-   input: /opt/crawler_data/input/id.txt
+   input: '/opt/crawler_data/input/id.txt'
 
 
 

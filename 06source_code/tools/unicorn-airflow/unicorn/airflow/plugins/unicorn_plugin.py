@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import unicorn_macros
+from unicorn.airflow.plugins.unicorn_macros import ds_sub
 from airflow.plugins_manager import AirflowPlugin
 
 
 class UnicornPlugin(AirflowPlugin):
     name = "UnicornPlugin"
     macros = [
-        unicorn_macros.ds_sub
+        ds_sub
     ]
