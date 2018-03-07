@@ -6,8 +6,9 @@
 
     <condition property="exe" value=".exe" else=""><os family="windows" /></condition>
     <condition property="bat" value=".bat" else=""><os family="windows" /></condition>
+    <condition property="cmd" value=".cmd" else=""><os family="windows" /></condition>
 
-    <property name="mvn.exe" value="mvn${bat}"/> 
+    <property name="mvn.exe" value="mvn${cmd}"/> 
     <property name="tox.exe" value="tox${bat}"/> 
 
     <condition property="is_redhat_linux">
@@ -37,15 +38,28 @@
         <mkdir dir="${release.dir}"/>
     </target>
 
-    <target name="compile" depends="init,unicorn_airflow_compile"> 
+    <target name="compile" depends="init,unicorn_airflow_compile,unicorn_data_importer_compile"> 
      </target>
      
     <target name="unicorn_airflow_compile">
        <exec dir="unicorn-airflow" executable="${tox.exe}" failonerror="true">
        </exec>    
      </target>
-
-    <target name="release" depends="init,unicorn_airflow_release">
+     
+    <target name="unicorn_data_importer_compile">
+       <exec dir="data-importer" executable="${mvn.exe}" failonerror="true">
+           <arg value="install"/>
+       </exec>    
+     </target>
+     
+     
+     
+    <target name="release" depends="init,unicorn_airflow_release,unicorn_data_importer_release">
+        <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip">
+            <tarfileset dir="${release.dir}">
+                <include name="**/**"/>
+            </tarfileset>
+        </tar>
     </target>
     
     <target name="unicorn_airflow_release">
@@ -56,20 +70,29 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="unicorn-airflow/build">
-                <include name="unicorn-airflow/**"/>
+                <include name="**/**"/>
             </fileset>
         </copy>  
         
-        <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip">
-            <tarfileset dir="${release.dir}/${release.name}">
-                <include name="**/**"/>
-            </tarfileset>
-        </tar>
+    </target>
+    
+    <target name="unicorn_data_importer_release">
+       <exec dir="data-importer" executable="${mvn.exe}" failonerror="true">
+          <arg value="install"/>
+       </exec>
+       
+        <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
+            <fileset dir="data-importer/target">
+                <include name="*.tar.gz"/>
+            </fileset>
+        </copy>  
+        
     </target>
 
     <target name="clean" >
         <delete dir="unicorn-airflow/.tox" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false" />
         <delete dir="unicorn-airflow/build" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+		<delete dir="data-importer/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
         <delete dir="${release.dir}"/>
     </target>
 

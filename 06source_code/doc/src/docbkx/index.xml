@@ -13,6 +13,7 @@
   <xi:include href="basic_install.xml"/>
   <xi:include href="db_install.xml"/>
   <xi:include href="module_install.xml"/>
+  <xi:include href="airflow_install.xml"/>
   
   
 </book>

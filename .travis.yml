@@ -8,7 +8,9 @@ before_install:
   - pip install tox
   - cd 06source_code
   
-install: ant compile
+install: 
+  - ant compile
+  - ant release
 
 script: 
     echo "hello"
