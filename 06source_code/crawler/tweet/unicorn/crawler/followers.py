@@ -100,7 +100,9 @@ def crawl_followers(options):
 
                     except Exception as e:
                         count = count + 1
-                        cursor = 0
+                        key_index = key_index + 1
+                        if cursor == -1:
+                            cursor = 0
                         time.sleep(api_rate_limit/len(get_twitter_auth_list()))
                         logging.error("Current User " + user + " Get Twitter Followers Error: %s" % e)
 

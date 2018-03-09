@@ -71,6 +71,8 @@ def crawl_user_profile(options):
                 except Exception as e:
                     count = count + 1
                     key_index = key_index + 1
+                    if cursor == -1:
+                        cursor = 0                    
                     time.sleep(api_rate_limit/len(get_twitter_auth_list()))
                     logging.error("Get Twitter Account Error: %s" % e)
 
