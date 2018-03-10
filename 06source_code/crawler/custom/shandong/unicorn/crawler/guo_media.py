@@ -9,12 +9,17 @@ import os
 import sys
 import unicorn.utils.select_useragent as select_useragent
 from time import time
+from bs4 import BeautifulSoup
 from unicorn.crawlernoapi.tweet import Tweet
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import *
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import requests
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 url = "https://www.guo.media/"
 
@@ -42,7 +47,7 @@ def crawl_media_info(options):
 
     with open(options.input, "r") as input_f:
         for user_name in input_f:
-            try: 
+            try:
                 user_name = user_name.strip()
                 take_info(url, user_name, options.screen_size)
 
@@ -51,6 +56,7 @@ def crawl_media_info(options):
 
 
 def take_info(screen_size):
+    f = open('1.tx', 'w')
     options = webdriver.ChromeOptions()
 
     options.add_argument('--proxy-server=%s' % '192.168.1.3:8119')
@@ -58,18 +64,10 @@ def take_info(screen_size):
     options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
     # options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    options.add_argument("window-size="+screen_size)
+    options.add_argument("window-size=" + screen_size)
     browser = webdriver.Chrome(chrome_options=options, executable_path='tools/chromedriver.exe')
 
-    browser.get(url)
-    
-    username = browser.find_element_by_name('username_email')
-    password = browser.find_element_by_name('password')
-
-    username.send_keys("demohaha")
-    password.send_keys("demohaha")
-
-    browser.find_element_by_xpath("/html/body/div[1]/div[2]/div[2]/div/div/div[2]/form/div[1]/div[1]/input[3]").click()
+    login(browser)
     browser.get("https://www.guo.media/followers.php?username=milesguo")
 
     time.sleep(7)
@@ -77,29 +75,59 @@ def take_info(screen_size):
     for element in elements:
         a = element.find_element_by_tag_name("a")
         img = element.find_element_by_tag_name("img")
-        print a.get_attribute('href') + "\t" + img.get_attribute("src") + "\t" + img.get_attribute('alt')
+        line = a.get_attribute('href') + "\t" + img.get_attribute('alt')
+        print line
+        f.write(line + "\n")
 
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-               'content-type':'application/x-www-form-urlencoded; charset=UTF-8',
-               'accept': 'application/json, text/javascript, */*; q=0.01',
-               'x-requested-with': 'XMLHttpRequest',
-               'accept-encoding':'gzip, deflate, br',
-               'accept-language':'zh-CN,zh;q=0.9'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'accept': 'application/json, text/javascript, */*; q=0.01',
+        'x-requested-with': 'XMLHttpRequest',
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'zh-CN,zh;q=0.9'}
 
     s = requests.Session()
     for cookie in browser.get_cookies():
         s.cookies.set(cookie['name'], cookie['value'])
 
     offset = 1
-    while offset<200:
+    while offset < 3300:
         data = {}
         data["get"] = "followers"
         data["uid"] = "356"
         data["offset"] = offset
-        print s.post("https://www.guo.media/includes/ajax/data/load.php", headers=headers,
-                      data=data, proxies=proxy_dict).text
-        offset = offset+1
+        contents = s.post("https://www.guo.media/includes/ajax/data/load.php", headers=headers,
+                          data=data, proxies=proxy_dict).json()
+        if 'data' not in contents:
+            continue
+        print contents
+        contents_html = contents['data']
+        soup = BeautifulSoup(contents_html, 'lxml')
+        pro_thumb = soup.find_all("div", 'pro_thumb')
 
+        time.sleep(0.5)
+        for child_ele in pro_thumb:
+            line = child_ele.find('a')['href'] + "\t" + child_ele.find('img')['alt']
+            print line
+            f.write(line + "\n")
+        print "offset is " + str(offset)
+        # if (offset % 50 == 0):
+        #     time.sleep(7)
+        #     login(browser)
+        offset = offset + 1
+
+
+def login(browser):
+    browser.get(url)
+
+    username = browser.find_element_by_name('username_email')
+    password = browser.find_element_by_name('password')
+
+    username.send_keys("demohaha")
+    password.send_keys("demohaha")
+
+    browser.find_element_by_xpath("/html/body/div[1]/div[2]/div[2]/div/div/div[2]/form/div[1]/div[1]/input[3]").click()
 
 
 def get_options(parser):
@@ -131,11 +159,11 @@ def main(args):
                         help="crawl end time")
 
     parser.add_argument("--o", "--output", dest="output", type=str,
-                    help="output dir")
+                        help="output dir")
 
-    #options = get_options(parser)
+    # options = get_options(parser)
     progress_start = time.time()
-    #crawl_twitter_content(options)
+    # crawl_twitter_content(options)
     progress_end = time.time()
     logging.info("Crawl Cost Time " + str(progress_end - progress_start) + "  s")
 
