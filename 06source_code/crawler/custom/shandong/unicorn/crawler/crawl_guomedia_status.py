@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import guo_media_util
 from bs4 import BeautifulSoup
 
@@ -15,7 +14,7 @@ def download_media(request_with_cookie, download_url, output):
                 f.write(chunk)
 
 
-def crawl_status():
+def crawl_status(input_file, output_dir):
     request_with_cookie = guo_media_util.get_requests_with_cookie()
     param = dict()
     param['get'] = 'posts_profile'
@@ -25,7 +24,7 @@ def crawl_status():
     if not os.path.exists("status"):
         os.makedirs("status")
 
-    with open('follwers_list.txt', 'r') as f_input:
+    with open(input_file, 'r') as f_input:
         for line in f_input:
             line_arr = line.strip().split("\t")
             if len(line_arr) < 2:
@@ -93,7 +92,13 @@ def crawl_status():
             f_output.close()
 
 
+def main(args):
+    input_file = args.input
+    output_dir = args.output
+
+    print input_file, output_dir
+    crawl_status(input_file, output_dir)
+
+
 if __name__ == '__main__':
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-    crawl_status()
+    crawl_status('follwers_list.txt', '.')

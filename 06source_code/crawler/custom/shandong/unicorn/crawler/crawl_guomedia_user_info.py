@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-import argparse
-import requests
 import guo_media_util
 from bs4 import BeautifulSoup
 
 
-def crawl_user_info():
-    with open("follwers_info.txt", "a+") as f_output:
-        with open('follwers_list.txt', 'r') as f_input:
+def crawl_user_info(input_file, output_file):
+    with open(input_file, "a+") as f_output:
+        with open(output_file, 'r') as f_input:
             for line in f_input:
                 i = 0
                 line_arr = line.strip().split("\t")
@@ -44,17 +41,12 @@ def crawl_user_info():
 
 
 def main(args):
-    parser = argparse.ArgumentParser(description=
-                                     "Simple Twitter Profile Analyzer", usage='--input <twitter_user_input_file>')
+    input_file = args.input
+    output_file = args.output
 
-    parser.add_argument("--i", "--input", dest="input", type=str,
-                        default="twitter_user.txt", help="The input file")
-
-    options = parser.parse_args()
-
+    print input_file, output_file
+    crawl_user_info(input_file, output_file)
 
 if __name__ == '__main__':
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-    crawl_user_info()
+    crawl_user_info("follwers_info.txt", 'follwers_list.txt')
 

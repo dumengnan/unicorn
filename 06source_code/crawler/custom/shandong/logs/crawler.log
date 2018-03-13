@@ -1,0 +1,185 @@
+2018-03-13 16:55:04,819 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 30, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 17, in get_parser
+    subparsers = parser.add_subparsers('follwer', help='sub-command help')
+TypeError: add_subparsers() takes exactly 1 argument (3 given)
+2018-03-13 17:02:55,411 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 28, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 17, in get_parser
+    subparsers_followers = parser.add_subparsers('follower', help='crawl follwer sub command')
+TypeError: add_subparsers() takes exactly 1 argument (3 given)
+2018-03-13 17:02:57,503 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 28, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 17, in get_parser
+    subparsers_followers = parser.add_subparsers('follower', help='crawl follwer sub command')
+TypeError: add_subparsers() takes exactly 1 argument (3 given)
+2018-03-13 17:10:18,657 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 32, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 19, in get_parser
+    parser_follower.add_argument("start", dest="start", type=str, help="start time")
+  File "C:\Python27\lib\argparse.py", line 1275, in add_argument
+    raise ValueError('dest supplied twice for positional argument')
+ValueError: dest supplied twice for positional argument
+2018-03-13 17:10:29,937 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 31, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 19, in get_parser
+    parser_follower.add_argument("start", dest="start", type=str, help="start time")
+  File "C:\Python27\lib\argparse.py", line 1275, in add_argument
+    raise ValueError('dest supplied twice for positional argument')
+ValueError: dest supplied twice for positional argument
+2018-03-13 17:10:35,608 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 31, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 19, in get_parser
+    parser_follower.add_argument("start", dest="start", type=str, help="start time")
+  File "C:\Python27\lib\argparse.py", line 1275, in add_argument
+    raise ValueError('dest supplied twice for positional argument')
+ValueError: dest supplied twice for positional argument
+2018-03-13 17:38:06,255 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 42, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 20, in get_parser
+    parser_follower.add_argument("output", dest="output", type=str, help="follwers output file")
+  File "C:\Python27\lib\argparse.py", line 1275, in add_argument
+    raise ValueError('dest supplied twice for positional argument')
+ValueError: dest supplied twice for positional argument
+2018-03-13 17:38:35,924 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 42, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 20, in get_parser
+    parser_follower.add_argument("output", dest="output", type=str, help="follwers output file")
+  File "C:\Python27\lib\argparse.py", line 1275, in add_argument
+    raise ValueError('dest supplied twice for positional argument')
+ValueError: dest supplied twice for positional argument
+2018-03-13 17:39:40,584 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 42, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 20, in get_parser
+    parser_follower.add_argument("--o", "output", dest="output", type=str, help="follwers output file")
+  File "C:\Python27\lib\argparse.py", line 1280, in add_argument
+    kwargs = self._get_optional_kwargs(*args, **kwargs)
+  File "C:\Python27\lib\argparse.py", line 1410, in _get_optional_kwargs
+    raise ValueError(msg % tup)
+ValueError: invalid option string 'output': must start with a character '-'
+2018-03-13 17:50:09,434 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 40, in <module>
+    args.func(args)
+  File "C:\Users\Administrator\Desktop\project\unicorn\06source_code\crawler\custom\shandong\unicorn\crawler\crawl_guomedia_status.py", line 96, in main
+    input_file = args.input
+AttributeError: 'Namespace' object has no attribute 'input'
+2018-03-13 17:56:54,717 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 37, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 16, in get_parser
+    parser.add_argument("input", type=str, dest="input", nargs='?', help="input file")
+  File "C:\Python27\lib\argparse.py", line 1275, in add_argument
+    raise ValueError('dest supplied twice for positional argument')
+ValueError: dest supplied twice for positional argument
+2018-03-13 17:57:23,743 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 37, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 16, in get_parser
+    parser.add_argument("input", type=str, dest="input", nargs='?', help="input file")
+  File "C:\Python27\lib\argparse.py", line 1275, in add_argument
+    raise ValueError('dest supplied twice for positional argument')
+ValueError: dest supplied twice for positional argument
+2018-03-13 17:57:33,451 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 37, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 16, in get_parser
+    parser.add_argument("input", type=str, dest="input", nargs='?', help="input file")
+  File "C:\Python27\lib\argparse.py", line 1275, in add_argument
+    raise ValueError('dest supplied twice for positional argument')
+ValueError: dest supplied twice for positional argument
+2018-03-13 17:57:49,459 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 37, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 16, in get_parser
+    parser.add_argument("input", type=str, dest="input", nargs='?', help="input file")
+  File "C:\Python27\lib\argparse.py", line 1275, in add_argument
+    raise ValueError('dest supplied twice for positional argument')
+ValueError: dest supplied twice for positional argument
+2018-03-13 18:01:46,174 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 37, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 27, in get_parser
+    parser.add_argument("input", type=str, action="store_true", help="input file")
+  File "C:\Python27\lib\argparse.py", line 1294, in add_argument
+    action = action_class(**kwargs)
+TypeError: __init__() got an unexpected keyword argument 'type'
+2018-03-13 18:01:49,796 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 37, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 27, in get_parser
+    parser.add_argument("input", type=str, action="store_true", help="input file")
+  File "C:\Python27\lib\argparse.py", line 1294, in add_argument
+    action = action_class(**kwargs)
+TypeError: __init__() got an unexpected keyword argument 'type'
+2018-03-13 18:02:02,447 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 37, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 28, in get_parser
+    parser.add_argument("output", type=str, action="stor", help="output dir or file")
+  File "C:\Python27\lib\argparse.py", line 1293, in add_argument
+    raise ValueError('unknown action "%s"' % (action_class,))
+ValueError: unknown action "stor"
+2018-03-13 18:12:51,915 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 38, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 19, in get_parser
+    parser_follower.add_argument("--u", "--uid", dest="uid", type=str, help="crawl user uid")
+  File "C:\Python27\lib\argparse.py", line 1308, in add_argument
+    return self._add_action(action)
+  File "C:\Python27\lib\argparse.py", line 1682, in _add_action
+    self._optionals._add_action(action)
+  File "C:\Python27\lib\argparse.py", line 1509, in _add_action
+    action = super(_ArgumentGroup, self)._add_action(action)
+  File "C:\Python27\lib\argparse.py", line 1322, in _add_action
+    self._check_conflict(action)
+  File "C:\Python27\lib\argparse.py", line 1460, in _check_conflict
+    conflict_handler(action, confl_optionals)
+  File "C:\Python27\lib\argparse.py", line 1467, in _handle_conflict_error
+    raise ArgumentError(action, message % conflict_string)
+ArgumentError: argument --o/--uid: conflicting option string(s): --uid
+2018-03-13 18:13:10,678 ERROR main except
+Traceback (most recent call last):
+  File "crawl_guomedia.py", line 38, in <module>
+    parser = get_parser()
+  File "crawl_guomedia.py", line 19, in get_parser
+    parser_follower.add_argument("--u", "--uid", dest="uid", type=str, help="crawl user uid")
+  File "C:\Python27\lib\argparse.py", line 1308, in add_argument
+    return self._add_action(action)
+  File "C:\Python27\lib\argparse.py", line 1682, in _add_action
+    self._optionals._add_action(action)
+  File "C:\Python27\lib\argparse.py", line 1509, in _add_action
+    action = super(_ArgumentGroup, self)._add_action(action)
+  File "C:\Python27\lib\argparse.py", line 1322, in _add_action
+    self._check_conflict(action)
+  File "C:\Python27\lib\argparse.py", line 1460, in _check_conflict
+    conflict_handler(action, confl_optionals)
+  File "C:\Python27\lib\argparse.py", line 1467, in _handle_conflict_error
+    raise ArgumentError(action, message % conflict_string)
+ArgumentError: argument --o/--uid: conflicting option string(s): --uid
