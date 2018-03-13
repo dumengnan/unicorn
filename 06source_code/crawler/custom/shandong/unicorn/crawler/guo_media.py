@@ -2,132 +2,47 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import selenium
-import json
 import logging
-import os
-import sys
-import unicorn.utils.select_useragent as select_useragent
 from time import time
 from bs4 import BeautifulSoup
-from unicorn.crawlernoapi.tweet import Tweet
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import *
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import requests
+import guo_media_util
 import sys
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
-url = "https://www.guo.media/"
+def take_info():
+    f = open('follwers_list', 'w')
+    f.write("url    昵称   uid    imgurl" + "\n")
 
-http_proxy = 'http://192.168.1.3:8119'
-https_proxy = 'http://192.168.1.3:8119'
-
-proxy_dict = {
-    "http": http_proxy,
-    "https": https_proxy
-}
-
-
-def crawl_media_info(options):
-    """
-    crawl All Twitter content
-    :param options:
-    :return:
-    """
-    output_dir = options.output
-    current_outputdir = os.path.join(output_dir, get_current_time())
-    stat_file = os.path.join(output_dir, "stat.csv")
-
-    start_time = options.start
-    end_time = options.end
-
-    with open(options.input, "r") as input_f:
-        for user_name in input_f:
-            try:
-                user_name = user_name.strip()
-                take_info(url, user_name, options.screen_size)
-
-            except Exception as e:
-                print "Have Exception %s" % e
-
-
-def take_info(screen_size):
-    f = open('1.tx', 'w')
-    options = webdriver.ChromeOptions()
-
-    options.add_argument('--proxy-server=%s' % '192.168.1.3:8119')
-    # options.add_argument('--user-data-dir=C:/Users/Administrator/AppData/Local/Google/Chrome/User Data/Default')
-    options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
-    # options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    options.add_argument("window-size=" + screen_size)
-    browser = webdriver.Chrome(chrome_options=options, executable_path='tools/chromedriver.exe')
-
-    login(browser)
-    browser.get("https://www.guo.media/followers.php?username=milesguo")
-
-    time.sleep(7)
-    elements = browser.find_elements_by_class_name("pro_thumb")
-    for element in elements:
-        a = element.find_element_by_tag_name("a")
-        img = element.find_element_by_tag_name("img")
-        line = a.get_attribute('href') + "\t" + img.get_attribute('alt')
-        print line
-        f.write(line + "\n")
-
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'accept': 'application/json, text/javascript, */*; q=0.01',
-        'x-requested-with': 'XMLHttpRequest',
-        'accept-encoding': 'gzip, deflate, br',
-        'accept-language': 'zh-CN,zh;q=0.9'}
-
-    s = requests.Session()
-    for cookie in browser.get_cookies():
-        s.cookies.set(cookie['name'], cookie['value'])
-
-    offset = 1
+    offset = 0
     while offset < 3300:
-        data = {}
+        data = dict()
         data["get"] = "followers"
         data["uid"] = "356"
         data["offset"] = offset
-        contents = s.post("https://www.guo.media/includes/ajax/data/load.php", headers=headers,
-                          data=data, proxies=proxy_dict).json()
+        contents = guo_media_util.request_data(data)
         if 'data' not in contents:
             continue
-        print contents
         contents_html = contents['data']
         soup = BeautifulSoup(contents_html, 'lxml')
-        pro_thumb = soup.find_all("div", 'pro_thumb')
+        profile = soup.find_all('div', class_='side_profile')
 
         time.sleep(0.5)
-        for child_ele in pro_thumb:
-            line = child_ele.find('a')['href'] + "\t" + child_ele.find('img')['alt']
-            print line
-            f.write(line + "\n")
+        for child_ele in profile:
+            value_list = []
+            pro_thumb = child_ele.find('div', class_='pro_thumb')
+            value_list.append(pro_thumb.find('a')['href'])
+            value_list.append(pro_thumb.find('img')['alt'])
+
+            uid = child_ele.find('div', class_='admin_detail').find('span', class_='name js_user-popover')['data-uid']
+            value_list.append(uid)
+            value_list.append(pro_thumb.find('img')['src'])
+
+            f.write("\t".join(value_list) + "\n")
+
         print "offset is " + str(offset)
-        # if (offset % 50 == 0):
-        #     time.sleep(7)
-        #     login(browser)
         offset = offset + 1
-
-
-def login(browser):
-    browser.get(url)
-
-    username = browser.find_element_by_name('username_email')
-    password = browser.find_element_by_name('password')
-
-    username.send_keys("demohaha")
-    password.send_keys("demohaha")
-
-    browser.find_element_by_xpath("/html/body/div[1]/div[2]/div[2]/div/div/div[2]/form/div[1]/div[1]/input[3]").click()
 
 
 def get_options(parser):
@@ -169,6 +84,8 @@ def main(args):
 
 
 if __name__ == '__main__':
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
     # main(sys.argv[1:])
-    take_info("1920*1080")
+    take_info()
     # take_screenshot('https://twitter.com/HanaCheney/status/946576449900773376', '1.png')
