@@ -7,8 +7,16 @@ import guo_media_util
 from bs4 import BeautifulSoup
 
 
+def download_media(request_with_cookie, download_url, output):
+    response = request_with_cookie.get(download_url, stream=True)
+    if response.status_code == 200:
+        with open(output, 'wb') as f:
+            for chunk in response.iter_content(1024):
+                f.write(chunk)
+
+
 def crawl_status():
-    # request_with_cookie = guo_media_util.get_requests_with_cookie()
+    request_with_cookie = guo_media_util.get_requests_with_cookie()
     param = dict()
     param['get'] = 'posts_profile'
     param['filter'] = 'all'
@@ -32,7 +40,7 @@ def crawl_status():
             param['id'] = line_arr[2]
             while True:
                 param['offset'] = offset
-                contents = guo_media_util.request_data(param)
+                contents = guo_media_util.request_data(request_with_cookie, param)
                 if 'append' not in contents or contents['append'] is not \
                         True or 'data' not in contents:
                     break
@@ -49,17 +57,6 @@ def crawl_status():
                     data_text = post.find('div', class_='post-text-plain hidden').get_text()
                     data_text = data_text.replace('\n', '')
 
-                    video = post.find('video')
-                    if video is not None:
-                        video_url = video.find('source')['src']
-                        print video_url
-
-                    imgs = post.find_all('a', class_='js_lightbox')
-                    if imgs is not None:
-                        for img in imgs:
-                            img_url = img['data-image']
-                            print img_url
-
                     comments_count = post.find('span', id='span-comments-counter_' + data_id).get_text()
                     share_count = post.find('span', id='span-share-counter_' + data_id).get_text()
                     like_count = post.find('span', class_='span-counter_' + data_id).get_text()
@@ -70,6 +67,22 @@ def crawl_status():
                     status_info_list.append(share_count)
                     status_info_list.append(like_count)
                     status_info_list.append(data_text)
+
+                    video = post.find('video')
+                    if video is not None:
+                        video_url = video.find('source')['src']
+                        print video_url
+                        video_name = "video_" + video_url.split("/")[-1]
+                        status_info_list.append(video_name)
+                        download_media(request_with_cookie, video_url, os.path.join(dirname, video_name))
+
+                    imgs = post.find_all('a', class_='js_lightbox')
+                    if imgs is not None:
+                        for img in imgs:
+                            img_url = img['data-image']
+                            print img_url
+                            image_name = "image_" + img_url.split("/")[-1]
+                            status_info_list.append(image_name)
 
                     print "\t".join(status_info_list)
                     f_output.write("\t".join(status_info_list) + "\n")

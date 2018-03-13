@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 import requests
 import time
 
@@ -93,7 +92,7 @@ def get_proxy_dict():
     return proxy_dict
 
 
-def request_data(param):
+def request_data(request_with_cookie, param):
     # options = webdriver.ChromeOptions()
     #
     # # options.add_argument('--proxy-server=%s' % 'http://192.168.1.3:8119')
@@ -115,7 +114,7 @@ def request_data(param):
     #
     # cookies = browser.get_cookies()
 
-    contents = get_requests_with_cookie().post(LOAD_DATA_URL, headers=get_headers(), data=param, proxies=get_proxy_dict())
+    contents = request_with_cookie.post(LOAD_DATA_URL, headers=get_headers(), data=param, proxies=get_proxy_dict())
     contents_json = contents.json()
 
     return contents_json
