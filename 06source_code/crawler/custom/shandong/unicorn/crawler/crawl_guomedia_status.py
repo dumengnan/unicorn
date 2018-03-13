@@ -40,7 +40,7 @@ def crawl_status():
             param['id'] = line_arr[2]
             while True:
                 param['offset'] = offset
-                contents = guo_media_util.request_data(request_with_cookie, param)
+                contents = guo_media_util.request_json_data(request_with_cookie, param)
                 if 'append' not in contents or contents['append'] is not \
                         True or 'data' not in contents:
                     break

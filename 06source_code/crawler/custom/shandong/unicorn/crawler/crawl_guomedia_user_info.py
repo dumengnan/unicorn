@@ -4,27 +4,13 @@
 import sys
 import argparse
 import requests
+import guo_media_util
 from bs4 import BeautifulSoup
 
 
-http_proxy = 'socks5://127.0.0.1:1080'
-https_proxy = 'socks5://127.0.0.1:1080'
-
-proxy_dict = {'http': 'socks5h://127.0.0.1:1080', 'https': 'socks5h://127.0.0.1:1080'}
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'accept': 'application/json, text/javascript, */*; q=0.01',
-    'x-requested-with': 'XMLHttpRequest',
-    'accept-encoding': 'gzip, deflate, br',
-    'accept-language': 'zh-CN,zh;q=0.9'}
-
-
 def crawl_user_info():
-    with open("follwers_info.txt", "w") as f_output:
+    with open("follwers_info.txt", "a+") as f_output:
         with open('follwers_list.txt', 'r') as f_input:
-            f_output.write("账户名	昵称	郭文	正在关注	关注者	喜欢	直播记录" + "\n")
             for line in f_input:
                 i = 0
                 line_arr = line.strip().split("\t")
@@ -35,7 +21,7 @@ def crawl_user_info():
                     nick_name = line_arr[1]
                 else:
                     nick_name = user_name
-                response = requests.get(url, headers=headers, proxies=proxy_dict)
+                response = guo_media_util.request_with_retry(url)
                 if response.status_code != 200:
                     print "request failed " + url
                     continue
