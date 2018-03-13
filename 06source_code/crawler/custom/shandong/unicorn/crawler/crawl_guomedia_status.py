@@ -74,7 +74,8 @@ def crawl_status():
                         print video_url
                         video_name = "video_" + video_url.split("/")[-1]
                         status_info_list.append(video_name)
-                        download_media(request_with_cookie, video_url, os.path.join(dirname, video_name))
+                        # if not os.path.exists(os.path.join(dirname, video_name)):
+                        #     download_media(request_with_cookie, video_url, os.path.join(dirname, video_name))
 
                     imgs = post.find_all('a', class_='js_lightbox')
                     if imgs is not None:
@@ -83,6 +84,8 @@ def crawl_status():
                             print img_url
                             image_name = "image_" + img_url.split("/")[-1]
                             status_info_list.append(image_name)
+                            if not os.path.exists(os.path.join(dirname, image_name)):
+                                download_media(request_with_cookie, img_url, os.path.join(dirname, image_name))
 
                     print "\t".join(status_info_list)
                     f_output.write("\t".join(status_info_list) + "\n")

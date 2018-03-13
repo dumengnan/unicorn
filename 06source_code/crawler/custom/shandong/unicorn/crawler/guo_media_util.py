@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from selenium import webdriver
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 import requests
-import time
 
 LOAD_DATA_URL = "https://www.guo.media/includes/ajax/data/load.php"
 LOGIN_URL = "https://www.guo.media"
@@ -11,18 +12,12 @@ LOGIN_URL = "https://www.guo.media"
 
 def get_cookies():
     options = webdriver.ChromeOptions()
-
     # options.add_argument('--proxy-server=%s' % 'http://192.168.1.3:8119')
-    # options.add_argument('--user-data-dir=C:/Users/Administrator/AppData/Local/Google/Chrome/User Data/Default')
     options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
-    # options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument("window-size=1920*1080")
     browser = webdriver.Chrome(chrome_options=options, executable_path='tools/chromedriver.exe')
     login(browser)
-
-    browser.get("https://www.guo.media/milesguo")
-    time.sleep(7)
 
     cookies = browser.get_cookies()
     return cookies
@@ -37,7 +32,7 @@ def login(browser):
     username.send_keys("demohaha")
     password.send_keys("demohaha")
 
-    browser.find_element_by_xpath("/html/body/div[1]/div[2]/div[2]/div/div/div[2]/form/div[1]/div[1]/input[3]").click()
+    browser.find_element_by_xpath("//input[@type='submit' and @value='登录']").click()
 
 
 def get_headers():
@@ -92,29 +87,31 @@ def get_proxy_dict():
     return proxy_dict
 
 
+def requests_retry_session(
+        retries=3,
+        backoff_factor=0.3,
+        status_forcelist=(500, 502, 504),
+        session=None,
+):
+    session = session or requests.Session()
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session
+
+
 def request_data(request_with_cookie, param):
-    # options = webdriver.ChromeOptions()
-    #
-    # # options.add_argument('--proxy-server=%s' % 'http://192.168.1.3:8119')
-    # # options.add_argument('--user-data-dir=C:/Users/Administrator/AppData/Local/Google/Chrome/User Data/Default')
-    # options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
-    # # options.add_argument('--headless')
-    # options.add_argument('--disable-gpu')
-    # options.add_argument("window-size=1920*1080")
-    # browser = webdriver.Chrome(chrome_options=options, executable_path='tools/chromedriver.exe')
-    # browser.get(LOGIN_URL)
-    #
-    # username = browser.find_element_by_name('username_email')
-    # password = browser.find_element_by_name('password')
-    #
-    # username.send_keys("demohaha")
-    # password.send_keys("demohaha")
-    #
-    # browser.find_element_by_xpath("//input[@type='submit' and @value='登录']").click()
-    #
-    # cookies = browser.get_cookies()
+    response = requests_retry_session(session=request_with_cookie).post(LOAD_DATA_URL, headers=get_headers(),
+                                                                        data=param,
+                                                                        proxies=get_proxy_dict())
+    if response.status_code == 200:
+        return response.json()
 
-    contents = request_with_cookie.post(LOAD_DATA_URL, headers=get_headers(), data=param, proxies=get_proxy_dict())
-    contents_json = contents.json()
-
-    return contents_json
+    return dict()

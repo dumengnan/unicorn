@@ -23,7 +23,7 @@ headers = {
 
 def crawl_user_info():
     with open("follwers_info.txt", "w") as f_output:
-        with open('1.tx', 'r') as f_input:
+        with open('follwers_list.txt', 'r') as f_input:
             f_output.write("账户名	昵称	郭文	正在关注	关注者	喜欢	直播记录" + "\n")
             for line in f_input:
                 i = 0

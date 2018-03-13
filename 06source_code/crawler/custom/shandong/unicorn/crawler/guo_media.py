@@ -21,7 +21,8 @@ def take_info():
         data["get"] = "followers"
         data["uid"] = "356"
         data["offset"] = offset
-        contents = guo_media_util.request_data(data)
+        request_with_cookie = guo_media_util.get_requests_with_cookie()
+        contents = guo_media_util.request_data(request_with_cookie, data)
         if 'data' not in contents:
             continue
         contents_html = contents['data']
