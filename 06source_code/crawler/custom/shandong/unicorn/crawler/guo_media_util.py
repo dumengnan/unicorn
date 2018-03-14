@@ -4,7 +4,9 @@
 from selenium import webdriver
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
+from unicorn.utils.get_config import get_config
 import requests
+import random
 
 LOAD_DATA_URL = "https://www.guo.media/includes/ajax/data/load.php"
 LOGIN_URL = "https://www.guo.media"
@@ -77,12 +79,14 @@ def get_requests_with_cookie():
 
 
 def get_proxy_dict():
-    http_proxy = 'socks5h://127.0.0.1:1080'
-    https_proxy = 'socks5h://127.0.0.1:1080'
+    config = get_config()
+    proxies = config['proxies']
+
+    proxy = random.choice(proxies)
 
     proxy_dict = {
-        "http": http_proxy,
-        "https": https_proxy
+        "http": proxy,
+        "https": proxy
     }
     return proxy_dict
 
@@ -130,3 +134,5 @@ def request_with_retry(url):
     except requests.exceptions.HTTPError as err:
         print err
 
+if __name__ == '__main__':
+    get_proxy_dict()
