@@ -108,15 +108,25 @@ def requests_retry_session(
 
 
 def request_json_data(request_with_cookie, param):
-    response = requests_retry_session(session=request_with_cookie).post(LOAD_DATA_URL, headers=get_headers(),
-                                                                        data=param,
-                                                                        proxies=get_proxy_dict())
-    if response.status_code == 200:
-        return response.json()
+    try:
+        response = requests_retry_session(session=request_with_cookie).post(LOAD_DATA_URL, headers=get_headers(),
+                                                                            data=param,
+                                                                            proxies=get_proxy_dict())
+        if response.status_code == 200:
+            return response.json()
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        print err
 
     return dict()
 
 
 def request_with_retry(url):
-    response = requests_retry_session(session=requests.Session()).get(url, headers=get_headers(), proxies=get_proxy_dict())
-    return response
+    try:
+        response = requests_retry_session(session=requests.Session()).get(url, headers=get_headers(),
+                                                                          proxies=get_proxy_dict())
+        response.raise_for_status()
+        return response
+    except requests.exceptions.HTTPError as err:
+        print err
+

@@ -21,8 +21,8 @@ def crawl_status(input_file, output_dir):
     param['filter'] = 'all'
 
     offset = 0
-    if not os.path.exists("status"):
-        os.makedirs("status")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     with open(input_file, 'r') as f_input:
         for line in f_input:
@@ -31,7 +31,7 @@ def crawl_status(input_file, output_dir):
                 continue
 
             user_name = line_arr[1].strip()
-            dirname = os.path.join("status", user_name)
+            dirname = os.path.join(output_dir, user_name)
             if not os.path.exists(dirname):
                 os.mkdir(dirname)
 

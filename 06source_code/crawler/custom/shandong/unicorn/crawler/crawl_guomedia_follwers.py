@@ -60,8 +60,6 @@ def get_options(parser):
 
 
 def main(args):
-    print "hello "
-    print args
     crawl_uid = args.uid
     output_file = args.output
 

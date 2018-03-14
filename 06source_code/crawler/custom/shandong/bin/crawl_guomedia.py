@@ -20,9 +20,13 @@ def get_parser():
 
     parser_follower.set_defaults(func=followers_main)
     parser_status = subparsers.add_parser('status')
+    parser_status.add_argument("--i", "--input", dest="input", type=str, help="input file")
+    parser_status.add_argument("--o", "--output", dest="output", type=str, help="status output dir")
     parser_status.set_defaults(func=status_main)
 
     parser_userinfo = subparsers.add_parser('userinfo')
+    parser_userinfo.add_argument("--i", "--input", dest="input", type=str, help="input file")
+    parser_userinfo.add_argument("--o", "--output", dest="output", type=str, help="user info output file")
     parser_userinfo.set_defaults(func=userinfo_main)
 
     return parser

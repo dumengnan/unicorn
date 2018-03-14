@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 import guo_media_util
 from bs4 import BeautifulSoup
 
@@ -48,5 +49,8 @@ def main(args):
     crawl_user_info(input_file, output_file)
 
 if __name__ == '__main__':
+    reload(sys)
+    # unicode 转换成utf-8必须设置
+    sys.setdefaultencoding("utf-8")  # @UndefinedVariable
     crawl_user_info("follwers_info.txt", 'follwers_list.txt')
 
