@@ -57,6 +57,9 @@
             <tarfileset dir="${release.dir}/${release.name}">
                 <include name="**/**"/>
             </tarfileset>
+			<tarfileset dir="${release.dir}" filemode="755">
+                <include name="**/*.sh"/>
+            </tarfileset>
         </tar>
     </target>
 
