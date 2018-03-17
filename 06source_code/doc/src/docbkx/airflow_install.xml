@@ -53,7 +53,12 @@ flush privileges;
 	 
       <listitem>
 	    <para>解压安装包,切换目录</para>
-		<screen>tar zxvf unicorn-tools-@PROJECT_VERSION@.tar.gz -C /opt
+		<screen>tar zxvf unicorn-tools-@PROJECT_VERSION@.tar.gz -C /opt</screen>
+	 </listitem>
+	 
+      <listitem>
+	    <para>创建软连接</para>
+		<screen>ln -s unicorn-tools-@PROJECT_VERSION@ unicorn-tools
 cd /opt/unicorn-tools/unicorn-airflow</screen>
 	 </listitem>
 	 
