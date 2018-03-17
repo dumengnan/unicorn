@@ -22,9 +22,9 @@ task5_cmd: 'python /opt/unicorn-crawler/tweet/bin/crawl_content.py --i {{params.
 
 
 task_params:
-    input: '/opt/crawl_data/input/id.txt'
-    output: '/opt/crawl_data/output/relation_list.bcp'
-    output2: '/opt/crawl_data/output/trigger_content_output.bcp'
+    input: '/opt/crawler_data/input/id.txt'
+    output: '/opt/crawler_data/output/relation_list.bcp'
+    output2: '/opt/crawler_data/output/trigger_content_output.bcp'
 
 
 
