@@ -75,7 +75,7 @@
                                 <include name="*.xml" />
                             </fileset>
 							<filterset>
-                                <filtersfile file="replace.properties" />
+                                <filtersfile file="build.properties" />
                             </filterset>
                         </copy>
                     </preProcess>

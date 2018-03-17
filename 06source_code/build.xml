@@ -70,7 +70,7 @@
             <fileset file="tools/build/*.tar.gz"/>
         </copy> 
 		
-		<tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}>
+		<tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}">
             <tarfileset dir="${release.dir}">
                 <include name="**/**"/>
             </tarfileset>
