@@ -55,9 +55,12 @@
      
      
     <target name="release" depends="init,unicorn_airflow_release,unicorn_data_importer_release">
-        <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}>
+        <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}">
             <tarfileset dir="${release.dir}">
                 <include name="**/**"/>
+            </tarfileset>
+            <tarfileset mode="755">
+                <include name="*.sh"/>
             </tarfileset>
         </tar>
     </target>
@@ -92,7 +95,7 @@
     <target name="clean" >
         <delete dir="unicorn-airflow/.tox" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false" />
         <delete dir="unicorn-airflow/build" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
-		<delete dir="data-importer/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="data-importer/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
         <delete dir="${release.dir}"/>
     </target>
 
