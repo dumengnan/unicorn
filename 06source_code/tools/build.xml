@@ -55,7 +55,7 @@
      
      
     <target name="release" depends="init,unicorn_airflow_release,unicorn_data_importer_release">
-        <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip">
+        <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}>
             <tarfileset dir="${release.dir}">
                 <include name="**/**"/>
             </tarfileset>
