@@ -12,7 +12,7 @@ default_args:
    params:
        time_out: 86400
 
-task2_cmd: 'python /opt/unicorn-crawler/tweet/bin/crawl_follwers.py --i {{params.input}} --o {{params.output}}'
+task2_cmd: 'python /opt/unicorn-crawler/tweet/bin/crawl_followers.py --i {{params.input}} --o {{params.output}}'
 
 task3_cmd: 'python /opt/unicorn-crawler/tweet/bin/crawl_friends.py --i {{params.input}} --o {{params.output}}'
 
