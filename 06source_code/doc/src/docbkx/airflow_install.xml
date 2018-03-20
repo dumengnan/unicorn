@@ -44,16 +44,21 @@ flush privileges;
 	 	<listitem>
 	    <para>新建airflow 用户 airflow 数据库并授权</para>
 		<screen>mysql -u root -p123456
-create user 'airlfow'@'%' identified by '123456';
+create user 'airflow'@'%' identified by 'airflow';
 create database if not exists airflow;
-grant all privileges on *.* to 'airflow'@'localhost' identified by '123456';
+grant all privileges on *.* to 'airflow'@'localhost' identified by 'airflow';
 flush privileges;
 </screen>
 	 </listitem>
 	 
       <listitem>
 	    <para>解压安装包,切换目录</para>
-		<screen>tar zxvf unicorn-tools-@PROJECT_VERSION@.tar.gz -C /opt
+		<screen>tar zxvf unicorn-tools-@PROJECT_VERSION@.tar.gz -C /opt</screen>
+	 </listitem>
+	 
+      <listitem>
+	    <para>创建软连接</para>
+		<screen>ln -s unicorn-tools-@PROJECT_VERSION@ unicorn-tools
 cd /opt/unicorn-tools/unicorn-airflow</screen>
 	 </listitem>
 	 

@@ -57,7 +57,7 @@ def crawl_content_noapi(screen_name, end_date):
     return noapi_main.query_content(screen_name, start_date, end_date)
 
 
-def crawl_content_withapi(screen_name):
+def crawl_content_withapi(screen_name, options):
     """
     使用API 爬取推文内容
     :param screen_name: user screen name
@@ -80,6 +80,9 @@ def crawl_content_withapi(screen_name):
             max_id = results[-1]["id_str"]
             last_tweet_time = format_content_time_to_day(results[-1]["created_at"])
             content_list.append(results)
+
+            if options.update and last_tweet_time < options.update:
+                    return content_list, last_tweet_time
             if len(results) <= 1 or max_id is None:
                 return content_list, last_tweet_time
     except Exception:
@@ -192,7 +195,7 @@ def crawl_twitter_content(options):
     with open(options.input, "r") as input_f:
         for user_name in input_f:
             try:
-                pre_tweets, last_tweet_time = crawl_content_withapi(user_name.strip())
+                pre_tweets, last_tweet_time = crawl_content_withapi(user_name.strip(), options)
                 tweet_list = trans_json_to_tweet(pre_tweets)
                 logging.info("Get {} Tweets From Api".format(str(len(tweet_list))))
                 write_content_to_file(content_file, tweet_list, user_name)
