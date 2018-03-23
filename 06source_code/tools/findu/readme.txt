@@ -16,3 +16,10 @@
    https://login.sina.com.cn/signup/check_user.php  POST   {name:186243405280@126.com,format:json,from:othermail}
    
    
+   
+整体采用 之前的策略
+但是个别定制化的内容 需要定制进行开发 
+   
+twitter.com
+    检测手机号是否存在
+       https://twitter.com/users/phone_number_available?lang=zh-cn&raw_phone_number=+8618652005280
