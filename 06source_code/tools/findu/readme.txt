@@ -23,3 +23,9 @@
 twitter.com
     检测手机号是否存在
        https://twitter.com/users/phone_number_available?lang=zh-cn&raw_phone_number=+8618652005280
+	   
+	   
+	   https://twitter.com/users/phone_number_available?raw_phone_number=%2B8618652005280
+	   
+	   
+	   https://www.facebook.com/ajax/login/help/identify.php?ctx=recover&dpr=1.5
