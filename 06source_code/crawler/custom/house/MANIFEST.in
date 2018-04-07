@@ -1,0 +1,5 @@
+include requirements.txt test-requirements.txt tox.ini
+recursive-include bin *.*
+recursive-include etc *.*
+recursive-include test *.py *.txt
+recursive-include unicorn *.py
