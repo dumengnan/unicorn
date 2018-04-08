@@ -20,7 +20,10 @@ def parse_linajia_content(soup):
     for house in house_list:
         line_info = list()
         desc = house.find('div', class_='info clear').find('a').text
-        house_id = house.find('div', class_='title').find('a')["data-housecode"]
+        house_id_item = house.find('div', class_='title').find('a')
+        house_id = ""
+        if "data-housecode" in house_id_item.attrs:
+            house_id = house_id_item["data-housecode"]
         house_info = house.find('div', class_='houseInfo').text
         position_info = house.find('div', class_='positionInfo').text
         total_price = house.find('div', class_='totalPrice').text
