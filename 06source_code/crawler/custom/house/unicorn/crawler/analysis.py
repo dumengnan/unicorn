@@ -6,6 +6,7 @@ import sys
 import time
 from collections import defaultdict
 
+nj_house_prefix='https://nj.lianjia.com/ershoufang/'
 
 def stat_community_price(community_dict):
     avg_price_list = list()
@@ -65,7 +66,8 @@ def find_add_house(new_house_info_file, old_house_info_file):
         for line in f_input:
             house_id = line.split("|")[0]
             if house_id not in old_house_list:
-                new_add_house_list.append(line)
+                url = nj_house_prefix + house_id + ".html"
+                new_add_house_list.append(line + " | " + url)
     return new_add_house_list
 
 
@@ -80,7 +82,8 @@ def find_sub_house(new_house_info_file, old_house_info_file):
         for line in f_input:
             house_id = line.split("|")[0]
             if house_id not in new_house_list:
-                sub_house_list.append(line)
+                url = nj_house_prefix + house_id + ".html"
+                sub_house_list.append(line + " | " + url)
     return sub_house_list
 
 
