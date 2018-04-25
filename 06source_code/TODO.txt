@@ -1,5 +1,4 @@
 1、安装并学习airflow  
-2、kafka 写数据到hive
 3、kafka 写数据到ES
 4、kafka 写数据到mysql 
 4、安装buildbot 做每日构造
@@ -10,6 +9,10 @@
 9、修改爬虫程序 支持图片和视频内容的下载 
 10、DeepVideoAnalysis 应用  用于检索图片和视频中的内容
 
+
+
+要写一个unicorn-producer  同时支持avro 和 txt 数据格式的发送kafka  
+如果要生成avro的数据格式需要传入schema 文件进行解析 
 
 
 
