@@ -8,7 +8,6 @@ import chardet
 import requests
 import urlparse
 import argparse
-import multiprocessing
 
 
 def check(plugin, passport, passport_type):
@@ -75,39 +74,32 @@ def check(plugin, passport, passport_type):
             pass
 
 
-def main(args):
-    parser = argparse.ArgumentParser(description="Check how many Platforms the User registered.")
-    parser.add_argument("-u", action="store", dest="user")
-    parser.add_argument("-e", action="store", dest="email")
-    parser.add_argument("-c", action="store", dest="cellphone")
-    parser_argument = parser.parse_args()
+def find_registered(options):
+    account_type = options.type
+    account_value = options.value
 
     plugins = glob.glob("plugins/*.json")
-    print '[*] Find U In Virtual Worlds'
 
-    jobs = []
     for plugin in plugins:
         with open(plugin) as f:
             try:
                 content = json.load(f)
+                check(content, account_value, account_type)
             except Exception, e:
                 print e, plugin
                 continue
-        if parser_argument.cellphone:
-            p = multiprocessing.Process(target=check,
-                                        args=(content, unicode(parser_argument.cellphone, "utf-8"), "cellphone"))
-        elif parser_argument.user:
-            p = multiprocessing.Process(target=check,
-                                        args=(content, unicode(parser_argument.user, "utf-8"), "user"))
-        elif parser_argument.email:
-            p = multiprocessing.Process(target=check,
-                                        args=(content, unicode(parser_argument.email, "utf-8"), "email"))
-        p.start()
-        jobs.append(p)
-    while sum([i.is_alive() for i in jobs]) != 0:
-        pass
-    for i in jobs:
-        i.join()
+
+
+def main(args):
+    parser = argparse.ArgumentParser(description="Check how many Platforms the User registered.")
+    parser.add_argument("--type", action="store", dest="type")
+    parser.add_argument("--value", action="store", dest="value")
+    options = parser.parse_args()
+
+    print '[*] Find U In Virtual Worlds'
+
+    find_registered(options)
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
