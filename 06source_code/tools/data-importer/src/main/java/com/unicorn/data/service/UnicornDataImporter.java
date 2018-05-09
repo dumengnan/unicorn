@@ -1,12 +1,20 @@
 package com.unicorn.data.service;
 
 import com.google.common.collect.Maps;
+import com.unicorn.data.sender.HbaseSender.HbaseSenderService;
 import com.unicorn.data.sender.MysqlSender.MysqlSenderService;
 import com.unicorn.data.utils.UnicornDataImportUtil;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
+import org.apache.avro.Schema;
+import org.apache.avro.file.DataFileReader;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
 import org.apache.commons.cli.*;
 import org.apache.commons.configuration.Configuration;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -69,20 +77,34 @@ public class UnicornDataImporter {
         Map<String, Object> kafkaParams = Maps.newHashMap((Map) consumerProperties);
         kafkaParams.put("bootstrap.servers", applicationConfig.getString("bootstrap.servers"));
         String[] topicLsit = applicationConfig.getStringArray("topics");
+        String avroSchemaFile = applicationConfig.getString("avro.schema.location");
+        Schema topicSchema = loadAvroSchemaFromFile(avroSchemaFile);
 
-        JavaInputDStream<ConsumerRecord<String, String>> stream = KafkaUtils.createDirectStream(jssc,
-                LocationStrategies.PreferConsistent(), ConsumerStrategies.<String, String>Subscribe(
+        JavaInputDStream<ConsumerRecord<String, byte[]>> stream = KafkaUtils.createDirectStream(jssc,
+                LocationStrategies.PreferConsistent(), ConsumerStrategies.<String, byte[]>Subscribe(
                         Arrays.asList(topicLsit), kafkaParams));
 
-        MysqlSenderService mysqlSenderService = new MysqlSenderService(applicationConfig);
+        HbaseSenderService hbaseSenderService = new HbaseSenderService(topicSchema);
         stream.foreachRDD(rdd -> rdd.foreachPartition(partitionOfRecords -> {
-            mysqlSenderService.sendDataToMysql(partitionOfRecords);
+
         }));
 
 
         jssc.start();
         jssc.awaitTermination();
         jssc.stop();
+    }
+
+    public Schema loadAvroSchemaFromFile(String avroSchemaFile) throws IOException {
+        if (!new File(avroSchemaFile).exists()) {
+            log.error("Load Avro File Error ");
+        }
+
+        DatumReader<GenericRecord> datumReader = new GenericDatumReader<>();
+        DataFileReader<GenericRecord> dataFileReader = new DataFileReader<>(new File(avroSchemaFile), datumReader);
+        Schema schema = dataFileReader.getSchema();
+
+        return schema;
     }
 
     public static void doMain(String[] args) {
