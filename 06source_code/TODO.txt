@@ -1,6 +1,6 @@
-1、安装并学习airflow  
-3、kafka 写数据到ES
-4、kafka 写数据到mysql 
+1、安装并学习airflow     --okay
+3、kafka 写数据到ES      --okay
+4、kafka 写数据到mysql   --okay
 4、安装buildbot 做每日构造
 5、spark-streaming 接入kafka数据 实时分析统计 最终结果入hbase 
 6、使用spring cloud 框架 写上层分析应用接口 
@@ -11,9 +11,9 @@
 
 
 
-要写一个unicorn-producer  同时支持avro 和 txt 数据格式的发送kafka  
-如果要生成avro的数据格式需要传入schema 文件进行解析 
+要写一个unicorn-producer  同时支持avro 和 txt 数据格式的发送kafka     --okay   (用nifi 实现)
+如果要生成avro的数据格式需要传入schema 文件进行解析                   --okay   (用nifi 实现)
 
 
 
-python 安装环境 几个版本要装统一 否则会有问题 
+python 安装环境 几个版本要装统一 否则会有问题                        --okay 

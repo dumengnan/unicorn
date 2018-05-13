@@ -1,6 +1,7 @@
 package com.unicorn.data.sender.HbaseSender;
 
 
+import com.hankcs.hanlp.tokenizer.NLPTokenizer;
 import com.twitter.bijection.Injection;
 import com.twitter.bijection.avro.GenericAvroCodecs;
 import com.unicorn.data.service.UnicornDataImporter;
@@ -35,7 +36,7 @@ public class HbaseSenderService {
             Injection<GenericRecord, byte[]> recordInjection = GenericAvroCodecs.toBinary(schema);
             GenericRecord record = recordInjection.invert(avroRecord.value()).get();
 
-
+            String content = (String) record.get("content");
         }
     }
 
