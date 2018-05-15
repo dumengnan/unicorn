@@ -9,8 +9,10 @@ CREATE TABLE SOCIAL_CONTENT
     favorite_count STRING,
     geo STRING,
     place STRING,
-    text STRING
+    text STRING,
+    screen_name STRING
 )
+partitioned by (crawl_time STRING)
 CLUSTERED BY (user_id)INTO 3 BUCKETS
 ROW FORMAT DELIMITED
 STORED AS ORC 
