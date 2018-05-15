@@ -150,7 +150,8 @@ def write_content_to_file(content_file, tweet_list, screen_name):
                 continue
             else:
                 bf.insert(content.status_id)
-                f_out.write(repr(content) + "\t" + screen_name + "\n")
+                f_out.write(repr(content) + "\t" + screen_name + "\t" +
+                            get_crawl_time() + "\n")
 
 
 def write_comment_to_file(source_status_id, file_name, comment_list):

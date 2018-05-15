@@ -10,6 +10,7 @@ from unicorn.utils.get_random_key import get_twitter_auth_list
 from unicorn.utils.get_random_key import get_twitter_auth
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import get_file_name
+from unicorn.utils.uni_util import get_crawl_time
 from unicorn.redis.redis_bloom import BloomFilter
 
 # api的限制速度 15分钟 15次
@@ -30,6 +31,7 @@ def get_user_id_str(twitter, username):
     except Exception as e:
         logging.error(" Get User " + username + " Error : %s " % e)
         return None
+
 
 def crawl_followers(options):
     count = 0
@@ -96,7 +98,7 @@ def crawl_followers(options):
                             user_info.append(str(favourite_count))
 
                             f_output.write("\t".join(user_info) + "\n")
-                            relation_f.write(parent_id_str + "\t" + relation_type + "\t" + id_str + "\n")
+                            relation_f.write(parent_id_str + "\t" + relation_type + "\t" + id_str + "\t" + get_crawl_time() + "\n")
 
                     except Exception as e:
                         count = count + 1

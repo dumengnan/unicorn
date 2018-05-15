@@ -10,6 +10,10 @@ def get_current_time():
     return time.strftime("%Y%m%d%H%M%S", time.localtime())
 
 
+def get_crawl_time():
+    return time.strftime("%Y-%m-%d", time.localtime())
+
+
 # 生成文件名
 def get_file_name(prefix):
     current_time = get_current_time()

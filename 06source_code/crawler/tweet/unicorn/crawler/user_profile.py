@@ -10,6 +10,7 @@ from unicorn.utils.get_random_key import get_twitter_auth
 from unicorn.utils.get_random_key import get_twitter_auth_list
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import get_file_name
+from unicorn.utils.uni_util import get_crawl_time
 from unicorn.redis.redis_bloom import BloomFilter
 
 
@@ -66,7 +67,7 @@ def crawl_user_profile(options):
                     user_info.append(str(list_count))
                     user_info.append(str(favourite_count))
 
-                    f_output.write("\t".join(user_info) + "\n")
+                    f_output.write("\t".join(user_info) + "\t" + get_crawl_time() + "\n")
 
                 except Exception as e:
                     count = count + 1
