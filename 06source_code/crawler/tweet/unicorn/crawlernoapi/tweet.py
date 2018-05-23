@@ -54,7 +54,7 @@ class Tweet:
         text = tweet.find('p', 'tweet-text').text or ""
 
         return cls(user_id, create_time, status_id, lang, device, \
-                   retweet_count, favorite_count, geo, place, text.replace("\n", ""))
+                   retweet_count, favorite_count, geo, place, text.replace("\n", "").replace("\t", ""))
 
     @classmethod
     def from_html(cls, html):
