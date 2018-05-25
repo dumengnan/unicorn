@@ -3,11 +3,13 @@ package com.unicorn.data.service;
 import com.google.common.collect.Maps;
 import com.unicorn.data.sender.HbaseSender.HbaseSenderService;
 import com.unicorn.data.sender.MysqlSender.MysqlSenderService;
+import com.unicorn.data.utils.UnicornConstant;
 import com.unicorn.data.utils.UnicornDataImportUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import org.apache.avro.Schema;
@@ -76,15 +78,18 @@ public class UnicornDataImporter {
 
         Map<String, Object> kafkaParams = Maps.newHashMap((Map) consumerProperties);
         kafkaParams.put("bootstrap.servers", applicationConfig.getString("bootstrap.servers"));
-        String[] topicLsit = applicationConfig.getStringArray("topics");
-        String avroSchemaFile = applicationConfig.getString("avro.schema.location");
-        Schema topicSchema = loadAvroSchemaFromFile(avroSchemaFile);
+        String[] topicList = applicationConfig.getStringArray("topics");
+        List<String> extractWordList = applicationConfig.getList("extract.word.list");
+        String avroSchemaDir = applicationConfig.getString("avro.schema.dir");
+
+
+        Map<String, Schema> topicSchema = loadAvroSchemaFromFile(avroSchemaDir, topicList);
 
         JavaInputDStream<ConsumerRecord<String, byte[]>> stream = KafkaUtils.createDirectStream(jssc,
                 LocationStrategies.PreferConsistent(), ConsumerStrategies.<String, byte[]>Subscribe(
-                        Arrays.asList(topicLsit), kafkaParams));
+                        Arrays.asList(topicList), kafkaParams));
 
-        HbaseSenderService hbaseSenderService = new HbaseSenderService(topicSchema);
+        HbaseSenderService hbaseSenderService = new HbaseSenderService(topicSchema, extractWordList);
         stream.foreachRDD(rdd -> rdd.foreachPartition(partitionOfRecords -> {
 
         }));
@@ -95,16 +100,23 @@ public class UnicornDataImporter {
         jssc.stop();
     }
 
-    public Schema loadAvroSchemaFromFile(String avroSchemaFile) throws IOException {
-        if (!new File(avroSchemaFile).exists()) {
-            log.error("Load Avro File Error ");
+    public Map<String, Schema> loadAvroSchemaFromFile(String avroSchemaDir, String[] topicList) throws IOException {
+        Map<String, Schema> schemaMap = Maps.newHashMap();
+
+        for (String topic : topicList) {
+            File avroSchemaFile = new File(avroSchemaDir, topic + UnicornConstant.SCHMEA_FILE_PREFIX);
+            if (!avroSchemaFile.exists()) {
+                log.error("Topic {} Avro File {} Not Exists!", topic, avroSchemaFile.getAbsolutePath());
+            }
+
+            DatumReader<GenericRecord> datumReader = new GenericDatumReader<>();
+            DataFileReader<GenericRecord> dataFileReader = new DataFileReader<>(avroSchemaFile, datumReader);
+
+            Schema schema = dataFileReader.getSchema();
+            schemaMap.put(topic, schema);
         }
 
-        DatumReader<GenericRecord> datumReader = new GenericDatumReader<>();
-        DataFileReader<GenericRecord> dataFileReader = new DataFileReader<>(new File(avroSchemaFile), datumReader);
-        Schema schema = dataFileReader.getSchema();
-
-        return schema;
+        return schemaMap;
     }
 
     public static void doMain(String[] args) {

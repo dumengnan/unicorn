@@ -72,6 +72,13 @@
             <version>2.2.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-server -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <version>0.95.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
         <dependency>
             <groupId>commons-cli</groupId>
