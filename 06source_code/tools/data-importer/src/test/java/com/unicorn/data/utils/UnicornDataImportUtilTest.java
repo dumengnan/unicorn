@@ -29,7 +29,7 @@ public class UnicornDataImportUtilTest {
                         "src/test/resources/config2_override.properties");
 
         Assert.assertEquals("192.168.0.6:9000", config.getString("kafka.brokers"));
-        Assert.assertEquals("192.168.0.7", config.getString("hbase.server"));
+        Assert.assertEquals("192.168.0.7", config.getString("hbase.zookeeper.server"));
     }
 
     @Test

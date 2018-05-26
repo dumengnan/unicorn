@@ -2,23 +2,18 @@ package com.unicorn.data.service;
 
 import com.google.common.collect.Maps;
 import com.unicorn.data.sender.HbaseSender.HbaseSenderService;
-import com.unicorn.data.sender.MysqlSender.MysqlSenderService;
 import com.unicorn.data.utils.UnicornConstant;
 import com.unicorn.data.utils.UnicornDataImportUtil;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.apache.avro.Schema;
-import org.apache.avro.file.DataFileReader;
-import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.DatumReader;
 import org.apache.commons.cli.*;
 import org.apache.commons.configuration.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.mapreduce.TableOutputFormat;
+import org.apache.hadoop.mapreduce.Job;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.spark.SparkConf;
 import org.apache.spark.streaming.Durations;
@@ -79,44 +74,38 @@ public class UnicornDataImporter {
         Map<String, Object> kafkaParams = Maps.newHashMap((Map) consumerProperties);
         kafkaParams.put("bootstrap.servers", applicationConfig.getString("bootstrap.servers"));
         String[] topicList = applicationConfig.getStringArray("topics");
-        List<String> extractWordList = applicationConfig.getList("extract.word.list");
-        String avroSchemaDir = applicationConfig.getString("avro.schema.dir");
-
-
-        Map<String, Schema> topicSchema = loadAvroSchemaFromFile(avroSchemaDir, topicList);
 
         JavaInputDStream<ConsumerRecord<String, byte[]>> stream = KafkaUtils.createDirectStream(jssc,
                 LocationStrategies.PreferConsistent(), ConsumerStrategies.<String, byte[]>Subscribe(
                         Arrays.asList(topicList), kafkaParams));
 
-        HbaseSenderService hbaseSenderService = new HbaseSenderService(topicSchema, extractWordList);
-        stream.foreachRDD(rdd -> rdd.foreachPartition(partitionOfRecords -> {
-
-        }));
-
+        org.apache.hadoop.conf.Configuration hbaseConf = getHbaseConf();
+        HbaseSenderService hbaseSenderService = new HbaseSenderService(applicationConfig);
+        stream.foreachRDD(rdd -> {
+                    rdd.flatMapToPair(hbaseSenderService.new ConvertToPut()).saveAsNewAPIHadoopDataset(hbaseConf);
+                }
+        );
 
         jssc.start();
         jssc.awaitTermination();
         jssc.stop();
     }
 
-    public Map<String, Schema> loadAvroSchemaFromFile(String avroSchemaDir, String[] topicList) throws IOException {
-        Map<String, Schema> schemaMap = Maps.newHashMap();
 
-        for (String topic : topicList) {
-            File avroSchemaFile = new File(avroSchemaDir, topic + UnicornConstant.SCHMEA_FILE_PREFIX);
-            if (!avroSchemaFile.exists()) {
-                log.error("Topic {} Avro File {} Not Exists!", topic, avroSchemaFile.getAbsolutePath());
-            }
+    private org.apache.hadoop.conf.Configuration getHbaseConf() throws IOException {
+        String hbaseZkServer = applicationConfig.getString("hbase.zookeeper.server");
+        String hbaseZkPort = applicationConfig.getString("hbase.zookeeper.port");
+        org.apache.hadoop.conf.Configuration hbaseConf = HBaseConfiguration.create();
 
-            DatumReader<GenericRecord> datumReader = new GenericDatumReader<>();
-            DataFileReader<GenericRecord> dataFileReader = new DataFileReader<>(avroSchemaFile, datumReader);
+        hbaseConf.set("hbase.zookeeper.quorum", hbaseZkServer);
+        hbaseConf.set("hbase.zookeeper.property.clientPort", hbaseZkPort);
 
-            Schema schema = dataFileReader.getSchema();
-            schemaMap.put(topic, schema);
-        }
+        Job newApiJobConf = Job.getInstance(hbaseConf);
+        newApiJobConf.getConfiguration().set(TableOutputFormat.OUTPUT_TABLE,
+                UnicornConstant.CONTENT_TABLE);
+        newApiJobConf.setOutputFormatClass(TableOutputFormat.class);
 
-        return schemaMap;
+        return hbaseConf;
     }
 
     public static void doMain(String[] args) {
