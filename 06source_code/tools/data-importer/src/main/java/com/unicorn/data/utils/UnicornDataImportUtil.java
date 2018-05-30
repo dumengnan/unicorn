@@ -6,10 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import org.apache.avro.Schema;
-import org.apache.avro.file.DataFileReader;
-import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.DatumReader;
+import org.apache.avro.Schema.Parser;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -49,10 +46,9 @@ public class UnicornDataImportUtil {
                 log.error("Topic {} Avro File {} Not Exists!", topic, avroSchemaFile.getAbsolutePath());
             }
 
-            DatumReader<GenericRecord> datumReader = new GenericDatumReader<>();
-            DataFileReader<GenericRecord> dataFileReader = new DataFileReader<>(avroSchemaFile, datumReader);
+            Parser parser = new Parser();
+            Schema schema = parser.parse(avroSchemaFile);
 
-            Schema schema = dataFileReader.getSchema();
             schemaMap.put(topic, schema);
         }
 

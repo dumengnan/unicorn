@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.piggymetrics</groupId>
+	<groupId>com.unicorn</groupId>
 	<artifactId>config</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -19,6 +19,7 @@
 	</parent>
 
 	<properties>
+	    <docker.image.prefix>unicorn</docker.image.prefix>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 	</properties>
@@ -89,6 +90,18 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			 <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.3.6</version>
+                <configuration>
+                    <repository>${docker.image.prefix}/${project.artifactId}</repository>
+                   <buildArgs>
+                    <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                   </buildArgs>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 	

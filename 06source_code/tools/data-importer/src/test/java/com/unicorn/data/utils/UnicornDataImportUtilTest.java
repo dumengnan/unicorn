@@ -1,6 +1,7 @@
 package com.unicorn.data.utils;
 
 import java.util.List;
+import org.apache.avro.Schema;
 import org.apache.commons.configuration.Configuration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,5 +43,16 @@ public class UnicornDataImportUtilTest {
 
         List topicList = config.getList("send.tomysql.topics");
         Assert.assertEquals(3, topicList.size());
+    }
+
+    @Test
+    public void testLoadAvroSchemaFromFile() throws Exception {
+        String avroSchemaDir = "src/test/resources";
+        String[] topics = new String[] {"social_content"};
+
+        Map<String, Schema> result = UnicornDataImportUtil.loadAvroSchemaFromFile(avroSchemaDir, topics);
+        Assert.assertEquals(1, result.size());
+
+        Assert.assertTrue(result.containsKey("social_content"));
     }
 }

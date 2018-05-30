@@ -16,9 +16,12 @@ import com.unicorn.data.utils.UnicornConstant;
 import com.unicorn.data.utils.UnicornDataImportUtil;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import jersey.repackaged.com.google.common.collect.Sets;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -43,6 +46,8 @@ public class HbaseSenderService implements Serializable {
 
     private Segment segment;
 
+    public HbaseSenderService() {}
+
     public HbaseSenderService(Configuration configuration) throws IOException {
         List<String> extractWordList = configuration.getList("extract.word.list");
         String avroSchemaDir = configuration.getString("avro.schema.dir");
@@ -59,20 +64,31 @@ public class HbaseSenderService implements Serializable {
         @Override
         public Iterator<Tuple2<ImmutableBytesWritable, Put>> call(ConsumerRecord<String, byte[]> avroConsumerRecord)
                 throws Exception {
-            List<Tuple2<ImmutableBytesWritable, Put>> result = Lists.newArrayList();
 
             String topic = avroConsumerRecord.topic();
             if (!schemaMap.containsKey(topic)) {
                 log.error("Can not Find Topic {} Schema !", topic);
-                return result.iterator();
+                return Collections.emptyIterator();
             }
 
-            Gson gson = new GsonBuilder().serializeNulls().create();
 
             Injection<GenericRecord, byte[]> recordInjection = GenericAvroCodecs.toBinary(schemaMap.get(topic));
             GenericRecord record = recordInjection.invert(avroConsumerRecord.value()).get();
 
-            String content = (String) record.get("content");
+            return convertRecordToTuple(record).iterator();
+        }
+
+        /**
+         * 将avro 的一条record  转换成Hbase 里面的Put 格式.
+         * @param record avro record data
+         * @return Hbase Put List
+         */
+        public List<Tuple2<ImmutableBytesWritable, Put>> convertRecordToTuple(GenericRecord record) {
+            List<Tuple2<ImmutableBytesWritable, Put>> result = Lists.newArrayList();
+
+            Gson gson = new GsonBuilder().serializeNulls().create();
+
+            String content = (String) record.get("text");
             String rowKey = createRowKey(record);
             String qualifier = DigestUtils.md5Hex(content);
 
@@ -82,17 +98,22 @@ public class HbaseSenderService implements Serializable {
             Tuple2<ImmutableBytesWritable, Put> keyWordTuple = new Tuple2<>(new ImmutableBytesWritable(), keyWordPut);
             result.add(keyWordTuple);
 
-            List<EntityValue> entityValue = parseEntityValue(content);
+            Set<EntityValue> entityValue = parseEntityValue(content);
             Put entityPut = new Put(Bytes.toBytes(rowKey));
             entityPut.add(Bytes.toBytes(UnicornConstant.ENTITY_FAMILY), Bytes.toBytes(qualifier), Bytes.toBytes(gson.toJson(entityValue)));
             Tuple2<ImmutableBytesWritable, Put> entityTuple = new Tuple2<>(new ImmutableBytesWritable(), entityPut);
             result.add(entityTuple);
 
-            return result.iterator();
+            return result;
         }
 
-        public List<EntityValue> parseEntityValue(String content) {
-            List<EntityValue> entityValues = Lists.newArrayList();
+        /**
+         * 从内容中抽取所有的实体.
+         * @param content content text
+         * @return entity value collection
+         */
+        public Set<EntityValue> parseEntityValue(String content) {
+            Set<EntityValue> entityValues = Sets.newHashSet();
             for (Term term : segment.seg(content)) {
                 // 只抽取指定类型的词（人名 机构名 后期需要添加码址识别）
                 if (extractWordList.contains(term.nature.name())) {
@@ -103,6 +124,11 @@ public class HbaseSenderService implements Serializable {
             return entityValues;
         }
 
+        /**
+         * 根据social_type  和 id  构建hbase rowkey.
+         * @param record avro record message.
+         * @return hbase rowkey ["sinaweibo","9038434"]
+         */
         public String createRowKey(GenericRecord record) {
             String socialType = (String) record.get("social_type");
             String statusId = (String) record.get("status_id");
@@ -115,4 +141,16 @@ public class HbaseSenderService implements Serializable {
         }
     }
 
+
+    public void setSchemaMap(Map<String, Schema> schemaMap) {
+        this.schemaMap = schemaMap;
+    }
+
+    public void setExtractWordList(List<String> extractWordList) {
+        this.extractWordList = extractWordList;
+    }
+
+    public void setSegment(Segment segment) {
+        this.segment = segment;
+    }
 }
