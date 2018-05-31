@@ -50,12 +50,13 @@
                 <include name="etc/**"/>
                 <include name="logs/**"/>
                 <include name="db_scripts/**"/>
+				<include name="schema/**"/>
             </fileset>
         </copy>  
         
         <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}">
             <tarfileset dir="${release.dir}/${release.name}">
-                <include name="**/**"/>
+                <include name="*.tar.gz"/>
             </tarfileset>
 			<tarfileset dir="${release.dir}" filemode="755">
                 <include name="**/*.sh"/>
