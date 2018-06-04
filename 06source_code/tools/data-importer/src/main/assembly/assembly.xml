@@ -4,10 +4,6 @@
 
     <id>unicorn</id>
 
-    <formats>
-        <format>tar.gz</format>
-    </formats>
-
     <fileSets>
         <fileSet>
             <directory>target</directory>

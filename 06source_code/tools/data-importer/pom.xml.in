@@ -149,6 +149,7 @@
 				<version>2.4</version>
 				<configuration>
 					<appendAssemblyId>false</appendAssemblyId>
+					<outputDirectory>${project.build.directory}/release/</outputDirectory>
 					<descriptors>
 						<descriptor>src/main/assembly/assembly.xml</descriptor>
 					</descriptors>

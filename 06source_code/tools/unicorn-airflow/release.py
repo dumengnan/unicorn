@@ -86,7 +86,7 @@ def main():
     for py_dir in py_strip_dirs:
         _strip_py(os.path.join(target_dir, py_dir))
 
-    _zip_file(target_dir)
+    # _zip_file(target_dir)
 
 
 if __name__ == '__main__':
