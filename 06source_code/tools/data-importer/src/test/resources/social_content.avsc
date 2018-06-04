@@ -1,0 +1,19 @@
+{
+ "type": "record",
+ "name": "social_content",
+ "fields": [
+     {"name": "user_id", "type": "string"},
+     {"name": "create_time",  "type": ["string", "null"]},
+     {"name": "status_id", "type": ["string", "null"]},
+     {"name": "lang", "type": ["string", "null"]},
+     {"name": "device", "type": ["string", "null"]},
+     {"name": "retweet_count", "type": ["string", "null"]},
+     {"name": "favorite_count", "type": ["string", "null"]},
+     {"name": "geo", "type": ["string", "null"]},
+     {"name": "place", "type": ["string", "null"]},
+     {"name": "text", "type": ["string", "null"]},
+     {"name": "screen_name", "type": ["string", "null"]},
+     {"name": "social_type", "type": ["string", "null"]},
+     {"name": "crawl_time", "type": "string"}
+ ]
+}

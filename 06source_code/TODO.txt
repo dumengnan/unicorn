@@ -17,3 +17,11 @@
 
 
 python 安装环境 几个版本要装统一 否则会有问题                        --okay 
+
+
+
+
+
+STUDY：
+1、awk 在中间位置添加列的方法 
+    awk -v FS='\t' -v OFS='\t' '{$11=$11"\t""twitter"} 1' a.txt

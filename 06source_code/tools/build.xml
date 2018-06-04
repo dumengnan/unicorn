@@ -57,7 +57,7 @@
     <target name="release" depends="init,unicorn_airflow_release,unicorn_data_importer_release">
         <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}">
             <tarfileset dir="${release.dir}">
-                <include name="**/**"/>
+                <include name="${release.name}"/>
             </tarfileset>
             <tarfileset dir="${release.dir}" filemode="755">
                 <include name="**/bin/*"/>
@@ -73,7 +73,7 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="unicorn-airflow/build">
-                <include name="**/**"/>
+                <include name="*.tar.gz"/>
             </fileset>
         </copy>  
         
@@ -85,8 +85,8 @@
        </exec>
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
-            <fileset dir="data-importer/target">
-                <include name="*.tar.gz"/>
+            <fileset dir="data-importer/target/release">
+                <include name="*"/>
             </fileset>
         </copy>  
         
