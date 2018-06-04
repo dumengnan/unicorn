@@ -86,7 +86,7 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="data-importer/target/release">
-                <include name="*.tar.gz"/>
+                <include name="*"/>
             </fileset>
         </copy>  
         
