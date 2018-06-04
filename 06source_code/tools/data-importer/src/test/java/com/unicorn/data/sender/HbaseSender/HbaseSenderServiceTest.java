@@ -3,6 +3,9 @@ package com.unicorn.data.sender.HbaseSender;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
+import com.unicorn.data.sender.HbaseSender.HbaseSenderService.ConvertToPut;
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.junit.Test;
 
 public class HbaseSenderServiceTest {
@@ -27,5 +30,17 @@ public class HbaseSenderServiceTest {
             System.out.println(term.nature.name());
         }
 
+    }
+
+    @Test
+    public void testConvertToPut() throws Exception {
+        Configuration conf = new CompositeConfiguration();
+        conf.setProperty("extract.word.list", "nr,nt");
+        conf.setProperty("avro.schema.dir", "test/resources");
+        conf.setProperty("topics", "social_content");
+
+
+        HbaseSenderService senderService = new HbaseSenderService(conf);
+        ConvertToPut convertToPut = senderService.new ConvertToPut();
     }
 }
