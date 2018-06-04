@@ -54,7 +54,7 @@ public class UnicornDataImporter {
     }
 
     CommandLine parseCommandLine(String[] args) throws Exception {
-        DefaultParser parser = new DefaultParser();
+        CommandLineParser  parser = new PosixParser();
 
         return parser.parse(getOptions(), args);
     }

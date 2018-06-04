@@ -13,7 +13,7 @@
      {"name": "place", "type": ["string", "null"]},
      {"name": "text", "type": ["string", "null"]},
      {"name": "screen_name", "type": ["string", "null"]},
-     {"name": "social_type", "type: ["string", "null"]"},
+     {"name": "social_type", "type": ["string", "null"]},
      {"name": "crawl_time", "type": "string"}
  ]
 }
