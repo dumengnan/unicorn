@@ -60,6 +60,7 @@ public class UnicornDataImporter {
     }
 
     public void readConf() throws Exception {
+        consumerProperties = new Properties();
         consumerProperties.load(new FileInputStream("etc/consumer.properties"));
 
         applicationConfig = UnicornDataImportUtil

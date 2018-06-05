@@ -16,8 +16,7 @@ set -x
 spark-submit \
   --class com.unicorn.data.service.UnicornDataImporter \
   --master local[*] \
-  --conf spark.executor.extraClassPath=$MYAPPLICATION_HOME \
-  --files $MYAPPLICATION_HOME/etc/config.properties,$MYAPPLICATION_HOME/etc/consumer.properties \
+  --driver-class-path $MYAPPLICATION_HOME/etc/*.properties \
   $MYAPPLICATION_HOME/lib/*.jar
 
   
