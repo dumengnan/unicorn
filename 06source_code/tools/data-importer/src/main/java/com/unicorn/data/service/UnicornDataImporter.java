@@ -132,4 +132,14 @@ public class UnicornDataImporter {
             log.error("Data Importer Exception ", ex);
         }
     }
+
+    // for test
+    public Properties getConsumerProperties() {
+        return consumerProperties;
+    }
+
+    // for test
+    public Configuration getApplicationConfig() {
+        return applicationConfig;
+    }
 }

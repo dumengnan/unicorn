@@ -22,4 +22,13 @@ public class UnicornDataImporterTest {
         Assert.assertEquals("value1", commandProp.getProperty("key1"));
         Assert.assertEquals("value2", commandProp.getProperty("key2"));
     }
+
+    @Test
+    public void testReadConf() throws Exception {
+        UnicornDataImporter dataImporter = new UnicornDataImporter();
+        dataImporter.readConf();
+
+        Assert.assertNotNull(dataImporter.getApplicationConfig().getString("topics"));
+        Assert.assertNotNull(dataImporter.getConsumerProperties());
+    }
 }
