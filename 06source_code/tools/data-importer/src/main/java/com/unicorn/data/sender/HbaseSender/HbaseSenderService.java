@@ -41,10 +41,10 @@ import scala.Tuple2;
 public class HbaseSenderService implements Serializable {
     private static Logger log = LoggerFactory.getLogger(HbaseSenderService.class);
 
-    private Map<String, Schema> schemaMap;
+    private transient Map<String, Schema> schemaMap;
     private List<String> extractWordList;
 
-    private Segment segment;
+    private transient Segment segment;
 
     public HbaseSenderService() {}
 

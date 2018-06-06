@@ -12,10 +12,13 @@ import java.util.Properties;
 import org.apache.commons.cli.*;
 import org.apache.commons.configuration.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
@@ -24,6 +27,7 @@ import org.apache.spark.streaming.kafka010.KafkaUtils;
 import org.apache.spark.streaming.kafka010.LocationStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Tuple2;
 
 
 public class UnicornDataImporter {
@@ -80,10 +84,12 @@ public class UnicornDataImporter {
                 LocationStrategies.PreferConsistent(), ConsumerStrategies.<String, byte[]>Subscribe(
                         Arrays.asList(topicList), kafkaParams));
 
-        org.apache.hadoop.conf.Configuration hbaseConf = getHbaseConf();
+
         HbaseSenderService hbaseSenderService = new HbaseSenderService(applicationConfig);
         stream.foreachRDD(rdd -> {
-                    rdd.flatMapToPair(hbaseSenderService.new ConvertToPut()).saveAsNewAPIHadoopDataset(hbaseConf);
+                    org.apache.hadoop.conf.Configuration hbaseConf = getHbaseConf();
+                    JavaPairRDD<ImmutableBytesWritable, Put> putRdd = rdd.flatMapToPair(hbaseSenderService.new ConvertToPut());
+                    putRdd.saveAsNewAPIHadoopDataset(hbaseConf);
                 }
         );
 
