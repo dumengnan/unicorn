@@ -13,6 +13,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		<spark.version>2.3.0</spark.version>
 	</properties>
 
 	<dependencies>
@@ -54,7 +55,7 @@
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-streaming_2.11</artifactId>
-            <version>2.2.1</version>
+            <version>${spark.version}</version>
         </dependency>
 
 
@@ -62,7 +63,7 @@
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-streaming-kafka-0-10_2.11</artifactId>
-            <version>2.2.1</version>
+            <version>${spark.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-server -->
