@@ -112,7 +112,7 @@ public class UnicornDataImporter {
                 UnicornConstant.CONTENT_TABLE);
         newApiJobConf.setOutputFormatClass(TableOutputFormat.class);
 
-        return hbaseConf;
+        return newApiJobConf.getConfiguration();
     }
 
     public static void doMain(String[] args) {
