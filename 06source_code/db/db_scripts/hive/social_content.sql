@@ -10,7 +10,9 @@ CREATE TABLE SOCIAL_CONTENT
     geo STRING,
     place STRING,
     text STRING,
-    screen_name STRING
+    text STRING,
+    screen_name STRING,
+    social_type STRING
 )
 partitioned by (crawl_time STRING)
 CLUSTERED BY (user_id)INTO 3 BUCKETS
