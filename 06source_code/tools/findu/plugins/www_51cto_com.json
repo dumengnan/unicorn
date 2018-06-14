@@ -10,18 +10,18 @@
     },
 
     "request" :{
-        "cellphone_url" : "http://ucenter.51cto.com/checkemails.php?email={}",
-        "email_url" : "http://ucenter.51cto.com/checkemails.php?email={}",
-        "user_url" : "http://ucenter.51cto.com/checkuser.php?username={}",
+        "cellphone_url" : "http://home.51cto.com/user/check-mobile",
+        "email_url" : "",
+        "user_url" : "",
         "method" : "GET",
         "post_fields":{
-
+            "mobile":{}
         }
     },
 
     "status":{
-        "judge_yes_keyword":"被注册",
-        "judge_no_keyword":"恭喜",
+        "judge_yes_keyword":"该手机可以使用",
+        "judge_no_keyword":"",
         "profile_url" : ""
     }
 }
