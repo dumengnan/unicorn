@@ -8,6 +8,7 @@ import chardet
 import requests
 import urlparse
 import argparse
+import logging
 
 
 def check(plugin, passport, passport_type):
@@ -20,35 +21,26 @@ def check(plugin, passport, passport_type):
         url = plugin["request"]["{0}_url".format(passport_type)]
     else:
         return
+
     app_name = plugin['information']['name']
-    category = plugin["information"]["category"]
     website = plugin["information"]["website"].encode("utf-8")
     judge_yes_keyword = plugin['status']['judge_yes_keyword'].encode("utf-8")
     judge_no_keyword = plugin['status']['judge_no_keyword'].encode("utf-8")
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6',
-        'Host': urlparse.urlparse(url).netloc,
-        'Referer': url,
+        'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'
     }
     if plugin['request']['method'] == "GET":
         try:
             url = url.replace('{}', passport)
             content = requests.get(url, headers=headers, timeout=8).content
-            encoding = chardet.detect(content)["encoding"]
-            if encoding == None or encoding == "ascii":
-                content = content.encode("utf-8")
-            else:
-                content = content.decode(encoding).encode("utf-8")
-        except Exception, e:
-            print '\n[-] %s Error: %s\n' % (app_name, str(e))
+            if check_response(content, judge_yes_keyword, judge_no_keyword):
+                logging.info(u"Find In [{0}] Response Content is {1}".format(('%s (%s)' % (app_name, website)), content))
+            else: 
+                logging.info(u"Not Find in {0}".format('%s' % website))
+        except Exception as ex:
+            logging.exception('\n[-] %s Error \n' % (app_name))
             return
-        if judge_yes_keyword in content and judge_no_keyword not in content:
-            print u"[{0}] {1}".format(category, ('%s (%s)' % (app_name, website)))
-            icon = plugin['information']['icon'].encode("utf-8")
-            desc = plugin['information']['desc'].encode("utf-8")
 
-        else:
-            pass
     elif plugin['request']['method'] == "POST":
         post_data = plugin['request']['post_fields']
         if post_data.values().count("") != 1:
@@ -59,20 +51,32 @@ def check(plugin, passport, passport_type):
                 post_data[k] = passport
         try:
             content = requests.post(url, data=post_data, headers=headers, timeout=8).content
-            encoding = chardet.detect(content)["encoding"]
-            if encoding == None or encoding == "ascii":
-                content = content.encode("utf-8")
-            else:
-                content = content.decode(encoding).encode("utf-8")
-        except Exception, e:
+            if check_response(content, judge_yes_keyword, judge_no_keyword):
+                logging.info(u"Find In [{0}] Response Content is {1}".format(('%s (%s)' % (app_name, website)), content))
+            else: 
+                logging.info(u"Not Find in {0}".format('%s' % website))
+        except Exception as ex:
+            logging.exception('\n[-] %s Error \n' % (app_name))
             return
-        if judge_yes_keyword in content and judge_no_keyword not in content:
-            print u"[{0}] {1}".format(category, ('%s (%s)' % (app_name, website)))
-            icon = plugin['information']['icon'].encode("utf-8")
-            desc = plugin['information']['desc'].encode("utf-8")
-        else:
-            pass
 
+
+def check_response(content, judge_yes_keyword, judge_no_keyword):
+    try:
+        encoding = chardet.detect(content)["encoding"]
+        if encoding == None or encoding == "ascii":
+            content = content.encode("utf-8")
+        else:
+            content = content.decode(encoding).encode("utf-8")
+
+        if judge_yes_keyword in content and judge_no_keyword not in content:
+            return True
+        else:
+            return False
+
+    except Exception as ex:
+        logging.exception('\n[-] Check Response Exception : %s\n' % (str(ex)))
+
+    return False
 
 def find_registered(options):
     account_type = options.type
@@ -92,11 +96,12 @@ def find_registered(options):
 
 def main(args):
     parser = argparse.ArgumentParser(description="Check how many Platforms the User registered.")
-    parser.add_argument("--type", action="store", dest="type")
-    parser.add_argument("--value", action="store", dest="value")
+    parser.add_argument("--type", action="store", dest="type", help="The Check Type Contains (cellphone, email, user(nickname))")
+    parser.add_argument("--value", action="store", dest="value", help="The Type Value  youe wille be Check")
     options = parser.parse_args()
 
-    print '[*] Find U In Virtual Worlds'
+    print '[*] Find U In Virtual Worlds [*]'
+    print 'Check Type ' + options.type + " Check Value " + options.value
 
     find_registered(options)
 

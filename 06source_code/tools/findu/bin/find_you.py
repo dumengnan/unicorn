@@ -13,7 +13,7 @@ if __name__ == '__main__':
         reload(sys)
         # unicode 转换成utf-8必须设置
         sys.setdefaultencoding("utf-8")  # @UndefinedVariable
-        find_u_main.main(sys.argv[1:])
-    except Exception, ex:
-        logging.exception("main except", ex)
+        find_u_main(sys.argv[1:])
+    except Exception as ex:
+        logging.exception("main except")
         os._exit(1)
