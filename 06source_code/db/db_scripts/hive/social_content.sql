@@ -10,7 +10,6 @@ CREATE TABLE SOCIAL_CONTENT
     geo STRING,
     place STRING,
     text STRING,
-    text STRING,
     screen_name STRING,
     social_type STRING
 )
