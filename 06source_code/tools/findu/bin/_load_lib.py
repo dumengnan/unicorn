@@ -26,3 +26,5 @@ if os.path.isdir(libdir):
 
 # set cwd
 os.chdir(parent_dir)
+
+logging.config.fileConfig('etc/log_config.conf')
