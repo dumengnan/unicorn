@@ -10,9 +10,9 @@
     },
 
     "request" :{
-        "cellphone_url" : "http://passport.58.com/ajax/checkemail?id=6266&email={}",
+        "cellphone_url" : "",
         "email_url" : "http://passport.58.com/ajax/checkemail?id=6266&email={}",
-        "user_url" : "http://passport.58.com/ajax/checkemail?id=6266&email={}",
+        "user_url" : "",
         "method" : "GET",
         "post_fields":{
 

@@ -10,8 +10,8 @@
     },
 
     "request" :{
-        "cellphone_url" : "http://my.1ting.com/register/check?user_login={}",
-        "email_url" : "http://my.1ting.com/register/check?user_login={}",
+        "cellphone_url" : "",
+        "email_url" : "http://my.1ting.com/register/check?user_email={}",
         "user_url" : "http://my.1ting.com/register/check?user_login={}",
         "method" : "GET",
         "post_fields":{

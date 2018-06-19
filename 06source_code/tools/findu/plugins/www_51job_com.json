@@ -3,20 +3,18 @@
         "author" : "e0",
         "date" : "2015/03/11",
         "name" : "前程无忧",
-        "website" : "http://www.iciba.com/",
+        "website" : "https://51job.com/",
         "category" : "求职招聘",
         "icon" : "http://img01.51jobcdn.com/im/2009/newlogin/login_img1.gif",
         "desc" : "前程无忧是国内第一个集多种媒介资源优势的专业人力资源服务机构。"
     },
 
     "request" :{
-        "cellphone_url" : "http://my.51job.com/my/in/checkinfo.php",
-        "email_url" : "http://my.51job.com/my/in/checkinfo.php",
-        "user_url" : "http://my.51job.com/my/in/checkinfo.php",
-        "method" : "POST",
+        "cellphone_url" : "https://login.51job.com/ajax/checkinfo.php?value={}&nation=CN&type=mobile",
+        "email_url" : "https://login.51job.com/ajax/checkinfo.php?value={}&type=useremail",
+        "user_url" : "",
+        "method" : "GET",
         "post_fields":{
-            "type":"mobilePhone",
-            "value":""
         }
     },
 

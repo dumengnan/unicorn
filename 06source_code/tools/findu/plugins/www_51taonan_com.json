@@ -12,7 +12,7 @@
     "request" :{
         "cellphone_url" : "http://www.51taonan.com/index.php?page=ajax_mobile_number&mobile_number={}",
         "email_url" : "http://www.51taonan.com/index.php?page=ajax_email&email={}",
-        "user_url" : "http://www.51taonan.com/index.php?page=ajax_mobile_number&mobile_number={}",
+        "user_url" : "",
         "method" : "GET",
         "post_fields":{
 
