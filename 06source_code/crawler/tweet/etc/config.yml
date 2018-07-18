@@ -22,6 +22,9 @@ friends:
 proxy:
     - 127.0.0.1:1080
 
+stat_dir:
+  /opt/uni_stat
+  
 keys:
     - vAqeRGkY2KGTYnJDN89TWbyI3,JJ8nXRmqDnJSbC6GEpStL9W2tRe55yfdBbZhtEuao64RX8wePT,923829528610217986-sPoePUiErqSmKdGzTpxvw4umSwa2xtW,hhjy19vlksPqBMNBK32Eyk3NLyDeK8SUDO4TBWywYstg9
     - o4gBbWlEupcTmBOXZoCEYXVB8,pLVnNV6h9ak1KV30IADUAjQGgZQRxhEcHW1bzVlZiHYYrROmRg,923833894104850432-SJnuv55wzynhiTxY1k5H7PbRj3vew0U,chbXjnHoXfiT1MoZ4NOsmkreJmKl8BaMQmJSAZaMub011

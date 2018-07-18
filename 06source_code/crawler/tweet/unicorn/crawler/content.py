@@ -26,6 +26,8 @@ file_prefix = "uni-twitter_content-"
 comment_prefix = "uni-twitter_comment-"
 
 
+lines_num = 0
+
 def get_user_register_time(username):
     try:
         twitter, count, key_index = get_twitter_auth(15, 0, 0)
@@ -140,8 +142,13 @@ def write_content_to_file(content_file, tweet_list, screen_name):
     :param tweet_list:
     :return:
     """
+    social_type = "twitter"
     redis_host = get_config()['redis']['host']
     bf = BloomFilter(host=redis_host, key='status')
+    if lines_num > 100000:
+        content_file = os.path.join(os.path.dirname(content_file), get_file_name(file_prefix))
+        lines_num = 0
+        
     with open(content_file, "a+") as f_out:
         for content in tweet_list:
             # 对数据进行去重
@@ -150,7 +157,8 @@ def write_content_to_file(content_file, tweet_list, screen_name):
                 continue
             else:
                 bf.insert(content.status_id)
-                f_out.write(repr(content) + "\t" + screen_name + "\t" +
+                lines_num = lines_num + 1
+                f_out.write(repr(content) + "\t" + screen_name + "\t" + social_type + "\t" + \
                             get_crawl_time() + "\n")
 
 
@@ -235,14 +243,10 @@ def main(args):
     parser = argparse.ArgumentParser(description=
                                      "Simple Twitter Profile Analyzer", usage='--input <twitter_user_input_file>')
 
-    parser.add_argument("--i", "--input", dest="input", type=str,
-                        default="twitter_user.txt", help="The input file")
-
-    parser.add_argument("--o", "--output", dest="output", type=str,
-                        default="twitter_profile_analyzer.txt", help="analyzer result txt")
+    parser.add_argument("--i", "--input-file", dest="input", type=str, help="The input file")
 
     parser.add_argument("--u", "--update_time", dest="update", type=str,
-                        help="Last update time")
+                        help="Last update time %Y%m%d%H%M%S")
 
     parser.add_argument("--a", "--all", dest="all", type=bool, default=False,
                         help="crawl all tweet no use api")

@@ -3,6 +3,7 @@
 
 import re
 import time
+import random
 from datetime import datetime
 
 
@@ -15,10 +16,10 @@ def get_crawl_time():
 
 
 # 生成文件名
-def get_file_name(prefix):
-    current_time = get_current_time()
+def get_file_name(module_name):
+    current_time = get_current_time() + str(random.randint(0,100))
 
-    file_name = prefix + current_time + ".bcp"
+    file_name = "uni-" + module_name + "-" + current_time + ".bcp"
     return file_name
 
 
