@@ -5,16 +5,15 @@ import argparse
 import requests
 import json
 import logging
-import os
 import unicorn.utils.select_useragent as select_useragent
 import unicorn.crawlernoapi.main as noapi_main
-from time import time
 from unicorn.crawlernoapi.tweet import Tweet
 from unicorn.crawlernoapi.comment.comment import crawl_single_comment
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import *
 from unicorn.redis.redis_bloom import BloomFilter
 from unicorn.utils.get_random_key import get_twitter_auth
+from file_writer import FileWriter
 
 
 URL = "https://www.allmytweets.net/get_tweets.php?include_rts=true& \
@@ -135,7 +134,7 @@ def get_status_id_list(tweet_list):
     return id_list
 
 
-def write_content_to_file(content_file, tweet_list, screen_name):
+def write_content_to_file(content_file_writer, tweet_list, screen_name):
     """
     将所有的推文内容写入到文件
     :param content_file:
@@ -145,24 +144,18 @@ def write_content_to_file(content_file, tweet_list, screen_name):
     social_type = "twitter"
     redis_host = get_config()['redis']['host']
     bf = BloomFilter(host=redis_host, key='status')
-    if lines_num > 100000:
-        content_file = os.path.join(os.path.dirname(content_file), get_file_name(file_prefix))
-        lines_num = 0
-        
-    with open(content_file, "a+") as f_out:
-        for content in tweet_list:
-            # 对数据进行去重
-            if bf.isContains(content.status_id):
-                logging.info("The status Exists for " + content.status_id)
-                continue
-            else:
-                bf.insert(content.status_id)
-                lines_num = lines_num + 1
-                f_out.write(repr(content) + "\t" + screen_name + "\t" + social_type + "\t" + \
-                            get_crawl_time() + "\n")
+    for content in tweet_list:
+        # 对数据进行去重
+        if bf.isContains(content.status_id):
+            logging.info("The status Exists for " + content.status_id)
+            continue
+        else:
+            bf.insert(content.status_id)
+            content_file_writer.append_line(repr(content) + "\t" + screen_name + "\t" + social_type + "\t" + \
+                            get_crawl_time())
 
 
-def write_comment_to_file(source_status_id, file_name, comment_list):
+def write_comment_to_file(source_status_id, comments_file_writer, comment_list):
     """
     将所有的评论内容写入到文件
     :param source_status_id:
@@ -170,14 +163,13 @@ def write_comment_to_file(source_status_id, file_name, comment_list):
     :param comment_list:
     :return:
     """
-    with open(file_name, "a+") as f_comment:
-        for comment in comment_list:
-            for single_comment in comment:
-                line = single_comment.status_id + "\treply\t" + source_status_id
-                f_comment.write(line + "\n")
+    for comment in comment_list:
+        for single_comment in comment:
+            line = single_comment.status_id + "\treply\t" + source_status_id
+            comments_file_writer.append_line(line)
 
 
-def crawl_comments(options, screen_name, status_id_list, content_file):
+def crawl_comments(options, screen_name, status_id_list, content_file_writer):
     """
     抓取所有的评论内容
     :param options:
@@ -186,12 +178,12 @@ def crawl_comments(options, screen_name, status_id_list, content_file):
     :param content_file:
     :return:
     """
-    comments_file = os.path.join(options.output, get_file_name(comment_prefix))
+    comments_file_writer =  FileWriter(100000, "twitter_comments", options.output)
     for status_id in status_id_list:
         comment_list = crawl_single_comment(screen_name, status_id)
-        write_comment_to_file(status_id, comments_file, comment_list)
+        write_comment_to_file(status_id, comments_file_writer, comment_list)
         for comm_list in comment_list:
-            write_content_to_file(content_file, comm_list, screen_name)
+            write_content_to_file(content_file_writer, comm_list, screen_name)
 
 
 def crawl_twitter_content(options):
@@ -200,26 +192,26 @@ def crawl_twitter_content(options):
     :param options:
     :return:
     """
-    content_file = os.path.join(options.output, get_file_name(file_prefix))
+    content_file_writer = FileWriter(100000, "twitter_content", options.output) 
     with open(options.input, "r") as input_f:
         for user_name in input_f:
             try:
                 pre_tweets, last_tweet_time = crawl_content_withapi(user_name.strip(), options)
                 tweet_list = trans_json_to_tweet(pre_tweets)
                 logging.info("Get {} Tweets From Api".format(str(len(tweet_list))))
-                write_content_to_file(content_file, tweet_list, user_name)
+                write_content_to_file(content_file_writer, tweet_list, user_name)
 
                 if options.all and len(tweet_list) >= 3200:
                     logging.info("Start Crawl Status Not Use Api!")
                     new_tweet_list = crawl_content_noapi(user_name.strip(), last_tweet_time)
-                    write_content_to_file(content_file, new_tweet_list, user_name)
+                    write_content_to_file(content_file_writer, new_tweet_list, user_name)
                     logging.info("Get {} Tweets From No Api".format(str(len(new_tweet_list))))
                     tweet_list.append(new_tweet_list)
 
                 if options.comment:
                     status_id_list = get_status_id_list(tweet_list)
                     logging.info("Start Crawl Comment" + str(len(status_id_list)))
-                    crawl_comments(options, user_name.strip(), status_id_list, content_file)
+                    crawl_comments(options, user_name.strip(), status_id_list, content_file_writer)
 
             except Exception as e:
                 print "Have Exception %s" % e

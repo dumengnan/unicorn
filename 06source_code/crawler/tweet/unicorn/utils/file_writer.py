@@ -55,6 +55,6 @@ class FileWriter(object):
             
         stat_file = os.path.join(stat_dir, uni_util.get_file_name("stat_flow"))
         with open(stat_file, "w") as f_stat:
-            f_stat.write(uni_util.get_current_time() + "\t" + self.module_name + "\t" + str(self.fix_line_number))
+            f_stat.write(uni_util.get_crawl_time() + "\t" + self.module_name + "\t" + str(self.fix_line_number))
         
         
