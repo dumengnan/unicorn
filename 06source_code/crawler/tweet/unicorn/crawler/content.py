@@ -21,9 +21,6 @@ URL = "https://www.allmytweets.net/get_tweets.php?include_rts=true& \
 
 RELOAD_URL = URL + "&max_id={max_id}"
 
-file_prefix = "uni-twitter_content-"
-comment_prefix = "uni-twitter_comment-"
-
 
 lines_num = 0
 

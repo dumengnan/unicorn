@@ -14,8 +14,6 @@ from unicorn.redis.redis_bloom import BloomFilter
 from file_writer import FileWriter
 
 
-output_file_prefix = "uni-twitter_info-"
-
 # api的限制速度 15分钟 900次
 api_rate_limit = 900
 
