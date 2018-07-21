@@ -13,7 +13,7 @@ from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import *
 from unicorn.redis.redis_bloom import BloomFilter
 from unicorn.utils.get_random_key import get_twitter_auth
-from file_writer import FileWriter
+from unicorn.utils.file_writer import FileWriter
 
 
 URL = "https://www.allmytweets.net/get_tweets.php?include_rts=true& \
@@ -110,7 +110,7 @@ def trans_json_to_tweet(tweet_json_arr):
             device = parse_device_from_str(source)
             create_time = format_content_time_to_minute(content["created_at"])
 
-            text = content["text"].encode("utf-8").replace("\n", " ")
+            text = content["text"].strip().encode("utf-8").replace("\n", " ")
 
             tweet = Tweet(user_id, create_time, status_id, \
                           lang, device, retweet_count, favorite_count, geo, place, text)
@@ -148,8 +148,8 @@ def write_content_to_file(content_file_writer, tweet_list, screen_name):
             continue
         else:
             bf.insert(content.status_id)
-            content_file_writer.append_line(repr(content) + "\t" + screen_name + "\t" + social_type + "\t" + \
-                            get_crawl_time())
+            line_str = repr(content) + "\t" + screen_name + "\t" + social_type + "\t" + get_crawl_time()
+            content_file_writer.append_line(line_str)
 
 
 def write_comment_to_file(source_status_id, comments_file_writer, comment_list):
@@ -181,7 +181,8 @@ def crawl_comments(options, screen_name, status_id_list, content_file_writer):
         write_comment_to_file(status_id, comments_file_writer, comment_list)
         for comm_list in comment_list:
             write_content_to_file(content_file_writer, comm_list, screen_name)
-
+    
+    comments_file_writer.close()
 
 def crawl_twitter_content(options):
     """
@@ -193,6 +194,7 @@ def crawl_twitter_content(options):
     with open(options.input, "r") as input_f:
         for user_name in input_f:
             try:
+                user_name = user_name.strip()
                 pre_tweets, last_tweet_time = crawl_content_withapi(user_name.strip(), options)
                 tweet_list = trans_json_to_tweet(pre_tweets)
                 logging.info("Get {} Tweets From Api".format(str(len(tweet_list))))
@@ -213,7 +215,9 @@ def crawl_twitter_content(options):
             except Exception as e:
                 print "Have Exception %s" % e
 
-
+    content_file_writer.close()
+    
+    
 def get_options(parser):
     """
     解析 所有的参数
@@ -230,12 +234,12 @@ def get_options(parser):
 
 def main(args):
     parser = argparse.ArgumentParser(description=
-                                     "Simple Twitter Profile Analyzer", usage='--input <twitter_user_input_file>')
+                                     "Simple Twitter Content Crawler", usage='--input-file <twitter_user_input_file>')
 
     parser.add_argument("--i", "--input-file", dest="input", type=str, help="The input file")
 
     parser.add_argument("--u", "--update_time", dest="update", type=str,
-                        help="Last update time %Y%m%d%H%M%S")
+                        help="Last update time eg: 2018060623121100")
 
     parser.add_argument("--a", "--all", dest="all", type=bool, default=False,
                         help="crawl all tweet no use api")

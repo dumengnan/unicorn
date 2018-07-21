@@ -11,7 +11,7 @@ from unicorn.utils.get_random_key import get_twitter_auth
 from unicorn.utils.get_config import get_config
 from unicorn.utils.uni_util import get_crawl_time
 from unicorn.redis.redis_bloom import BloomFilter
-from file_writer import FileWriter
+from unicorn.utils.file_writer import FileWriter
 
 # api的限制速度 15分钟 15次
 api_rate_limit = 15

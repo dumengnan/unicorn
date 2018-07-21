@@ -44,7 +44,9 @@ class FileWriter(object):
         self.lines_num = self.lines_num + 1
                
     def close(self):
+        self.write_to_stat()
         self.f_output.close()
+        os.rename(self.tmp_file, os.path.join(self.output_dir, self.tmp_file))
         self.lines_num = 0
         
         
@@ -55,6 +57,6 @@ class FileWriter(object):
             
         stat_file = os.path.join(stat_dir, uni_util.get_file_name("stat_flow"))
         with open(stat_file, "w") as f_stat:
-            f_stat.write(uni_util.get_crawl_time() + "\t" + self.module_name + "\t" + str(self.fix_line_number))
+            f_stat.write(uni_util.get_crawl_time() + "\t" + self.module_name + "\t" + str(self.lines_num))
         
         
