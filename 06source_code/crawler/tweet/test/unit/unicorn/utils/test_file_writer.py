@@ -6,7 +6,7 @@
 import unittest
 import os
 import glob
-from file_writer import FileWriter
+from unicorn.utils.file_writer import FileWriter
 
 
 class Test(unittest.TestCase):
