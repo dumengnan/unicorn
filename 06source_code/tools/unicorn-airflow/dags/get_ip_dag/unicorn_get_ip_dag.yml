@@ -1,0 +1,21 @@
+doc_md: >
+     Get The real time Ip.
+
+ # 每30分钟执行1次
+schedule_interval: '*/30 * * * *'
+
+default_args:
+   owner: unicorn
+   email_on_retry: False
+   email_on_failure: False
+   retries: 1
+   params:
+       time_out: 86400
+
+task1_cmd: 'python /opt/get-ip/AutoGetIp.py'
+
+
+
+
+
+
