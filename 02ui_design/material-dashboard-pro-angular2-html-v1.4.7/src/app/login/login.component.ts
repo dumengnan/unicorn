@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef,ViewChild } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 
 import { AuthService } from '../auth/auth.service';
@@ -15,6 +15,9 @@ export class LoginComponent implements OnInit {
     private toggleButton: any;
     private sidebarVisible: boolean;
     private nativeElement: Node;
+
+    @ViewChild('username') username: ElementRef;
+    @ViewChild('password') password: ElementRef;
 
     constructor(private element: ElementRef, public authService: AuthService, public router: Router) {
         this.nativeElement = element.nativeElement;
@@ -47,7 +50,7 @@ export class LoginComponent implements OnInit {
         }
     }
     login() {
-        this.authService.login('a@b.com', '111111').subscribe(() => {
+        this.authService.login(this.username.nativeElement.value, this.password.nativeElement.value).subscribe(() => {
             if (this.authService.isLoggedIn) {
                 // Get the redirect URL from our auth service
                 // If no redirect has been set, use the default
