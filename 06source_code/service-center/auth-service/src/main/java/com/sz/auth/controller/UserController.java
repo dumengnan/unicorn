@@ -1,7 +1,6 @@
 package com.sz.auth.controller;
 
 import com.sz.auth.domain.User;
-import com.sz.auth.service.UserService;
 import com.sz.auth.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

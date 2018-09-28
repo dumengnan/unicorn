@@ -1,16 +1,27 @@
 package com.sz.auth.domain;
 
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
+@Entity
+@Table(name = "user")
 public class User implements UserDetails {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 	private String username;
 
 	private String password;
+	private String remark;
 
 	@Override
 	public String getPassword() {
@@ -22,6 +33,21 @@ public class User implements UserDetails {
 		return username;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
 	@Override
 	public List<GrantedAuthority> getAuthorities() {
