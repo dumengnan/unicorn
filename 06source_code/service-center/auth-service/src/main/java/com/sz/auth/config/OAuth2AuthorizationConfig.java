@@ -40,8 +40,6 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         this.customClientDetails = customClientDetails;
     }
 
-    @Autowired
-    private Environment env;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -59,8 +57,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer
                 .tokenKeyAccess("permitAll()")
-                .checkTokenAccess("isAuthenticated()")
-                .passwordEncoder(NoOpPasswordEncoder.getInstance());
+                .checkTokenAccess("isAuthenticated()");
     }
     
     @Bean
@@ -86,17 +83,4 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         // converter.setKeyPair(keyStoreKeyFactory.getKeyPair("mytest"));
         return converter;
     }
-
-
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-        dataSource.setUrl(env.getProperty("spring.datasource.url"));
-        dataSource.setUsername(env.getProperty("spring.datasource.username"));
-        dataSource.setPassword(env.getProperty("spring.datasource.password"));
-        return dataSource;
-    }
-    
 }

@@ -12,8 +12,7 @@ current_dir="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 MYAPPLICATION_HOME="$current_dir"/..
 
 if [ "x$MYAPPLICATION_INCLUDE" = "x" ]; then
-    for include in  /opt/piggy/auth-service/piggy-auth.in.sh \
-                   $MYAPPLICATION_HOME/bin/piggy-auth.in.sh; do
+    for include in $MYAPPLICATION_HOME/bin/myapp.in.sh; do
         if [ -r $include ]; then
             . $include
             break
