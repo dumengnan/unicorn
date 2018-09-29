@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.transation.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional

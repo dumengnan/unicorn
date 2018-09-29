@@ -26,5 +26,7 @@ INSERT INTO oauth_client_details
     web_server_redirect_uri, authorities, access_token_validity,
     refresh_token_validity, additional_information, auto_approve)
 VALUES
-    ("browser", "browser", null, false, "ui",
+    ("browser", "browser", false, "ui",
     "password,refresh_token", null, null, 36000, 36000, null, true);
+
+INSERT INTO user(id,username,password) VALUES (1,"hello", "$2a$10$pgrtfybAessgOBrwNFtsr.CckL6kFC1IOx543Jtv9MpfcdPmP4b62");

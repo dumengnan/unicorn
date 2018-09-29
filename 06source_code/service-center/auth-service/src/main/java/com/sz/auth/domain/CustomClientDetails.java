@@ -1,11 +1,5 @@
 package com.sz.auth.domain;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -23,11 +17,106 @@ public class CustomClientDetails {
     private boolean secretRequired;
     private String scope;
     private String authorizedGrantTypes;
-    private Set<String> registeredRedirectUri;
-    private Collection<String> authorities;
+    private String webServerRedirectUri;
+    private String authorities;
     private Integer accessTokenValidity;
-    private  Integer refreshTokenValidity;
+    private Integer refreshTokenValidity;
     private boolean autoApprove;
     private String additionalInformation;
 
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public String getResourceIds() {
+        return resourceIds;
+    }
+
+    public void setResourceIds(String resourceIds) {
+        this.resourceIds = resourceIds;
+    }
+
+    public boolean isSecretRequired() {
+        return secretRequired;
+    }
+
+    public void setSecretRequired(boolean secretRequired) {
+        this.secretRequired = secretRequired;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public String getAuthorizedGrantTypes() {
+        return authorizedGrantTypes;
+    }
+
+    public void setAuthorizedGrantTypes(String authorizedGrantTypes) {
+        this.authorizedGrantTypes = authorizedGrantTypes;
+    }
+
+    public String getWebServerRedirectUri() {
+        return webServerRedirectUri;
+    }
+
+    public void setWebServerRedirectUri(String webServerRedirectUri) {
+        this.webServerRedirectUri = webServerRedirectUri;
+    }
+
+    public String getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(String authorities) {
+        this.authorities = authorities;
+    }
+
+    public Integer getAccessTokenValidity() {
+        return accessTokenValidity;
+    }
+
+    public void setAccessTokenValidity(Integer accessTokenValidity) {
+        this.accessTokenValidity = accessTokenValidity;
+    }
+
+    public Integer getRefreshTokenValidity() {
+        return refreshTokenValidity;
+    }
+
+    public void setRefreshTokenValidity(Integer refreshTokenValidity) {
+        this.refreshTokenValidity = refreshTokenValidity;
+    }
+
+    public boolean isAutoApprove() {
+        return autoApprove;
+    }
+
+    public void setAutoApprove(boolean autoApprove) {
+        this.autoApprove = autoApprove;
+    }
+
+    public String getAdditionalInformation() {
+        return additionalInformation;
+    }
+
+    public void setAdditionalInformation(String additionalInformation) {
+        this.additionalInformation = additionalInformation;
+    }
 }
