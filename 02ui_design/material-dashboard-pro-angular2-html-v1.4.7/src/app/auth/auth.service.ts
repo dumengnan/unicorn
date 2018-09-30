@@ -14,6 +14,15 @@ export interface ItemResponse {
     jti: string    
 }
 
+export interface currtUserItem {
+    aud: Array<string>,
+    exp: string,
+    user_name:string,
+    jti:string,
+    client_id:string,
+    scope: Array<string>
+}
+
 @Injectable()
 export class AuthService {
 
@@ -27,26 +36,35 @@ export class AuthService {
 
 
     login(username: string, password: string): Observable<ItemResponse> {
-        this.loginUrl =  "http://localhost:16003/uaa/oauth/token";
+        this.loginUrl =  "http://192.168.0.6:16003/uaa/oauth/token";
         const headers = new HttpHeaders({'Content-Type' : 'application/x-www-form-urlencoded', 
-        'Authorization' : 'Basic YnJvd3Nlcjo=',
-        'Access-Control-Allow-Origin' : '*'});
-        let body = {
-            'username':username,
-            'password':password,
-            'scope':'ui',
-            'grant_type':'password'
-        }
-        // const body = new HttpParams()
-        //     .set('username', username)
-        //     .set('password', password)
-        //     .set('scope', 'ui')
-        //     .set('grant_type', 'password');
-
-        console.log("The username is  %s %s", username, body);
+        'Authorization' : 'Basic YnJvd3Nlcjo='});
+        const body = new HttpParams()
+            .set('username', username)
+            .set('password', password)
+            .set('scope', 'ui')
+            .set('grant_type', 'password');
         
-        return this.http.post<ItemResponse>(this.loginUrl, body, { headers: headers, withCredentials: true});
-        // return Observable.of(true).delay(1000).do(val => this.isLoggedIn = true);
+        return this.http.post<ItemResponse>(this.loginUrl, body, { headers: headers});
+    }
+
+    currentUser(token: string): any {
+        const checkCurrentUrl = "http://192.168.0.6:16003/uaa/oauth/check_token";
+        const headers = new HttpHeaders({'Content-Type' : 'application/x-www-form-urlencoded', 
+        'Authorization' : 'Basic YnJvd3Nlcjo='});
+
+        const body = new HttpParams()
+        .set('token', token);
+
+        let username;
+        this.http.post<currtUserItem>(checkCurrentUrl,body, { headers: headers}).subscribe(
+            data => {
+                console.log(data.user_name);
+                console.log(data.client_id);
+            }
+        );
+
+        return username;
     }
 
     logout(): void {
