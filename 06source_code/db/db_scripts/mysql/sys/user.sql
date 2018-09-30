@@ -2,7 +2,7 @@ CREATE TABLE user(
     id int(11) NOT NULL PRIMARY KEY auto_increment, 
 	username varchar(100) ,
 	password varchar(100), 
-	remark varchar(100),
+	remark varchar(100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
