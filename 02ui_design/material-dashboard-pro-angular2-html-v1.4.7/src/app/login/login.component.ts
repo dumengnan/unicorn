@@ -50,7 +50,8 @@ export class LoginComponent implements OnInit {
         }
     }
     login() {
-        this.authService.login(this.username.nativeElement.value, this.password.nativeElement.value).subscribe(() => {
+        this.authService.login(this.username.nativeElement.value, this.password.nativeElement.value).subscribe(data => {
+            console.log("The token is " + data.access_token);
             if (this.authService.isLoggedIn) {
                 // Get the redirect URL from our auth service
                 // If no redirect has been set, use the default
