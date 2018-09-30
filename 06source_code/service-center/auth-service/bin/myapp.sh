@@ -49,6 +49,7 @@ esac
 # 默认后台启动
 # The option will tell MYAPPLICATIONDaemon not
 # to close stdout/stderr, but it's up to us not to background.
+daemonized=false
 if [ "x$daemonized" != "x" ]; then
     exec $JAVA $JAVA_OPTS  -cp $MYAPPLICATION_CLASSPATH -DrootDir=$MYAPPLICATION_HOME \
             org.springframework.boot.loader.JarLauncher  "$@"
