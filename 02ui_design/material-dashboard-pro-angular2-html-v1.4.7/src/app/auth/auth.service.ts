@@ -36,7 +36,7 @@ export class AuthService {
 
 
     login(username: string, password: string): Observable<ItemResponse> {
-        this.loginUrl =  "http://192.168.0.6:16003/uaa/oauth/token";
+        this.loginUrl =  window.location.host + "/uaa/oauth/token";
         const headers = new HttpHeaders({'Content-Type' : 'application/x-www-form-urlencoded', 
         'Authorization' : 'Basic YnJvd3Nlcjo='});
         const body = new HttpParams()

@@ -52,22 +52,26 @@ export class LoginComponent implements OnInit {
     login() {
         this.authService.login(this.username.nativeElement.value, this.password.nativeElement.value).subscribe(data => {
             localStorage.setItem('token', data.access_token);
-            if (this.authService.isLoggedIn) {
-                // Get the redirect URL from our auth service
-                // If no redirect has been set, use the default
-                const redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/dashboard';
+            // Get the redirect URL from our auth service
+            // If no redirect has been set, use the default
+            const redirect = this.authService.redirectUrl ? this.authService.redirectUrl : '/dashboard';
 
-                // Set our navigation extras object
-                // that passes on our global query params and fragment
-                const navigationExtras: NavigationExtras = {
+            // Set our navigation extras object
+            // that passes on our global query params and fragment
+            const navigationExtras: NavigationExtras = {
                     queryParamsHandling: 'preserve',
                     preserveFragment: true
-                };
+            };
 
                 // Redirect the user
-                this.router.navigate([redirect], navigationExtras);
-            }
+            this.router.navigate([redirect], navigationExtras);
+        },
+        (error) => { 
+            const navigationExtras: NavigationExtras = {
+                queryParamsHandling: 'preserve',
+                preserveFragment: true
+            };
+            this.router.navigate(['/dashboard'], navigationExtras);
         });
-
     }
 }
