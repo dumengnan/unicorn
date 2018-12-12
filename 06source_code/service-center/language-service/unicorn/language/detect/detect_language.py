@@ -9,22 +9,16 @@ Created on 2018
 '''
 import logging
 from flask import request
-from flask_restful import Resource
-from langdetect import detect
-
-class DetectLanguage(Resource):
-    '''
-    classdocs
-    '''
+from unicorn.language.app import app
 
 
-    def post(self):
-        '''
-        Constructor
-        '''
-        param = request.get_json(force=True)
-        text = param["text"]
-        text = "u\"" + text + "\""
-        logging.info("Detect Text " + text)
-        lang = detect(text)
-        return {'lang': lang}
+@app.route('/language/detect', methods=['POST'])
+def detect_text():
+    if not request.json or not 'text' in request.json:
+        abort(400)
+
+    input_text = request.json.get("text", "")
+    lang = detect(input_text)
+    logging.info("Detect Text " + input_text + ", Lang is " + lang)
+    return jsonify({'lang': lang})
+
