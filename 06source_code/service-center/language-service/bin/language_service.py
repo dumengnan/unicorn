@@ -11,10 +11,7 @@ from unicorn.language.app\
 
 if __name__ == '__main__':
     try:
-        reload(sys)
-        # unicode 转换成utf-8必须设置
-        sys.setdefaultencoding("utf-8")  # @UndefinedVariable
-        languae_main(sys.argv[1:])
+        languae_main()
     except Exception as ex:
         logging.exception("main except")
         os._exit(1)

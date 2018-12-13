@@ -36,21 +36,21 @@ def _copytree(src, dst, ignore=None):
                 shutil.copytree(srcname, dstname, ignore=ignore)
             else:
                 shutil.copy2(srcname, dstname)
-        except shutil.Error, err:
+        except shutil.Error as err:
             errors.extend(err.args[0])
-        except EnvironmentError, why:
+        except EnvironmentError as why:
             errors.append(srcname, dstname, str(why))
 
     try:
         shutil.copystat(src, dst)
-    except OSError, why:
+    except OSError as why:
         if WindowsError is not None and isinstance(why, WindowsError):
             pass
         else:
             errors.extend((src, dst, str(why)))
 
     if errors:
-        raise shutil.Error, errors
+        raise shutil.Error(errors)
 
 
 def _zip_file(target_dir):
