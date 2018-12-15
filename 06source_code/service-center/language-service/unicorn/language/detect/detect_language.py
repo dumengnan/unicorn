@@ -8,11 +8,11 @@ Created on 2018
 @author: Administrator
 '''
 import logging
-from flask import request
-from unicorn.language.app import app
+from flask import request, Blueprint
 
+detect_language_api = Blueprint('detect_language_api', __name__, template_folder='templates')
 
-@app.route('/language/detect', methods=['POST'])
+@detect_language_api.route('/language/detect', methods=['POST'])
 def detect_text():
     if not request.json or not 'text' in request.json:
         abort(400)
