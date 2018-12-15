@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 from flask import Flask
-from unicron.language.detect.detect_language import detect_language_api
+from unicorn.language.detect.detect_language import detect_language_api
 
 
 app = Flask(__name__)
