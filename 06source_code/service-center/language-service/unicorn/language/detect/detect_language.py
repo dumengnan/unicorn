@@ -8,7 +8,8 @@ Created on 2018
 @author: Administrator
 '''
 import logging
-from flask import request, Blueprint
+from flask import request, Blueprint, abort, jsonify
+from langdetect import detect
 
 detect_language_api = Blueprint('detect_language_api', __name__, template_folder='templates')
 
