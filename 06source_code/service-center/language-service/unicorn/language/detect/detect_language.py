@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 
 
@@ -12,6 +12,7 @@ from flask import request, Blueprint, abort, jsonify
 from langdetect import detect
 
 detect_language_api = Blueprint('detect_language_api', __name__, template_folder='templates')
+
 
 @detect_language_api.route('/language/detect', methods=['POST'])
 def detect_text():
