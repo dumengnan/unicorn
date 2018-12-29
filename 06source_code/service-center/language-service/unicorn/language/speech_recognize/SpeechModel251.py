@@ -43,17 +43,6 @@ class ModelSpeech(): # 语音模型类
 		self._model, self.base_model = self.CreateModel() 
 		
 		self.datapath = datapath
-		self.slash = ''
-		system_type = plat.system() # 由于不同的系统的文件路径表示不一样，需要进行判断
-		if(system_type == 'Windows'):
-			self.slash='\\' # 反斜杠
-		elif(system_type == 'Linux'):
-			self.slash='/' # 正斜杠
-		else:
-			print('*[Message] Unknown System\n')
-			self.slash='/' # 正斜杠
-		if(self.slash != self.datapath[-1]): # 在目录路径末尾增加斜杠
-			self.datapath = self.datapath + self.slash
 	
 		
 	def CreateModel(self):
