@@ -58,6 +58,10 @@
 	   <ant antfile="build.xml" target="release" dir="tools" inheritAll="false"/>
 	   <ant antfile="build.xml" target="release" dir="doc" inheritAll="false"/>
 	   
+	   	<copy todir="${release.dir}/${release.name}" overwrite="true" >
+            <fileset file="doc/build/*.tar.gz"/>
+        </copy> 
+
 	   <copy todir="${release.dir}/${release.name}" overwrite="true" >
             <fileset file="crawler/build/*.tar.gz"/>
         </copy>  
