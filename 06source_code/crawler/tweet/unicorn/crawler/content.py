@@ -139,15 +139,21 @@ def write_content_to_file(content_file_writer, tweet_list, screen_name):
     :return:
     """
     social_type = "twitter"
-    redis_host = get_config()['redis']['host']
-    bf = BloomFilter(host=redis_host, key='status')
+    use_redis = get_config()['redis']['use']
+    if use_redis:
+        redis_host = get_config()['redis']['host']
+        bf = BloomFilter(host=redis_host, key='status')
     for content in tweet_list:
         # 对数据进行去重
-        if bf.isContains(content.status_id):
-            logging.info("The status Exists for " + content.status_id)
-            continue
+        if use_redis:
+            if bf.isContains(content.status_id):
+                logging.info("The status Exists for " + content.status_id)
+                continue
+            else:
+                bf.insert(content.status_id)
+                line_str = repr(content) + "\t" + screen_name + "\t" + social_type + "\t" + get_crawl_time()
+                content_file_writer.append_line(line_str)
         else:
-            bf.insert(content.status_id)
             line_str = repr(content) + "\t" + screen_name + "\t" + social_type + "\t" + get_crawl_time()
             content_file_writer.append_line(line_str)
 
@@ -236,7 +242,7 @@ def main(args):
     parser = argparse.ArgumentParser(description=
                                      "Simple Twitter Content Crawler", usage='--input-file <twitter_user_input_file>')
 
-    parser.add_argument("--i", "--input-file", dest="input", type=str, help="The input file")
+    parser.add_argument("--i", "--input-file", dest="input", type=str, help="The input file of list users line by line")
 
     parser.add_argument("--u", "--update_time", dest="update", type=str,
                         help="Last update time eg: 2018060623121100")

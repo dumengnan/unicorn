@@ -31,7 +31,9 @@ def get_user_id_str(twitter, username):
 def crawl_followers(options):
     count = 0
     key_index = 0
-    bf = BloomFilter(host=options.redis_host, key='users')
+    use_redis = get_config()['redis']['use']
+    if use_redis:
+        bf = BloomFilter(host=options.redis_host, key='users')
 
     # 记录他们的关注关系
     followers_file_writer = FileWriter(100000, "twitter_relation", options.output)
@@ -63,11 +65,12 @@ def crawl_followers(options):
                         id_str = follower_user["id_str"]
 
                         # 对数据进行去重
-                        if bf.isContains(id_str):
-                            logging.info("The user Profile Exists for " + id_str)
-                            continue
-                        else:
-                            bf.insert(id_str)
+                        if use_redis:
+                            if bf.isContains(id_str):
+                                logging.info("The user Profile Exists for " + id_str)
+                                continue
+                            else:
+                                bf.insert(id_str)
 
                         name = follower_user["name"].encode("utf-8", 'ignore')
                         screen_name = follower_user["screen_name"]

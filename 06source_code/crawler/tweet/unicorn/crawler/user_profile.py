@@ -19,7 +19,9 @@ api_rate_limit = 900
 
 
 def crawl_user_profile(options):
-    bf = BloomFilter(host=options.redis_host, key='users')
+    use_redis = get_config()['redis']['use']
+    if use_redis:
+        bf = BloomFilter(host=options.redis_host, key='users')
     count = 0
     key_index = 0
     
