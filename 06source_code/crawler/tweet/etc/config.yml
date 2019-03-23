@@ -3,6 +3,7 @@ content:
         /opt/crawler_data/output/content
 
 redis:
+    use: false
     host:
         127.0.0.1
 
