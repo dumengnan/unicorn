@@ -31,7 +31,7 @@
 		</not>
 	</condition>
 	
-	<target name="init" description="init clean dirs">
+	<target name="init" description="init clean dirs" depends="clean">
 		<copy todir="." overwrite="true" filtering="true" encoding="utf-8">
 			<fileset dir=".">
 				<include name="**/pom.xml.in" />
@@ -43,13 +43,31 @@
 		</copy>
     </target>
 
-	<target name="compile" depends="init,clean">
+	<target name="compile" depends="init">
 	<ant antfile="build.xml" target="compile" dir="crawler" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="db" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="tools" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="doc" inheritAll="false"/>
 	  <!-- <ant antfile="build.xml" target="compile" dir="service-center" inheritAll="false"/> -->
+	<exec dir="web" executable="npm" failonerror="true">
+	   <arg value="config"/>
+	   <arg value="set"/>
+	   <arg value="registry"/>
+	   <arg value="https://registry.npm.taobao.org"/>
+    </exec>   
+	
+	<exec dir="web" executable="npm" failonerror="true">
+	   <arg value="install"/>
+	   <arg value="-g"/>
+	   <arg value="@angular/cli"/>
+    </exec>    
+	
+	<exec dir="web" executable="npm" failonerror="true">
+	   <arg value="install"/>
+	   <arg value="--unsafe-perm"/>
+    </exec>    
     </target>
+
 
 	<target name="release" depends="compile">
 	   <mkdir dir="${release.dir}"/>
@@ -58,6 +76,15 @@
 	   <ant antfile="build.xml" target="release" dir="tools" inheritAll="false"/>
 	   <ant antfile="build.xml" target="release" dir="doc" inheritAll="false"/>
 	   
+	   	<exec dir="web" executable="ng" failonerror="true">
+	     <arg value="build"/>
+       </exec>    
+	   
+	    <mkdir dir="${release.dir}/${release.name}/web"/>
+	   	<copy todir="${release.dir}/${release.name}/web" overwrite="true" >
+            <fileset file="web/dist"/>
+        </copy> 
+
 	   	<copy todir="${release.dir}/${release.name}" overwrite="true" >
             <fileset file="doc/build/*.tar.gz"/>
         </copy> 
