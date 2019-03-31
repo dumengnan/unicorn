@@ -48,7 +48,7 @@
 	<ant antfile="build.xml" target="compile" dir="db" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="tools" inheritAll="false"/>
 	<ant antfile="build.xml" target="compile" dir="doc" inheritAll="false"/>
-	  <!-- <ant antfile="build.xml" target="compile" dir="service-center" inheritAll="false"/> -->
+	<ant antfile="build.xml" target="compile" dir="service-center" inheritAll="false"/>
 	<exec dir="web" executable="npm" failonerror="true">
 	   <arg value="config"/>
 	   <arg value="set"/>
@@ -75,7 +75,8 @@
 	   <ant antfile="build.xml" target="release" dir="db" inheritAll="false"/>
 	   <ant antfile="build.xml" target="release" dir="tools" inheritAll="false"/>
 	   <ant antfile="build.xml" target="release" dir="doc" inheritAll="false"/>
-	   
+	   <ant antfile="build.xml" target="release" dir="service-center" inheritAll="false"/>
+   
 	   	<exec dir="web" executable="ng" failonerror="true">
 	     <arg value="build"/>
        </exec>    
@@ -99,6 +100,10 @@
 		
 		<copy todir="${release.dir}/${release.name}" overwrite="true" >
             <fileset file="tools/build/*.tar.gz"/>
+        </copy> 
+		
+		<copy todir="${release.dir}/${release.name}" overwrite="true" >
+            <fileset file="service-center/build/*.tar.gz"/>
         </copy> 
 		
 		<tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}">

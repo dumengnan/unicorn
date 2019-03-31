@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="unicorn-service-center" default="compile" basedir=".">
+    <property file="build.properties"/>
+    <property name="release.name" value="${ant.project.name}-${project.version}"/>
+    <property name="release.dir" value="build"/> 
+
+    <condition property="exe" value=".exe" else=""><os family="windows" /></condition>
+    <condition property="bat" value=".bat" else=""><os family="windows" /></condition>
+    <condition property="cmd" value=".cmd" else=""><os family="windows" /></condition>
+
+    <property name="mvn.exe" value="mvn${cmd}"/> 
+    <property name="tox.exe" value="tox${bat}"/> 
+
+    <condition property="is_redhat_linux">
+        <and>
+            <os family="unix"/>
+            <resourceexists>
+                <file file="/etc/redhat-release"/>
+            </resourceexists>
+        </and>
+    </condition>
+    
+    <condition property="isOsWindows">
+        <os family="windows"/>
+    </condition>
+    
+    <condition property="python.tox.cmd.prefix" value="{envpython} {envbindir}/">
+        <isset property="is_redhat_linux"/>
+    </condition>
+    
+    <condition property="python.tox.cmd.prefix" value="">
+        <not>
+            <isset property="is_redhat_linux"/>
+        </not>
+    </condition>
+    
+    <target name="init" description="init clean dirs">
+        <mkdir dir="${release.dir}"/>
+    </target>
+
+    <target name="compile" depends="init,auth_service_compile,config_service_compile,language_service_compile"> 
+     </target>
+     
+    <target name="auth_service_compile">
+       <exec dir="auth-service" executable="${mvn.exe}" failonerror="true">
+        <arg value="install"/>
+       </exec>    
+     </target>
+
+    <target name="config_service_compile">
+       <exec dir="config-service" executable="${mvn.exe}" failonerror="true">
+           <arg value="install"/>
+       </exec>    
+     </target> 
+
+    <target name="language_service_compile">
+       <exec dir="language-service" executable="${tox.exe}" failonerror="true">
+       </exec>    
+     </target>
+
+     
+    <target name="release" depends="init,auth_service_release,config_service_release, language_service_release">
+        <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}">
+            <tarfileset dir="${release.dir}">
+                <include name="${release.name}"/>
+            </tarfileset>
+            <tarfileset dir="${release.dir}" filemode="755">
+                <include name="**/bin/*"/>
+            </tarfileset>
+        </tar>
+    </target>
+
+    <target name="language_service_release">
+       <exec dir="language-service" executable="${tox.exe}" failonerror="true">
+          <arg value="-e"/>
+          <arg value="py36-release"/>
+       </exec>
+       
+        <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
+            <fileset dir="language-service/build">
+                <include name="*.tar.gz"/>
+            </fileset>
+        </copy>  
+        
+    </target>
+
+    <target name="config_service_release">
+       <exec dir="config-service" executable="${mvn.exe}" failonerror="true">
+          <arg value="install"/>
+       </exec>
+       
+        <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
+            <fileset dir="config-service/target">
+                <include name="*.tar.gz"/>
+            </fileset>
+        </copy>  
+        
+    </target>
+    
+    <target name="auth_service_release">
+       <exec dir="auth-service" executable="${mvn.exe}" failonerror="true">
+          <arg value="install"/>
+       </exec>
+       
+        <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
+            <fileset dir="auth-service/target">
+                <include name="*.tar.gz"/>
+            </fileset>
+        </copy>  
+        
+    </target>
+
+    <target name="clean" >
+        <delete dir="language-service/.tox" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false" />
+        <delete dir="language-service/build" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="auth-service/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="config-service/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="${release.dir}"/>
+    </target>
+
+</project>
