@@ -13,10 +13,8 @@ class Test(unittest.TestCase):
 
 
     def testFileWriter(self):
-        file_writer = FileWriter(2, "twitter-content", ".")
-        
-        file_writer.write_stat = False
-        
+        file_writer = FileWriter(2, "twitter-content", ".", False)
+                
         file_writer.append_line("hello")
         file_writer.append_line("world")
         file_writer.append_line("this is a real world")

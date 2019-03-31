@@ -14,7 +14,7 @@ class FileWriter(object):
     '''
     '''
 
-    def __init__(self, fix_line_number, module_name, output_dir):
+    def __init__(self, fix_line_number, module_name, output_dir, write_stat=True):
         '''
         Constructor
         '''
@@ -26,7 +26,7 @@ class FileWriter(object):
         self.f_output = open(self.tmp_file, 'w')
         self.lines_num = 0
         
-        self.write_stat = True
+        self.write_stat = write_stat
                   
     def append_line(self, line_str):
 
@@ -44,7 +44,8 @@ class FileWriter(object):
         self.lines_num = self.lines_num + 1
                
     def close(self):
-        self.write_to_stat()
+        if self.write_stat:
+            self.write_to_stat()
         self.f_output.close()
         os.rename(self.tmp_file, os.path.join(self.output_dir, self.tmp_file))
         self.lines_num = 0
