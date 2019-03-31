@@ -38,7 +38,7 @@
         <mkdir dir="${release.dir}"/>
     </target>
 
-    <target name="compile" depends="init,unicorn_airflow_compile,unicorn_data_importer_compile,findu_compile"> 
+    <target name="compile" depends="init,unicorn_airflow_compile,findu_compile"> 
      </target>
      
     <target name="unicorn_airflow_compile">
@@ -59,7 +59,7 @@
      
      
      
-    <target name="release" depends="init,unicorn_airflow_release,unicorn_data_importer_release, findu_release">
+    <target name="release" depends="init,unicorn_airflow_release, findu_release">
         <tar destfile="${release.dir}/${release.name}.tar.gz" compression="gzip" basedir="${release.dir}">
             <tarfileset dir="${release.dir}">
                 <include name="${release.name}"/>
