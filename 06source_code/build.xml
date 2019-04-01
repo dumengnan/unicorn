@@ -128,6 +128,7 @@
     	<ant antfile="build.xml" target="clean" dir="db" inheritAll="false"/>
 		<ant antfile="build.xml" target="clean" dir="tools" inheritAll="false"/>
 		<ant antfile="build.xml" target="clean" dir="doc" inheritAll="false"/>
+		<ant antfile="build.xml" target="clean" dir="service-center" inheritAll="false"/>
     </target>
 
 
