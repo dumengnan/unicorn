@@ -78,7 +78,7 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="findu/build">
-                <include name="*.tar.gz"/>
+                <include name="findu/**"/>
             </fileset>
         </copy>  
         
@@ -92,7 +92,7 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="unicorn-airflow/build">
-                <include name="*.tar.gz"/>
+                <include name="unicorn-airflow/**"/>
             </fileset>
         </copy>  
         
