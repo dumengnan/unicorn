@@ -113,10 +113,10 @@
 
     <target name="clean" >
         <delete dir="findu/.tox" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false" />
-        <delete dir="findu/build" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="findu/build" />
         <delete dir="unicorn-airflow/.tox" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false" />
-        <delete dir="unicorn-airflow/build" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
-        <delete dir="data-importer/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="unicorn-airflow/build" />
+        <delete dir="data-importer/target" />
         <delete dir="${release.dir}"/>
     </target>
 
