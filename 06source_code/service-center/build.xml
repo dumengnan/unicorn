@@ -112,9 +112,9 @@
 
     <target name="clean" >
         <delete dir="language-service/.tox" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false" />
-        <delete dir="language-service/build" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
-        <delete dir="auth-service/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
-        <delete dir="config-service/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="language-service/build"/>
+        <delete dir="auth-service/target" />
+        <delete dir="config-service/target" />
         <delete dir="${release.dir}"/>
     </target>
 

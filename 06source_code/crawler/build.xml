@@ -68,7 +68,7 @@
 
     <target name="clean" >
         <delete dir="tweet/.tox" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false" />
-        <delete dir="tweet/build" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="tweet/build"/>
         <delete dir="${release.dir}"/>
     </target>
 
