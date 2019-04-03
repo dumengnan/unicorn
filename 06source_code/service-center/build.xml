@@ -78,7 +78,7 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="language-service/build">
-                <include name="*.tar.gz"/>
+                <include name="language-service/**"/>
             </fileset>
         </copy>  
         
@@ -91,7 +91,7 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="config-service/target">
-                <include name="*.tar.gz"/>
+                <include name="config-service/**"/>
             </fileset>
         </copy>  
         
@@ -104,7 +104,7 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="auth-service/target">
-                <include name="*.tar.gz"/>
+                <include name="auth-service/**"/>
             </fileset>
         </copy>  
         
@@ -112,9 +112,9 @@
 
     <target name="clean" >
         <delete dir="language-service/.tox" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false" />
-        <delete dir="language-service/build" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
-        <delete dir="auth-service/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
-        <delete dir="config-service/target" followSymlinks="false" removeNotFollowedSymlinks="true" failonerror="false"/>
+        <delete dir="language-service/build"/>
+        <delete dir="auth-service/target" />
+        <delete dir="config-service/target" />
         <delete dir="${release.dir}"/>
     </target>
 
