@@ -91,7 +91,7 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="config-service/target">
-                <include name="config-service/**"/>
+                <include name="config-service/config-service/**"/>
             </fileset>
         </copy>  
         
@@ -104,7 +104,7 @@
        
         <copy todir="${release.dir}/${release.name}" overwrite="true" filtering="true" encoding="utf-8">
             <fileset dir="auth-service/target">
-                <include name="auth-service/**"/>
+                <include name="auth-service/auth-service/**"/>
             </fileset>
         </copy>  
         
