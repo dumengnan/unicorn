@@ -8,7 +8,7 @@ Add plugins and their dependencies into the plugins/ folder instead.
 EOF
     exit 1
 fi
-MYAPPLICATION_CLASSPATH=$MYAPPLICATION_HOME/lib/auth-service.jar:$MYAPPLICATION_HOME/etc
+MYAPPLICATION_CLASSPATH=$MYAPPLICATION_HOME/lib/*:$MYAPPLICATION_HOME/etc
 if [ "x$MYAPPLICATION_MIN_MEM" = "x" ]; then
     MYAPPLICATION_MIN_MEM=256m
 fi
