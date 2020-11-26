@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="eladmin" default="compile" basedir=".">
+	<property file="build.properties"/>
+	<property name="release.name" value="${ant.project.name}-${project.version}"/>
+	<property name="release.dir" value="build"/> 
+
+	<condition property="exe" value=".exe" else=""><os family="windows" /></condition>
+	<condition property="bat" value=".bat" else=""><os family="windows" /></condition>
+	<condition property="cmd" value=".cmd" else=""><os family="windows" /></condition>
+
+	<property name="mvn.exe" value="mvn${cmd}"/> 
+	<property name="npm.exe" value="npm${cmd}"/> 
+	<property name="ng.exe" value="ng${cmd}"/> 
+    <condition property="is_redhat_linux">
+		<and>
+			<os family="unix"/>
+			<resourceexists>
+				<file file="/etc/redhat-release"/>
+			</resourceexists>
+		</and>
+	</condition>
+
+	<condition property="isOsWindows">
+		<os family="windows"/>
+	</condition>
+	
+	<condition property="python.tox.cmd.prefix" value="{envpython} {envbindir}/">
+		<isset property="is_redhat_linux"/>
+	</condition>
+	
+	<condition property="python.tox.cmd.prefix" value="">
+		<not>
+		<isset property="is_redhat_linux"/>
+		</not>
+	</condition>
+	
+	<target name="init" description="init clean dirs" depends="clean">
+		<copy todir="." overwrite="true" filtering="true" encoding="utf-8">
+			<fileset dir=".">
+				<include name="**/pom.xml.in" />
+				<include name="**/VERSION.in" />
+				<include name="**/build.properties.in" />
+			</fileset>
+			<regexpmapper from="^(.*)\.in$$" to="\1" />
+			<filterset refid="globalfilterset" />
+		</copy>
+    </target>
+
+	<target name="compile" depends="init">
+	<exec dir="eladmin" executable="${mvn.exe}" failonerror="true">
+	   <arg value="install"/>
+    </exec>
+
+	<exec dir="eladmin-web" executable="${npm.exe}" failonerror="true">
+	   <arg value="config"/>
+	   <arg value="set"/>
+	   <arg value="registry"/>
+	   <arg value="https://registry.npm.taobao.org"/>
+    </exec>   
+	
+	<exec dir="eladmin-web" executable="${npm.exe}" failonerror="true">
+	   <arg value="run"/>
+	   <arg value="build:prod"/>
+    </exec>    
+    </target>
+
+
+	<target name="release" depends="init, compile">
+ 
+	    <mkdir dir="${release.dir}/${release.name}/eladmin-web"/>
+	   	<copy todir="${release.dir}/${release.name}/eladmin-web" overwrite="true" >
+            <fileset file="eladmin-web/dist/**"/>
+        </copy> 
+
+	   	<copy todir="${release.dir}/${release.name}/" overwrite="true" >
+            <fileset file="eladmin/eladmin-system/target/eladmin-system/**"/>
+        </copy> 
+
+    </target>
+
+	<target name="clean">
+		<delete dir="${release.dir}"/>
+    </target>
+
+
+	<filterset id="globalfilterset" begintoken="@" endtoken="@">
+		<filter token="PROJECT_VERSION" value="${project.version}"></filter>
+		<filter token="PROJECT_JAVA_VERSION" value="${project.java.version}"></filter>
+	</filterset>
+	
+	<macrodef name="sed-file">
+		<attribute name="from"/>
+		<attribute name="to"/>
+		<attribute name="encoding" default="utf-8"/>
+		<sequential>
+			<copy file="@{from}" tofile="@{to}" overwrite="true" filtering="true" encoding="@{encoding}">
+				<filterset begintoken="@" endtoken="@">
+					<filter token="VERSION" value="${project.version}"/>
+				</filterset>
+			</copy>
+		</sequential>
+	</macrodef>
+
+</project>
