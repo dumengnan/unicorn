@@ -46,17 +46,19 @@ case "`uname`" in
     ;;
 esac
 
+SPRING_CONFIG="$MYAPPLICATION_HOME/etc/application-prod.yml"
+SPRING_OVERRIDE_CONFIG="$MYAPPLICATION_HOME/etc/application-override.yml"
 # 默认后台启动
 # The option will tell MYAPPLICATIONDaemon not
 # to close stdout/stderr, but it's up to us not to background.
 daemonized=false
 if [ "x$daemonized" != "x" ]; then
     exec $JAVA $JAVA_OPTS  -cp $MYAPPLICATION_CLASSPATH -DrootDir=$MYAPPLICATION_HOME \
-            org.springframework.boot.loader.JarLauncher  "$@"
+            org.springframework.boot.loader.JarLauncher  "$@"  --spring.profiles.active=prod
 # Startup piggy config , background it
 else
     exec $JAVA $JAVA_OPTS  -cp $MYAPPLICATION_CLASSPATH -DrootDir=$MYAPPLICATION_HOME \
-                org.springframework.boot.loader.JarLauncher "$@" <&- &
+                org.springframework.boot.loader.JarLauncher "$@" --spring.profiles.active=prod <&- &
 fi
 
 
