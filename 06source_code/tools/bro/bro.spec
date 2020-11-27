@@ -4,14 +4,14 @@
 %bcond_without kafka
 
 
-Name:           bro
+Name:           zeek
 Version:        %{release_version}
 Release:        %{release_num}%{dist}
-Summary:        Bro is a powerful framework for network analysis and security monitoring
+Summary:        zeek is a powerful framework for network analysis and security monitoring
 Group:          Productivity/Networking/Diagnostic
 
 License:        BSD-3-Clause
-URL:            http://bro.org
+URL:            http://zeek.org
 Source0:        %{name}-%{version}.tar.gz
 
 BuildRequires:  flex bison cmake openssl-devel zlib-devel python-devel swig gcc-c++
@@ -30,15 +30,15 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %endif
 
 %description
-Bro is a powerful network analysis framework.
+zeek is a powerful network analysis framework.
 
 
 %pre
-/usr/bin/getent group bro >/dev/null || /usr/sbin/groupadd -r bro
+/usr/bin/getent group zeek >/dev/null || /usr/sbin/groupadd -r zeek
 
 
 %prep
-%setup -n bro-%{version} -q
+%setup -n zeek-%{version} -q
 
 
 %build
