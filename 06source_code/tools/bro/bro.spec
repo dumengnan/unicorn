@@ -14,6 +14,8 @@ License:        BSD-3-Clause
 URL:            http://zeek.org
 Source0:        %{name}-%{version}.tar.gz
 
+#patch0: code_analysis.patch
+
 BuildRequires:  flex bison cmake openssl-devel zlib-devel python-devel swig gcc-c++
 BuildRequires:  libpcap-devel
 Requires(pre):  /usr/sbin/groupadd, /usr/bin/getent
@@ -39,6 +41,7 @@ zeek is a powerful network analysis framework.
 
 %prep
 %setup -n zeek-%{version} -q
+# %patch0 -p1
 
 
 %build
