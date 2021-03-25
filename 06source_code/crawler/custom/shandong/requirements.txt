@@ -1,7 +1,7 @@
 requests==2.18.4
 pbr==1.8.1
 twitter==1.17.1
-PyYAML==3.12
+PyYAML==5.4
 beautifulsoup4
 coala_utils==0.6.2
 selenium
