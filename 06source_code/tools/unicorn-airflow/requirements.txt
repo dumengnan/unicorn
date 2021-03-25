@@ -1,5 +1,5 @@
 mysqlclient==1.3.9
 numpy==1.13.1
-PyYAML==3.12
+PyYAML==5.4
 apache-airflow[mysql]==1.10.2
 
