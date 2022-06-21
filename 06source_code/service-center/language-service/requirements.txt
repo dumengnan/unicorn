@@ -4,7 +4,7 @@ python_speech_features==0.6
 protobuf==3.6.0
 TensorFlow==1.12.0
 Keras==2.2.4
-Numpy==1.15.4
+Numpy==1.22.0
 wave==0.0.2
 matplotlib==3.0.2
 Scipy==1.2.0
